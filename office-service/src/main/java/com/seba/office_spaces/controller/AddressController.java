@@ -29,7 +29,7 @@ public class AddressController {
     @ResponseStatus(HttpStatus.CREATED)
     public Address createAddress(@RequestParam("title") AddressDTO address) {
         log.info(TAG + "Create new address: {}", address.getAddress());
-        return addressService.createAddress(address);
+        return addressService.saveAddress(null, address);
     }
 
     @PutMapping("/{id}")
@@ -37,7 +37,7 @@ public class AddressController {
     public Address updateAddress(@PathVariable Long id,
                                  @RequestBody AddressDTO addressDetails) {
         log.info(TAG + "Update address with id: {}", id);
-        return addressService.updateAddress(id, addressDetails);
+        return addressService.saveAddress(id, addressDetails);
     }
 
     @DeleteMapping("/{id}")
@@ -46,5 +46,4 @@ public class AddressController {
         log.info(TAG + "Delete address with id: {}", id);
         addressService.deleteAddress(id);
     }
-
 }

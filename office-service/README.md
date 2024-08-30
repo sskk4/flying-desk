@@ -20,5 +20,12 @@
 
 ### todo:
 ~~~
-get,post,put 4 all
+-- get,post,put 4 all - do rozkminki
+-- delete logic - boolean additional isDeleted in db
+
+-- validator
+-- pageable
+-- cache
+-- scheduler
+-- mappers
 ~~~

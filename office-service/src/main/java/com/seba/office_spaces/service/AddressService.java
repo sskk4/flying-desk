@@ -20,31 +20,25 @@ public class AddressService {
 
     @SneakyThrows
     public Address getAddressById(Long id) {
+
         return addressRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found with id " + id));
     }
 
     @SneakyThrows
-    public Address createAddress(AddressDTO addressDTO) {
+    public Address saveAddress(Long id, AddressDTO addressDTO) {
 
         var city = cityService.getCityById(addressDTO.getCityId());
         var country = countryService.getCountryById(addressDTO.getCountryId());
 
-        Address address = new Address();
-        address.setCity(city);
-        address.setCountry(country);
-        address.setAddress(addressDTO.getAddress());
+        Address address;
 
-        return addressRepository.save(address);
-    }
+        if (id == null) {
+            address = new Address();
+        } else {
+            address = getAddressById(id);
+        }
 
-    @SneakyThrows
-    public Address updateAddress(Long id, AddressDTO addressDTO) {
-
-        var city = cityService.getCityById(addressDTO.getCityId());
-        var country = countryService.getCountryById(addressDTO.getCountryId());
-
-        Address address = getAddressById(id);
         address.setCity(city);
         address.setCountry(country);
         address.setAddress(addressDTO.getAddress());
