@@ -12,7 +12,7 @@
 ~~~   
 
 
-#< FILE STRUCTURE >
+# FILE STRUCTURE 
 
 < flying-desk-backend
 
@@ -78,7 +78,7 @@
 		> test-components
 
 
-#< DEPEDENCIES >
+# DEPEDENCIES 
 
 Backend 
 
@@ -109,7 +109,7 @@ Frontend
 	from "axios"
 
 
-#< API >
+# API 
 
 Backend
 
@@ -217,7 +217,7 @@ http://localhost:3000
 		
 
 					
-#< DATABASE >
+# DATABASE 
 
 mysql://localhost:3306/flying_desk_rent
 
