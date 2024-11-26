@@ -1,0 +1,21 @@
+/*
+paleta
+
+fioletowy jasny  - #9D8CFF
+fioletowy        - #7360DF
+fioletowy ciemny - #2D297D
+szary jasny tło  - #ECECEC
+szary            - #D9D9D9
+szary ciemny     - #CBCBCB
+szary ciemniejszy- #AAAAAA
+czarny           - #222
+
+*/
+
+body
+{
+    background-color: #ECECEC;
+    margin:0;
+    padding:0;
+    font-family: "Segoe UI", sans-serif;
+}

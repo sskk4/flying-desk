@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>searchbar</title>
+
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../components/SearchBar/SearchBar.css">
+    <link rel="stylesheet" href="../../components/Button/Button.css">
+</head>
+<body>
+
+
+    <div class="search-bar">
+        <div class="search-bar-left"></div>
+        <div class="search-bar-center">
+            <input class="search-bar-text-input" type="text" placeholder="Search...">
+            <img class="search-bar-button" src="https://www.svgrepo.com/show/7109/search.svg">
+        </div>
+        <div class="search-bar-right">
+            <div class="search-bar-filtres">
+                <img class="search-bar-filtres-img" src="https://www.svgrepo.com/show/418193/filter-sort-filtering.svg">
+                <a class="search-bar-filtres-text">Filtres</a>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="filtres-bar">
+    <div class="filtres-bar-close">
+        <div class="filtres-bar-left">
+            <div class="light-purple-button">Place an ad</div>
+            <div class="light-purple-button">Check best offers</div>
+            <div class="light-purple-button">Personalized offer</div>
+        </div>
+    
+        <div class="filtres-bar-right">
+            <div class="filtres-bar-right-panel">
+                Destination:
+                <select>
+                    <option>Warsaw</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+
+                <div class="arrow-show"> <img class="arrow" src="../../assets/icons/arrow-down.svg"> </div>
+
+            </div>
+
+        </div>
+    </div>
+
+        <div class="filtres-bar-open">
+            <div class="filtres-bar-top">
+                <div class="filtres-item">
+                    <label>Destination:</label>
+                    <select>
+                        <option>Warsaw</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+                
+                <div class="filtres-item">
+                    <label>Destination:</label>
+                    <select>
+                        <option>Warsaw</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+                
+                <div class="filtres-item">
+                    <label>Destination:</label>
+                    <select>
+                        <option>Warsaw</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+                
+                <div class="filtres-item">
+                    <label>Destination:</label>
+                    <select>
+                        <option>Warsaw</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+                
+                <div class="filtres-item">
+                    <label>Destination:</label>
+                    <select>
+                        <option>Warsaw</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+                
+                <div class="filtres-item">
+                    <label>Destination:</label>
+                    <select>
+                        <option>Warsaw</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="arrow-hide"> <img class="arrow" src="../../assets/icons/arrow-up.svg"> </div>
+
+            <div class="filtres-bar-bottom">
+                <div class="light-purple-button">Place an ad</div>
+                <div class="light-purple-button">Check best offers</div>
+                <div class="light-purple-button">Personalized offer</div>
+            </div>
+        </div>
+    </div>
+
+<div class="content">
+
+    ponizej
+
+</div>
+
+<script>
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const filtresBarClose = document.querySelector(".filtres-bar-close");
+    const filtresBarOpen = document.querySelector(".filtres-bar-open");
+    const arrowShow = document.querySelector(".arrow-show");
+    const arrowHide = document.querySelector(".arrow-hide");
+    const toggleFiltersButton = document.querySelector(".search-bar-filtres");
+
+    // Ustawia początkowy stan
+    filtresBarOpen.style.display = "none";
+
+    // Funkcja do przełączania między sekcjami
+    function toggleFilters() {
+        if (filtresBarClose.style.display === "none") {
+            filtresBarClose.style.display = "flex";
+            filtresBarOpen.style.display = "none";
+        } else {
+            filtresBarClose.style.display = "none";
+            filtresBarOpen.style.display = "block";
+        }
+    }
+
+    // Dodaj nasłuchiwacze zdarzeń do strzałek i przycisku "Filtres"
+    arrowShow.addEventListener("click", toggleFilters);
+    arrowHide.addEventListener("click", toggleFilters);
+    toggleFiltersButton.addEventListener("click", toggleFilters);
+});
+
+
+</script>
+
+
+</html>

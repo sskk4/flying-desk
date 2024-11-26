@@ -1,0 +1,15 @@
+# Node.js
+flying-desk-frontend/node_modules/
+flying-desk-frontend/.env
+
+# Java
+flying-desk-backend/**/target/
+flying-desk-backend/**/application.yml
+
+# Mac/Linux/Windows system files
+.DS_Store
+Thumbs.db
+
+# Logs
+**/logs/
+**/*.log

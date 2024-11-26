@@ -1,0 +1,8 @@
+gateway
+eureka-server
+company
+data migration
+logs
+notification
+product
+security

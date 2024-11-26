@@ -1,0 +1,18 @@
+package com.seba.office_service.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class BuildingDTO {
+
+    private String building;
+    private Long addressId;
+    private String description;
+    private String photo;
+
+}

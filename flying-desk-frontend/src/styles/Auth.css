@@ -1,0 +1,188 @@
+html
+{
+ margin:0;
+ padding:0;
+}
+
+a
+{
+    text-decoration: none;
+    color:#262626;
+}
+
+.login-container {
+    background-color: #ECECEC;
+    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+}
+
+.top-logo-img {
+    cursor:pointer;
+    width: 20vh;
+    margin-bottom: 20px;
+}
+
+.error-message
+{
+    color:white;
+    width:30vh;
+    text-align: center;
+    border-bottom-right-radius:20px;
+    border-bottom-left-radius:20px;
+    padding:0.5vh;
+    background-color:#cf493a;
+    margin-bottom:2vh;
+
+}
+
+.center
+{
+    text-align:center;
+
+}
+
+.panel {
+    border-radius: 40px;
+    background-color: #d9d9d9;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+
+}
+
+.panel-img {
+    width: 20%;
+    margin: 5% auto;
+}
+
+.panel-login input,
+.panel-password input {
+    background-color: white;
+    border-radius: 20px;
+    padding: 3%;
+    margin: 3% 0;
+    width: 94%;
+    border: 1px solid #707070;
+    outline: none;
+    transition: 0.1s;
+}
+
+.panel-login input:hover,
+.panel-password input:hover {
+    background-color: #eeecff;
+}
+
+.panel-login input:focus,
+.panel-password input:focus {
+    background-color: #eeecff;
+
+}
+
+
+
+.panel-forgot {
+    font-size: 13px;
+    color: #7575D3;
+    margin-top: 5%;
+    margin-bottom:0%;
+    width:50%;
+    margin-left:auto;
+    margin-right: auto;
+}
+
+
+a:visited {
+    color: #7575D3;
+}
+
+
+a:hover {
+    color: #2D297D;
+}
+
+
+
+.arrow-right
+{
+    width:5%;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(24%) saturate(188%) hue-rotate(250deg) brightness(111%) contrast(100%);
+}
+
+.password-strength {
+    margin-top:-20px;
+    margin-bottom: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left:10%;
+    padding:0.2vh;
+    width:50%;
+    color: #707070;
+    background-color: #e1c2be;
+    border:0.2px solid #e1c2be; /* czerwony */
+    transition: color 0.3s ease;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    text-align: center;
+  }
+  
+  .password-strength.weak {
+    color: white;
+    background-color: #cf493a;
+    border:0.2px solid #cf493a; /* czerwony */
+  }
+  
+  .password-strength.medium {
+    color: white;
+    background-color: #d0b340;
+    border:0.2px solid #d0b340;/* żółty */
+  }
+  
+  .password-strength.strong {
+    color: white;
+    background-color: #208048;
+    border:0.2px solid #208048; /* zielony */
+  }
+  
+.submit
+{
+    width:50%;
+}
+
+.back
+{
+    border:0.2px solid #ECECEC;
+}
+
+.form-container {
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    opacity: 1;
+  }
+  
+  .form-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .form-container.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .top-logo-img {
+        width: 23vh;
+    }
+
+    .panel {
+        width: 90%;
+    }
+
+
+}

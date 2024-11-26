@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../components/Header/Header.css">
+    <link rel="stylesheet" href="../../components/Button/Button.css">
+    <link rel="stylesheet" href="../../components/SearchBar/SearchBar.css">
+    <link rel="stylesheet" href="../../components/Card/Card.css">
+    <link rel="stylesheet" href="../../components/Form/Form.css">
+</head>
+<body>
+
+<div class="top-bar">
+    
+    <div class="top-bar-left">
+        <div class="top-bar-left-text"> 
+            <a class="menu-bar-button slide-in-out" href="#">office spaces</a> 
+        </div>
+        <div class="top-bar-left-text"> 
+            <a class="menu-bar-button slide-in-out" href="#">for customers</a> 
+        </div>
+        <div class="top-bar-left-text"> 
+            <a class="menu-bar-button slide-in-out" href="#">for owners</a> 
+        </div>
+        <div class="top-bar-left-text"> 
+            <a class="menu-bar-button slide-in-out" href="#">more info</a> 
+        </div>
+    </div>
+
+    <div class="top-bar-logo">
+            <img class="top-bar-logo-img" src="../../assets/images/flyingdesk.png" onclick="location.href='office.html'">
+    </div>
+        <div class="top-bar-right-panel">
+            <img class="top-bar-right-panel-menu-img" src="../../assets/icons/menu.svg"> 
+            <img class="top-bar-right-panel-menu-img" src="../../assets/images/user.png" onclick="location.href='login.html'">
+        </div>
+    </div>
+
+</div>
+
+<div class="bottom-nav">
+    <a href="#"><img class="nav-bar-menu-img nav-bar-smaller" src="../../assets/icons/forcustomer.svg"></a>
+    <a href="#"><img class="nav-bar-menu-img nav-bar-smaller" src="../../assets/icons/forowner.svg"></a>
+    <a href="#"><img class="nav-bar-menu-img nav-bar-bigger" src="../../assets/icons/offices.svg"></a>
+    <a href="#"><img class="nav-bar-menu-img nav-bar-smaller" src="../../assets/icons/info.svg"></a>
+    <a href="#"><img class="nav-bar-menu-img nav-bar-bigger" src="../../assets/images/user.png"></a>
+</div>
+
+<!--
+
+<div class="search-bar">
+    <div class="search-bar-left"></div>
+    <div class="search-bar-center">
+        <input class="search-bar-text-input" type="text" placeholder="Search...">
+        <img class="search-bar-button" src="https://www.svgrepo.com/show/7109/search.svg">
+    </div>
+    <div class="search-bar-right">
+        <div class="search-bar-filtres">
+            <img class="search-bar-filtres-img" src="https://www.svgrepo.com/show/418193/filter-sort-filtering.svg">
+            <a class="search-bar-filtres-text">Filtres</a>
+        </div>
+    </div>
+</div>
+
+
+<div class="filtres-bar">
+<div class="filtres-bar-close">
+    <div class="filtres-bar-left">
+        <div class="light-purple-button">Place an ad</div>
+        <div class="light-purple-button">Check best offers</div>
+        <div class="light-purple-button">Personalized offer</div>
+    </div>
+
+    <div class="filtres-bar-right">
+        <div class="filtres-bar-right-panel">
+            Destination:
+            <select>
+                <option>Warsaw</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+            </select>
+
+            <div class="arrow-show"> <img class="arrow" src="../../assets/icons/arrow-down.svg"> </div>
+
+        </div>
+
+    </div>
+</div>
+
+    <div class="filtres-bar-open">
+        <div class="filtres-bar-top">
+            <div class="filtres-item">
+                <label>Destination:</label>
+                <select>
+                    <option>Warsaw</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+            
+            <div class="filtres-item">
+                <label>Destination:</label>
+                <select>
+                    <option>Warsaw</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+            
+            <div class="filtres-item">
+                <label>Destination:</label>
+                <select>
+                    <option>Warsaw</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+            
+            <div class="filtres-item">
+                <label>Destination:</label>
+                <select>
+                    <option>Warsaw</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+            
+            <div class="filtres-item">
+                <label>Destination:</label>
+                <select>
+                    <option>Warsaw</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+            
+            <div class="filtres-item">
+                <label>Destination:</label>
+                <select>
+                    <option>Warsaw</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="arrow-hide"> <img class="arrow" src="../../assets/icons/arrow-up.svg"> </div>
+
+        <div class="filtres-bar-bottom">
+            <div class="light-purple-button">Place an ad</div>
+            <div class="light-purple-button">Check best offers</div>
+            <div class="light-purple-button">Personalized offer</div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+document.addEventListener("DOMContentLoaded", function () {
+const filtresBarClose = document.querySelector(".filtres-bar-close");
+const filtresBarOpen = document.querySelector(".filtres-bar-open");
+const arrowShow = document.querySelector(".arrow-show");
+const arrowHide = document.querySelector(".arrow-hide");
+const toggleFiltersButton = document.querySelector(".search-bar-filtres");
+
+// Ustawia początkowy stan
+filtresBarOpen.style.display = "none";
+
+// Funkcja do przełączania między sekcjami
+function toggleFilters() {
+    if (filtresBarClose.style.display === "none") {
+        filtresBarClose.style.display = "flex";
+        filtresBarOpen.style.display = "none";
+    } else {
+        filtresBarClose.style.display = "none";
+        filtresBarOpen.style.display = "block";
+    }
+}
+
+// Dodaj nasłuchiwacze zdarzeń do strzałek i przycisku "Filtres"
+arrowShow.addEventListener("click", toggleFilters);
+arrowHide.addEventListener("click", toggleFilters);
+toggleFiltersButton.addEventListener("click", toggleFilters);
+});
+
+
+</script>
+
+<div class="content">
+
+    <div class="card">
+        <div class="card-image">
+        <img class="card-img" src="https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg">    
+        </div>
+
+        <div class="card-title"> Office in Warsaw center </div>
+        <div class="card-star"> <span>☆</span>  </div>
+        <div class="card-price"> 
+            <span class="card-small-text"> Once </span> 
+            <span class="card-price-text"> 1$/h</span></div>
+        <div class="purple-button card-button"> Check </div>
+        <div class="card-status"> Available  </div>
+    </div>
+
+
+</div>
+
+-->
+
+<div class="container">
+    <aside class="sidebar">
+      <h2>Account Management</h2>
+      <ul>
+        <li><span>🏠</span> rentals</li>
+        <li><span>🔒</span> personal information</li>
+        <li><span>🔑</span> account sign-in</li>
+      </ul>
+    </aside>
+
+    <main class="form-container">
+      <div class="form">
+        
+        <div class="form-field">
+            <label for="first-name">first name</label>
+            <input type="text" id="first-name" value="Sebastian">
+          </div>
+
+          <div class="form-field">
+            <label for="first-name">first name</label>
+            <input type="text" id="first-name" value="Sebastian">
+          </div>
+
+          <div class="form-field">
+            <label for="first-name">first name</label>
+            <input type="text" id="first-name" value="Sebastian">
+          </div>
+
+        <div class="buttons">
+          <button class="button cancel">CANCEL</button>
+          <button class="button save">SAVE</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+</html>
