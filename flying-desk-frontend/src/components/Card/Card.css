@@ -1,13 +1,18 @@
 .card-container
 {
     margin-top: 5vh;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2%;
+    justify-content: space-between;
+    padding:0 5vh 0 5vh;
 }
 
 .card
 {
  float:left;
  background-color:white;
- width:30%;
+ flex: 1 1 calc(30% - 2%); 
  min-height: 100%;
  margin-left: 1%;
  margin-right:1%;
@@ -15,6 +20,7 @@
  margin-bottom:2.5vh;
  border-radius:14px;
  border: 2px solid #CBCBCB;
+ padding-bottom:2vh;
 }
 
 .card-img

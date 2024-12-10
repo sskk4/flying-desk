@@ -1,0 +1,85 @@
+/* Kontener główny */
+.image-hover-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Obraz i kontener */
+  .image-wrapper {
+    position:relative;
+    height:540px;
+    width: 1080px;
+    border-radius: 10px; /* Opcjonalne zaokrąglenie */
+    cursor:pointer;
+  }
+  
+  /* Obraz na wierzchu */
+  .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease; /* Animacja przejścia */
+    object-fit: cover; /* Zachowanie proporcji */
+  }
+  
+  /* Obraz początkowy */
+  .image-front {
+    opacity: 1;
+    z-index: 2;
+  }
+  
+  /* Obraz ukryty */
+  .image-back {
+    opacity: 0;
+    z-index: 1;
+  }
+  
+  /* Efekt hover */
+  .image-wrapper:hover .image-front {
+    opacity: 0; /* Ukryj obraz początkowy */
+  }
+  
+  .image-wrapper:hover .image-back {
+    opacity: 1; /* Pokaż obraz ukryty */
+  }
+  
+  .rent-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #7360df;
+    margin-bottom: 20px;
+    font-optical-sizing: auto;
+    font-size: 72px;
+    font-weight: 200;
+    font-style: normal;
+    font-size:xx-large;
+    cursor:default;
+    transition:0.1s;
+  }
+
+  .rent-button
+  {
+    width:200px;
+  }
+
+  .rent-title:hover
+  {
+    filter:  contrast(120%) brightness(80%) ;
+    font-weight: 500;
+  }
+
+  .terms-agreement {
+    display: flex;
+    align-items: center;
+    padding-top:10vh;
+    gap: 10px; /* Odstęp między checkboxem a tekstem */
+  }
+  
+  .rent-terms {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+  }

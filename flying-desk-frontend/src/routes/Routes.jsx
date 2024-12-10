@@ -9,7 +9,8 @@ import ProtectedRoute from "./ProtectedRoute"; // Import osłony
 import AddOffice from "../pages/Office/AddOffice";
 import OfficeDetails from "../pages/Office/OfficeDetails";
 import TestBuilding from "../utils/test-components/building/TestBuilding";
-
+import OwnerContainer from "../pages/Owner/Start";
+import RentContainer from "../pages/Rent/Start";
 
 
 const AppRoutes = () => {
@@ -39,10 +40,15 @@ const AppRoutes = () => {
         }
       />
 
+        <Route path="/become-owner" element={<OwnerContainer />} />
+
+        <Route path="/start-rent" element={<RentContainer />} />
 
         <Route path="/office/:id" element={<OfficeDetails />} />
 
         <Route path="/test/building" element={<TestBuilding />} />
+
+        
 
     </Routes>
   );

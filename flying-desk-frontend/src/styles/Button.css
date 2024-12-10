@@ -148,7 +148,7 @@
     border: solid 1px #7360DF;
     border-radius: 20px;
     margin: 10px auto;
-    transition: 0.1s;
+    transition: 0.2s;
 }
 
 .login-button:hover {
@@ -169,7 +169,7 @@
     background-color: #ECECEC;
     border-radius: 20px;
     margin: 10px auto;
-    transition: 0.1s;
+    transition: 0.2s;
 }
 
 .create-button:hover {

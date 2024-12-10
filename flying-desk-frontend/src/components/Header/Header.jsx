@@ -37,10 +37,10 @@ const Header = () => {
           <Link className="menu-bar-button slide-in-out" to="/">
             office spaces
           </Link>
-          <Link className="menu-bar-button slide-in-out" to="/customers">
+          <Link className="menu-bar-button slide-in-out" to="/start-rent">
             for customers
           </Link>
-          <Link className="menu-bar-button slide-in-out" to="/owners">
+          <Link className="menu-bar-button slide-in-out" to="/become-owner">
             for owners
           </Link>
           <Link className="menu-bar-button slide-in-out" to="/info">

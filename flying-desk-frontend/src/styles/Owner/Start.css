@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+
+
+.owner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #ececec;
+    padding: 50px;
+    border-radius: 10px;
+  }
+  
+  .owner-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #7360df;
+    margin-bottom: 20px;
+    font-family: "Noto Serif JP", serif;
+    font-optical-sizing: auto;
+    font-size: 72px;
+    font-weight: 200;
+    font-style: normal;
+    font-size:xx-large;
+    cursor:default;
+    transition:0.1s;
+  }
+
+  .owner-title:hover
+  {
+    filter:  drop-shadow(0px 0px 10px #7360df) contrast(120%) brightness(80%) ;
+  }
+  
+  .owner-image {
+    margin-bottom: 20px;
+  }
+  
+  .owner-illustration {
+    width: 400px;
+    height: auto;
+    transition:0.3s;
+  }
+
+  .owner-illustration:hover
+  {
+    filter:  brightness(80%) contrast(120%) drop-shadow(0px 0px 50px #7360df)  ;
+  }
+  
+  .owner-button {
+
+    width:50vh;
+    height: 30px;
+  }
+
+  .owner-button:hover
+  {
+    border: 1px solid #8A57B8;
+  }
+
+  
+  .owner-terms {
+    font-size: 14px;
+    color: #000000;
+  }
+  
+  .terms-link {
+    color: #7360df;
+    text-decoration: underline;
+    font-weight: bold;
+    transition:0.1s;
+  }
+  
+.terms-link:hover {
+    color: #8A57B8;
+}
+  

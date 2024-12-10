@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Footer from "../../components/Footer/Footer"
 import Header from '../../components/Header/Header';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import "../../components/Card/Card.css"
@@ -73,6 +74,7 @@ const OfficeList = () => {
       ))}
     </div>
 
+      <Footer />
     </div>
     );
 };

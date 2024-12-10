@@ -11,9 +11,9 @@ const FiltresBar = ({ isFiltersOpen, toggleFilters }) => {
       {!isFiltersOpen && (
         <div className="filtres-bar-close">
           <div className="filtres-bar-left">
-            <Link className="light-purple-button" to="/add/office"> <div>Place an ad</div> </Link>
-            <div className="light-purple-button">Check best offers</div>
-            <div className="light-purple-button">Personalized offer</div>
+            <Link className="light-purple-button" to="/add/office"> <div>Offices</div> </Link>
+            <div className="light-purple-button">Rooms</div>
+            <div className="light-purple-button">Desks</div>
           </div>
 
           <div className="filtres-bar-right">
@@ -57,9 +57,9 @@ const FiltresBar = ({ isFiltersOpen, toggleFilters }) => {
           </div>
 
           <div className="filtres-bar-bottom">
-          <Link className="light-purple-button" to="/add/office"><div >Place an ad</div></Link>
-            <div className="light-purple-button">Check best offers</div>
-            <div className="light-purple-button">Personalized offer</div>
+          <Link className="light-purple-button" to="/add/office"><div >Offices</div></Link>
+            <div className="light-purple-button">Rooms</div>
+            <div className="light-purple-button">Desks</div>
           </div>
         </div>
       )}

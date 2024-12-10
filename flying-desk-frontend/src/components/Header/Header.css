@@ -33,6 +33,12 @@
     width: 180px;
     height: auto;
     user-select: auto;
+    transition:0.2s;
+}
+
+.top-bar-logo-img:hover
+{
+    filter:  brightness(80%) ;
 }
 
 /* TOP RIGHT PANEL */
