@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+
+.owner-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #7360df;
+    margin-bottom: 20px;
+    font-family: "Noto Serif JP", serif;
+    font-optical-sizing: auto;
+    font-size: 72px;
+    font-weight: 200;
+    font-style: normal;
+    font-size:xx-large;
+    cursor:default;
+    transition:0.1s;
+  }
+
+.terms-container {
+    max-width: 800px;
+    margin: 7vh auto -5vh auto;
+    background: #fff;
+    padding: 2vh 7vh 7vh 7vh;
+    border-radius: 10vh 10vh 0 0;
+    background-color: #d9d9d9;
+    font-weight: 400;
+    cursor:default;
+}
+
+
+.subtitle {
+    font-family: "Noto Serif JP", serif;
+    font-optical-sizing: auto;
+    font-size: 20px;
+    margin: -2vh 0 5vh 0;
+}
+
+
+.buttons {
+    padding:7vh 0 0 0;
+    width:50%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin: 10px auto 10px auto;
+}
+
+.create-button
+{
+    width:250px;
+}
+

@@ -1,0 +1,398 @@
+
+.admin-panel {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar Styles */
+.ap-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 12%;
+    padding: 1%;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #ddd;
+    gap: 1vh;
+}
+
+.ap-menu-section {
+    margin: -1.5vh 0; 
+}
+
+.main-content
+{
+    width:86%;
+    margin-left:14%;
+}
+
+.ap-logo
+{
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.ap-error
+{
+    margin-left:auto;
+    margin-right: auto;
+
+    margin-bottom: 5vh;
+}
+
+.ap-menu-title
+{
+    margin-bottom: 0.5vh;
+    font-weight: 300;
+    font-size: 3vh;
+    cursor:default;
+}
+
+
+
+.ap-pagination-controls
+{
+    padding:2%;
+    width:96%;
+    text-align: center;
+}
+
+.ap-paggination-button
+{
+    width:10%;
+    border: 1px solid #2D297D;
+    color: black;
+    padding:10px 20px 10px 20px;
+    transition:0.2s;
+    cursor:pointer;
+}
+
+.ap-paggination-button
+{
+
+    border: 1px solid #2D297D;
+    color: black;
+    padding:10px 20px 10px 20px;
+}
+
+.ap-paggination-button:hover
+{
+
+    border: 1px solid #2D297D;
+    background-color:#2D297D;
+    color: white;
+    padding:10px 20px 10px 20px;
+}
+
+
+.ap-paggination-button:disabled
+{
+
+    display:none;
+
+}
+
+.ap-paggination-text
+{
+    background-color: #2D297D;
+    color:white;
+    border-radius:10px;
+    padding:10px 20px 10px 20px;
+    margin-left: 10px;
+    margin-right:10px;
+    cursor:default;
+}
+
+.ap-p-b-left
+{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.ap-p-b-right
+{
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+
+.ap-menu-link.active
+{
+    color:#7360DF;
+    
+}
+
+
+.ap-logout
+{
+    margin-top: auto; 
+    background-color:#f5f5f5;
+    width:100%;
+}
+
+.ap-table-button
+{
+    width:10vh;
+}
+
+.ap-menu-link
+{
+    cursor:pointer;
+    transition:0.1s;
+    margin: 0.75vh 0;
+}
+
+
+.ap-menu-link:hover
+{
+    color:#7360DF;
+    text-decoration: underline;
+}
+
+/* Header Styles */
+.ap-header {
+    width: 100%;
+    background-color: #fff;
+    padding: 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: column; 
+}
+
+.ap-bars {
+    display: flex;
+    height: 15px;
+}
+
+.ap-bar {
+    flex: 1;
+}
+
+.ap-bar {
+    flex: 1; 
+}
+.ap-header-1
+{
+    background-color:#9D8CFF;
+}
+
+.ap-header-2
+{
+    background-color:#7360DF;
+}
+
+.ap-header-3
+{
+    background-color:#2D297D;
+}
+
+.ap-header-section {
+    display: flex;
+    align-items: center;
+    height: 100px;
+}
+
+.ap-title-section
+{
+    width:48%;
+    padding:1%;
+    font-weight: 300;
+    font-size:40px;
+    color:#969696;
+    cursor:default;
+
+}
+
+.ap-button-section
+{
+    max-height: 40px;
+    width:48%;
+    padding:1%;
+}
+
+.ap-add
+{
+    float:right;
+    background-color:white;
+}
+
+
+/* Table Styles */
+
+.table-container {
+    width:100%;
+}
+
+.ap-search-bar-container
+{
+    padding: 0 0 2vh 0;
+    width:100%;
+
+    background-color:#ececec;
+
+}
+
+.ap-search-bar
+{
+    background-color:#d9d9d9;
+    padding:0.5% 2%;
+    border:none;
+    border-radius:0 0 5vh 0;
+    width:50%;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+
+.status-rejected {
+    font-weight: bold;
+}
+
+.ap-form {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.ap-form input {
+    background-color: white;
+    border-radius: 20px;
+    padding: 1.5vh;
+    width: 50vh;
+    height: 2vh;
+    border: 1px solid #707070;
+    outline: none;
+    transition: 0.1s;
+    margin: 1vh auto 1vh auto;
+    
+}
+
+.ap-form  input:hover{
+    background-color: #eeecff;
+}
+
+.ap-form  input:focus {
+    background-color: #eeecff;
+
+}
+
+.ap-form textarea {
+    background-color: white;
+    border-radius: 20px;
+    padding: 1.5vh;
+    width: 70vh;
+    height: 10vh;
+    border: 1px solid #707070;
+    outline: none;
+    transition: 0.1s;
+    margin: 1vh auto 1vh auto;
+    
+}
+
+.ap-details-container
+{
+    padding:2%;
+}
+
+.ap-h2
+{
+    text-align: center;
+
+}
+
+.ap-hr
+{
+    margin:3vh 0 3vh 0;
+    
+}
+
+ .ap-create-button
+ {
+    width:20vh;
+    margin-bottom:10vh;
+ }
+
+ .ap-label
+ {
+   text-align: center;
+   font-size:20px;
+ }
+
+ .action-button
+ {
+    margin:4vh;
+ }
+
+
+ /* Dla ekranów średnich (np. tablety) */
+@media (max-width: 1420px) {
+    .ap-sidebar {
+        width: 20%; /* Sidebar zajmuje więcej miejsca */
+    }
+
+    .header-title
+{
+    font-size:1em;
+}
+
+    .main-content {
+        margin-left: 22%; /* Przesunięcie na większy sidebar */
+        width: 80%;
+    }
+}
+
+/* Dla małych ekranów (np. telefony) */
+@media (max-width: 900px) {
+    .admin-panel {
+        flex-direction: column; /* Sidebar przesuwany na górę */
+    }
+
+    .ap-sidebar {
+        position: relative;
+        width: 100%; /* Sidebar zajmuje całą szerokość */
+        height: auto; /* Wysokość automatyczna */
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+
+
+    .main-content {
+        margin: 0;
+        width: 100%; /* Główna zawartość zajmuje pełną szerokość */
+    }
+}
+
+/* Dla bardzo małych ekranów (np. małe telefony) */
+@media (max-width: 480px) {
+    .ap-sidebar {
+        display: none; /* Ukrycie sidebaru dla małych ekranów */
+    }
+
+    .main-content {
+        width: 100%;
+        margin: 0;
+    }
+
+    .ap-header {
+        padding: 0.5em;
+    }
+}

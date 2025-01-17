@@ -1,0 +1,40 @@
+.application-card {
+    background-color: #d9d9d9;
+    width: 50vh;
+    min-height: 50vh;
+    padding: 5vh;
+    border-radius: 5vh;
+    text-align: center;
+  }
+  
+  .checkmark-illustration {
+width:10vh;
+height: 10vh;
+  }
+  
+  .icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  
+.a-link{
+    color:#2F88FF!important;
+    text-decoration: underline;
+}
+
+.error-description {
+  margin-bottom: 10vh;
+}
+
+.a-link:hover{
+  color:#2D297D!important;
+}
+  
+.error-img
+{
+  height: 40vh;
+}
+
+  
+

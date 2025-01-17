@@ -1,0 +1,174 @@
+/* Container for the entire view */
+.manage-ads-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+ 
+    width: 90%;
+    height: 90%;
+    padding: 5%;
+    margin-bottom:-3%;
+    background-image: url('../../assets/png/background3.png'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  /* Header text styling */
+  .manage-ads-container h2 {
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  /* Divider line */
+  .manage-ads-container hr {
+    width: 80%;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+
+  }
+  
+  .ads-justify-title {
+    text-align:start;
+  }
+
+  .select-form
+  {
+    background-color:#d9d9d9;
+    padding:3vh;
+    border-radius:20px;
+    border:2px solid #b5b4b4;
+  }
+
+  .manage-ads-container select {
+    width: 100%;
+    text-align: center;
+    border: none;
+    padding:1vh;
+    margin:1vh;
+    border-radius:20px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+  }
+    
+  .select-form label {
+    font-size:12px;
+
+
+  }
+    
+
+  /* Tabs section */
+  .manage-ads-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  
+  .tab-button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .tab-button.active {
+    background-color: #9f83ff;
+    color: white;
+  }
+  
+  .tab-button:hover {
+    background-color: #d0c4ff;
+  }
+  
+  /* Ads container */
+  .ads-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 30px;
+  }
+  
+  /* Individual ad card */
+  .ad-card {
+    background: #d9d9d9;
+    border-radius: 10px;
+    width: 200px;
+    padding: 15px;
+    text-align: center;
+    border:2px solid #d1d1d1;
+    transition: 0.2s;
+  }
+
+  .ad-card:hover{
+    border:2px solid #ddd;
+    background-color: #ddd;
+  }
+
+  .ad-card h3 {
+    color:#2D297D;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  
+  .ad-image {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .ad-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Button inside ad card */
+  .details-button {
+
+    width: 100%;
+
+  }
+  
+
+  
+  /* Place an ad button */
+  .add-button {
+    margin-top: 20px;
+    padding: 15px 30px;
+    background-color: #9f83ff;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .add-button:hover {
+    background-color: #7c63d9;
+  }
+  
+  .back-button {
+    margin-bottom:5vh;
+    width:100px;
+  }
+
+
+
+  .action-button
+  {
+    
+    width:200px;
+    padding:1vh 2vh;
+    margin:1vh 2vh;
+  }
