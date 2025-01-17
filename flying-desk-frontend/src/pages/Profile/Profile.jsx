@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom"; // Do przekierowania na login
 
 import Sidebar from "../../components/SideBar/SideBar";
 import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer"
 import Personal from "./Personal"; // Komponent Personal
 
 import { useAuth } from "../../services/AuthProvider";
@@ -57,16 +58,18 @@ const Profile = () => {
             <Route
               path="/"
               element={
-                <div>
-                  <h1>Welcome to your profile!</h1>
-                  <p>User ID: {user?.userId}</p>
+                <div className="profile-title-container">
+                  <h1 className="owner-title">Welcome to your profile!</h1>
+                  <h2>User ID: {user?.userId}</h2>
                   <p>Role: {user?.role}</p>
+   
                 </div>
               }
             />
           </Routes>
         </main>
       </div>
+      <Footer />
     </div>
   );
 };

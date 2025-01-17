@@ -1,11 +1,13 @@
 package com.seba.office_service.cloud;
 
+import com.seba.office_service.dto.PhotoDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,57 +25,76 @@ public class PhotoController {
         this.photoService = photoService;
     }
 
+    /**
+     * Przesyłanie maksymalnie 5 zdjęć dla konkretnego bytu (desk, building, room, submission).
+     */
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadPhoto(
-            @RequestParam("file") MultipartFile file,
-            @RequestHeader("folderName") String folderName) {
-        logger.info("Received request to upload photo to folder: {}", folderName);
+    public ResponseEntity<String> uploadPhotos(
+            @RequestParam("files") List<MultipartFile> files, // Lista plików
+            @RequestParam("type") String photoType,          // Typ obiektu (np. SUBMISSION)
+            @RequestParam("relatedId") Long relatedId        // Powiązane ID obiektu
+    ) {
+        logger.info("Received request to upload {} photos for {} with ID: {}", files.size(), photoType, relatedId);
+
+        if (files.size() > 5) {
+            return ResponseEntity.badRequest().body("You can upload a maximum of 5 photos.");
+        }
 
         try {
-            photoService.uploadPhoto(file.getBytes(), folderName, file.getOriginalFilename());
-            logger.info("Photo uploaded successfully: {}", file.getOriginalFilename());
-            return ResponseEntity.ok("Photo uploaded successfully.");
+            String folderName = photoType.toLowerCase(); // Folder oparty na typie zdjęcia
+
+            // Prześlij każde zdjęcie
+            for (MultipartFile file : files) {
+                String fileName = file.getOriginalFilename();
+
+                photoService.addPhoto(file.getBytes(), folderName, fileName, photoType, relatedId);
+                logger.info("Photo uploaded successfully: {}", fileName);
+            }
+
+            return ResponseEntity.ok("All photos uploaded and saved successfully.");
         } catch (IOException e) {
-            logger.error("Error while uploading photo: {}", file.getOriginalFilename(), e);
+            logger.error("Error while uploading photos", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to upload photo: " + e.getMessage());
+                    .body("Failed to upload photos: " + e.getMessage());
         }
     }
 
-    @GetMapping("/{folderName}/{fileName}")
-    public ResponseEntity<String> getPhotoUrl(
-            @PathVariable String folderName,
-            @PathVariable String fileName) {
-        logger.info("Received request to get photo URL for file: {}/{}", folderName, fileName);
+
+    /**
+     * Pobieranie URL zdjęć powiązanych z danym bytem.
+     */
+    @GetMapping
+    public ResponseEntity<List<PhotoDTO>> getPhotos(
+            @RequestParam("type") String photoType,
+            @RequestParam("relatedId") Long relatedId
+    ) {
+        logger.info("Received request to list photos for {} with ID: {}", photoType, relatedId);
 
         try {
-            String fileUrl = photoService.getPhotoUrl(folderName, fileName);
-            logger.info("Returning URL for file: {}", fileUrl);
-            return ResponseEntity.ok(fileUrl);
+            List<PhotoDTO> photos = photoService.getPhotos(photoType, relatedId);
+            logger.info("Returning list of photos for {} with ID: {}", photoType, relatedId);
+            return ResponseEntity.ok(photos);
         } catch (Exception e) {
-            logger.error("Error while retrieving photo URL for file: {}/{}", folderName, fileName, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to get photo URL: " + e.getMessage());
+            logger.error("Error while listing photos for {} with ID: {}", photoType, relatedId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @DeleteMapping("/{folderName}/{fileName}")
-    public ResponseEntity<String> deletePhoto(
-            @PathVariable String folderName,
-            @PathVariable String fileName) {
-        logger.info("Received request to delete photo: {}/{}", folderName, fileName);
+    /**
+     * Usuwanie zdjęcia powiązanego z ID.
+     */
+    @DeleteMapping("/{photoId}")
+    public ResponseEntity<String> deletePhoto(@PathVariable Long photoId) {
+        logger.info("Received request to delete photo with ID: {}", photoId);
 
         try {
-            photoService.deletePhoto(folderName, fileName);
-            logger.info("Photo deleted successfully: {}/{}", folderName, fileName);
+            photoService.deletePhoto(photoId); // Usuwanie zdjęcia
+            logger.info("Photo deleted successfully: {}", photoId);
             return ResponseEntity.ok("Photo deleted successfully.");
         } catch (Exception e) {
-            logger.error("Error while deleting photo: {}/{}", folderName, fileName, e);
+            logger.error("Error while deleting photo with ID: {}", photoId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to delete photo: " + e.getMessage());
         }
     }
 }
-
-
-

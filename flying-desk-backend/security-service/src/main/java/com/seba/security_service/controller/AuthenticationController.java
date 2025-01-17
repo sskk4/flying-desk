@@ -3,10 +3,7 @@ package com.seba.security_service.controller;
 import com.seba.security_service.email.EmailRequest;
 import com.seba.security_service.email.PasswordRecoveryRequest;
 import com.seba.security_service.security.request.*;
-import com.seba.security_service.security.response.AuthenticationResponse;
-import com.seba.security_service.security.response.RefreshTokenResponse;
-import com.seba.security_service.security.response.RegisterEmailResponse;
-import com.seba.security_service.security.response.RegisterResponse;
+import com.seba.security_service.security.response.*;
 import com.seba.security_service.service.AuthenticationService;
 import com.seba.security_service.util.SecurityHolder;
 import com.seba.security_service.security.request.*;
@@ -47,7 +44,7 @@ public class AuthenticationController {
 
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "logout user, inactive refresh token")
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public void logout() {
         log.info(TAG + "logout:");
         authenticationService.logout(SecurityHolder.getPrincipal());
@@ -128,5 +125,14 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new RegisterEmailResponse("Email is available"));
         }
+    }
+
+    @Operation(summary = "Get current user information")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/me")
+    public ResponseEntity<UserInformationResponse> getCurrentUser() {
+        log.info(TAG + "get current user info");
+        var user = authenticationService.getCurrentUser(SecurityHolder.getPrincipal());
+        return ResponseEntity.ok(user);
     }
 }

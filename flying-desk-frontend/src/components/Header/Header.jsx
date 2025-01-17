@@ -105,7 +105,7 @@ const Header = () => {
             alt="For Customers"
           />
         </Link>
-        <Link to="/owners">
+        <Link to="/become-owner">
           <img
             className="nav-bar-menu-img nav-bar-smaller"
             src={forOwnerIcon}

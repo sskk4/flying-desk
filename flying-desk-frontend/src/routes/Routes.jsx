@@ -1,27 +1,56 @@
-// src/routes/Routes.jsx
 import React from "react";
-import { Route, Routes } from "react-router-dom";
-import OfficeList from "../pages/Office/OfficeList";
+import { Route, Routes, Navigate } from "react-router-dom";
+
+import { useAuth } from "../services/AuthProvider";
+import ProtectedRoute from "./ProtectedRoute"; 
+
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
+import ActivateAccountPage from "../pages/Auth/ActivateAccount";
+
 import Profile from "../pages/Profile/Profile";
-import ProtectedRoute from "./ProtectedRoute"; // Import osłony
-import AddOffice from "../pages/Office/AddOffice";
+
+import OfficeList from "../pages/Office/OfficeList";
 import OfficeDetails from "../pages/Office/OfficeDetails";
+
 import TestBuilding from "../utils/test-components/building/TestBuilding";
-import OwnerContainer from "../pages/Owner/Start";
+
 import RentContainer from "../pages/Rent/Start";
 
+import BecomeOwner from "../pages/Owner/BecomeOwner";
+import OwnerWaitingContainer from "../pages/Error/Owner/Approve";
+import OwnerRejectedContainer from "../pages/Error/Owner/Wrong";
+
+import OwnerPanel from "../pages/Owner/OwnerPanel";
+
+import AdminPanel from "../pages/Admin/AdminPanel";
+
+import Error403 from "../pages/Error/Error403";
+import Error404 from "../pages/Error/Error404";
 
 const AppRoutes = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
+    
     <Routes>
+    
       <Route path="/" element={<OfficeList />} />
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route
+        path="/login"
+        element={isAuthenticated ? <Navigate to="/profile" /> : <Login />}
+      />
+      <Route
+        path="/register"
+        element={isAuthenticated ? <Navigate to="/profile" /> : <Register />}
+      />
 
-      {/* Ochrona trasy /profile */}
+        <Route
+          path="/activate/:activationId"
+          element={<ActivateAccountPage />}
+        />
+
       <Route
         path="/profile/*"
         element={
@@ -31,25 +60,67 @@ const AppRoutes = () => {
         }
       />
 
+
+
+<Route
+  path="/become-owner/*"
+  element={
+    <ProtectedRoute isBecomeOwner={true}>
+      <BecomeOwner />
+    </ProtectedRoute>
+  }
+/>
+
+
+
+
+      {/* Zależne od statusu zgłoszenia */}
       <Route
-        path="/add/office"
+  path="/waiting-status"
+  element={
+    <ProtectedRoute allowedStatuses={['PENDING']}>
+      <OwnerWaitingContainer />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/rejected"
+  element={
+    <ProtectedRoute allowedStatuses={['REJECTED']}>
+      <OwnerRejectedContainer />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/owner/*"
+  element={
+    <ProtectedRoute
+      allowedRoles={["ADMIN", "OWNER"]} // Upewnij się, że te wartości pasują do user.role
+      allowedSubmissionStatuses={["APPROVED"]} // Zależnie od implementacji
+    >
+      <OwnerPanel />
+    </ProtectedRoute>
+  }
+/>
+
+
+      <Route path="/start-rent" element={<RentContainer />} />
+      <Route path="/office/:id" element={<OfficeDetails />} />
+      <Route path="/test/building" element={<TestBuilding />} />
+
+      <Route
+        path="/admin-fd/*"
         element={
-          <ProtectedRoute>
-            <AddOffice />
+          <ProtectedRoute 
+         >
+            <AdminPanel />
           </ProtectedRoute>
         }
       />
 
-        <Route path="/become-owner" element={<OwnerContainer />} />
-
-        <Route path="/start-rent" element={<RentContainer />} />
-
-        <Route path="/office/:id" element={<OfficeDetails />} />
-
-        <Route path="/test/building" element={<TestBuilding />} />
-
-        
-
+      <Route path="/error-403" element={<Error403 />} />
+      <Route path="/error-404" element={<Error404 />} />
     </Routes>
   );
 };

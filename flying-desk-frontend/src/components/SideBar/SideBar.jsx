@@ -16,7 +16,7 @@ const Sidebar = ({ header, items }) => {
       </h2>
       <ul>
         {items.map((item, index) => (
-          <li key={index}>
+          <li className="side-bar-li" key={index}>
             <NavLink
               to={item.path}
               className={({ isActive }) => (isActive ? "sidebar-link active-link" : "sidebar-link")}

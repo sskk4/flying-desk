@@ -33,38 +33,72 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String userEmail;
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
-            userEmail = jwtService.extractUsername(jwt);
 
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            try {
+                String userEmail = jwtService.extractUsername(jwt);
 
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    User user = (User) userDetails;
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-                    if (!user.isActive()) {
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Account is not activated");
-                        return;
+                    if (jwtService.isTokenValid(jwt, userDetails)) {
+                        User user = (User) userDetails;
+
+                        if (!user.isActive()) {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Account is not activated");
+                            return;
+                        }
+
+                        CustomPrincipal principal = new CustomPrincipal(user);
+
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                principal,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(request)
+                        );
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
-
-                    CustomPrincipal principal = new CustomPrincipal(user);
-
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            principal,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-                    authToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
+
+            } catch (io.jsonwebtoken.ExpiredJwtException e) {
+                handleExpiredJwt(jwt, request, response, filterChain);
+                return;
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void handleExpiredJwt(
+            String jwt,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws IOException, ServletException {
+        final String refreshToken = request.getHeader("Refresh-Token");
+
+        if (refreshToken != null && jwtService.validateRefreshToken(refreshToken)) {
+            String username = jwtService.extractUsername(jwtService.extractTokenFromRefresh(refreshToken));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            String newAccessToken = jwtService.generateToken(userDetails);
+            response.setHeader("Authorization", "Bearer " + newAccessToken);
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+            filterChain.doFilter(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Refresh token is invalid or expired");
+        }
     }
 }

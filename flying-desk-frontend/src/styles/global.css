@@ -19,3 +19,45 @@ body
     padding:0;
     font-family: "Segoe UI", sans-serif;
 }
+
+
+h2 {
+    font-weight: 200;
+    cursor:default;
+}
+
+h3 {
+    font-weight: 200;
+    cursor:default;
+    color:#aaa;
+    margin-bottom:5vh;
+}
+
+ul {
+    margin-left: 20px;
+}
+
+p {
+    margin: 10px 0;
+}
+
+a
+{
+    text-decoration: none;
+    color:#262626;
+}
+
+a:visited {
+    color: #7575D3;
+}
+
+
+a:hover {
+    color: #2D297D;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #CBCBCB;
+    margin-top:5vh;
+}

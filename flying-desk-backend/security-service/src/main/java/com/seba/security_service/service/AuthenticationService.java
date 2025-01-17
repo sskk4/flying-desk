@@ -19,6 +19,7 @@ import com.seba.security_service.security.request.RegisterRequest;
 import com.seba.security_service.security.response.AuthenticationResponse;
 import com.seba.security_service.security.response.RefreshTokenResponse;
 import com.seba.security_service.security.response.RegisterResponse;
+import com.seba.security_service.security.response.UserInformationResponse;
 import com.seba.security_service.util.SecurityUtils;
 import com.seba.security_service.security.CustomPrincipal;
 import jakarta.transaction.Transactional;
@@ -50,7 +51,7 @@ public class AuthenticationService {
     public RegisterResponse register(RegisterRequest request) {
         log.info(TAG + "Create new user");
 
-        if(userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new ObjectAlreadyExistException("User with email: {} is already exist");
         }
 
@@ -66,14 +67,16 @@ public class AuthenticationService {
         userRepository.save(user);
         RefreshToken refreshToken = refreshTokenService.generateRefreshToken(user);
 
-        emailService.createMail(
+        // Generowanie linku aktywacyjnego
+        String activationLink = "http://localhost:3000/activate/" + refreshToken.getToken();
+
+        // Wysyłanie maila z przyciskiem aktywacyjnym
+        emailService.sendHtmlEmail(
                 EmailStructure.builder()
                         .email(user.getEmail())
                         .emailType(EmailType.CONFIRM_EMAIL)
                         .build(),
-                emailService.createBody(
-                        EmailType.CONFIRM_EMAIL,
-                        SecurityUtils.ENDPOINT_ACTIVATE + refreshToken.getToken().toString())
+                emailService.createHtmlBody(EmailType.CONFIRM_EMAIL, activationLink)
         );
 
         return RegisterResponse.builder()
@@ -135,7 +138,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UserFailedAuthentication("Authentication failed"));
 
         if(!refreshTokenService.checkIfTokenValid(UUID.fromString(request.getRefreshToken()), user))
-                throw new UserFailedAuthentication("Authentication failed");
+            throw new UserFailedAuthentication("Authentication failed");
 
         refreshTokenService.deleteRefreshToken(user);
 
@@ -166,12 +169,12 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = refreshTokenService.generateRefreshToken(user);
 
-            return AuthenticationResponse.builder()
-                    .accessToken(jwtToken)
-                    .refreshToken(refreshToken.getToken())
-                    .userId(user.getId())
-                    .role(user.getRole().name())
-                    .build();
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken.getToken())
+                .userId(user.getId())
+                .role(user.getRole().name())
+                .build();
     }
 
     @SneakyThrows
@@ -228,5 +231,17 @@ public class AuthenticationService {
     public boolean isEmailTaken(String email) {
         log.info("Checking if email is already taken: {}", email);
         return userRepository.findByEmail(email).isPresent();
+    }
+
+    public UserInformationResponse getCurrentUser(CustomPrincipal principal) {
+
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UserFailedAuthentication("Authentication failed"));
+
+        return UserInformationResponse.builder()
+                .email(user.getEmail())
+                .userId(user.getId())
+                .role(user.getRole().name())
+                .build();
     }
 }

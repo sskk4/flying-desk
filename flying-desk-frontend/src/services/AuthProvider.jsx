@@ -1,72 +1,124 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import axios from 'axios';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import axiosInstance from "./axiosConfig";
+import fetchUserSubmissionStatus from './SubbmisionApi';
 
-// Tworzenie kontekstu
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || null);
-  const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || null);
-  const [user, setUser] = useState(null); // Informacje o zalogowanym użytkowniku
-  const [isAuthenticated, setIsAuthenticated] = useState(!!accessToken);
+    const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken") || null);
+    const [refreshToken, setRefreshToken] = useState(localStorage.getItem("refreshToken") || null);
+    const [user, setUser] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(!!accessToken);
+    const [error, setError] = useState(null);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [submissionStatus, setSubmissionStatus] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  // Przechowywanie tokenów w localStorage
-  useEffect(() => {
-    if (accessToken) {
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-    } else {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-    }
-  }, [accessToken, refreshToken]);
+    const clearError = () => setError(null);
 
-  // Funkcja logowania
-  const login = async (email, password) => {
-    try {
-      const response = await axios.post('http://localhost:8080/api/v1/auth/authenticate', { email, password });
-      const { accessToken, refreshToken, userId, role } = response.data;
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-      setUser({ userId, role });
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Błąd logowania:', error);
-    }
-  };
+    const fetchAndSetSubmissionStatus = async () => {
+        console.log("User ID przekazywane do fetchUserSubmissionStatus:", user?.userId);
+        const status = await fetchUserSubmissionStatus(user?.userId);
+        console.log('Fetched submission status from API:', status);
+        setSubmissionStatus(status);
+    };
+    
 
-  // Funkcja wylogowania
-  const logout = async () => {
-    try {
-      await axios.post('http://localhost:8080/api/v1/auth/logout', null, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-    } catch (error) {
-      console.error('Błąd podczas wylogowywania:', error);
-    }
-    setAccessToken(null);
-    setRefreshToken(null);
-    setUser(null);
-    setIsAuthenticated(false);
-  };
+    const fetchUserData = async (token) => {
+        if (!token) {
+            console.warn("Fetch user data skipped: no token provided.");
+            return null;
+        }
+        try {
+            const response = await axiosInstance.get("/auth/me", {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch user data error:", error);
+            throw new Error("Unable to fetch user data.");
+        }
+    };
 
-  // Odświeżanie tokenu
-  const refresh = async () => {
-    try {
-      const response = await axios.post('http://localhost:8080/api/v1/auth/refresh', { refreshToken });
-      setAccessToken(response.data.accessToken);
-    } catch (error) {
-      console.error('Błąd podczas odświeżania tokenu:', error);
-      logout();
-    }
-  };
+    const login = async (email, password) => {
+        clearError();
+        try {
+            const response = await axiosInstance.post("/auth/authenticate", { email, password });
+            const { accessToken, refreshToken } = response.data;
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, refresh }}>
-      {children}
-    </AuthContext.Provider>
-  );
+            setAccessToken(accessToken);
+            setRefreshToken(refreshToken);
+            setIsAuthenticated(true);
+
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+
+            const data = await fetchUserData(accessToken);
+            setUser(data);
+        } catch (error) {
+            setError("Login failed. Please check your credentials.");
+            console.error("Login error:", error);
+        }
+    };
+
+    const logout = () => {
+        clearError();
+        setAccessToken(null);
+        setRefreshToken(null);
+        setUser(null);
+        setIsAuthenticated(false);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+    };
+
+    const refresh = async () => {
+        if (isRefreshing) return;
+
+        setIsRefreshing(true);
+        try {
+            const response = await axiosInstance.post("/auth/refresh", { refreshToken });
+            const { accessToken, refreshToken: newRefreshToken } = response.data;
+
+            setAccessToken(accessToken);
+            setRefreshToken(newRefreshToken);
+
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", newRefreshToken);
+
+            const data = await fetchUserData(accessToken);
+            setUser(data);
+        } catch (error) {
+            setError("Session expired. Please log in again.");
+            logout();
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
+    useEffect(() => {
+        if (accessToken) {
+            fetchUserData(accessToken)
+                .then(setUser)
+                .catch(() => logout());
+        }
+    }, [accessToken]);
+
+    useEffect(() => {
+        if (user && user.userId) {
+            console.log("Fetching submission status for user:", user.userId);
+            fetchAndSetSubmissionStatus(user.userId).finally(() => setLoading(false));
+        } else {
+            setLoading(false);
+        }
+    }, [user]);
+    
+    return (
+        <AuthContext.Provider
+            value={{ isAuthenticated, user, submissionStatus, accessToken, login, logout, refresh, error, clearError, loading }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
-// Hook do korzystania z kontekstu
 export const useAuth = () => useContext(AuthContext);

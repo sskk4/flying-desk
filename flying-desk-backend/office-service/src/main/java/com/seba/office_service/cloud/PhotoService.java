@@ -1,42 +1,88 @@
 package com.seba.office_service.cloud;
 
+import com.seba.office_service.dto.PhotoDTO;
+import com.seba.office_service.model.Photo;
+import com.seba.office_service.repository.PhotoRepository;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-
+import java.util.List;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
 
 @Service
 public class PhotoService {
 
     private static final Logger logger = LoggerFactory.getLogger(PhotoService.class);
     private final CDNService cdnService;
+    private final PhotoRepository photoRepository;
 
-    // Bazowy URL dla Google Cloud Storage
-    private static final String BASE_URL = "https://storage.googleapis.com/office-images/";
-
-    public PhotoService(CDNService cdnService) {
+    public PhotoService(CDNService cdnService, PhotoRepository photoRepository) {
         this.cdnService = cdnService;
+        this.photoRepository = photoRepository;
     }
 
-    public void uploadPhoto(byte[] fileBytes, String folderName, String fileName) throws IOException {
-        logger.debug("Uploading file: {} to folder: {}", fileName, folderName);
-        cdnService.uploadFile(fileBytes, folderName, fileName);
-        logger.debug("File uploaded successfully: {} to folder: {}", fileName, folderName);
+    /**
+     * Przesyła plik na Google Cloud, zapisuje w tabeli `Photo` i zwraca URL zdjęcia
+     */
+    public Photo addPhoto(byte[] fileBytes, String folderName, String fileName, String photoType, Long relatedId) {
+        try {
+            // Upload the file to Google Cloud
+            String url = cdnService.uploadFile(fileBytes, folderName, fileName);
+            logger.debug("Photo uploaded successfully: {}", url);
+
+            // Create and save the Photo entity
+            Photo photo = new Photo();
+            photo.setUrl(url);
+            photo.setPhotoType(photoType);
+            photo.setRelatedId(relatedId);
+
+            return photoRepository.save(photo);
+        } catch (IOException e) {
+            logger.error("Failed to upload file: {} to folder: {}", fileName, folderName, e);
+            throw new RuntimeException("Error occurred during file upload: " + e.getMessage(), e);
+        }
     }
 
-    public String getPhotoUrl(String folderName, String fileName) {
-        logger.debug("Fetching URL for file: {}/{}", folderName, fileName);
-        String fileUrl = cdnService.getFileUrl(folderName, fileName);
-        logger.debug("URL fetched: {}", fileUrl);
-        return fileUrl;
-    }
+    /**
+     * Usuwa zdjęcie z chmury i bazy danych.
+     */
+    public void deletePhoto(Long photoId) {
+        // Pobierz zdjęcie z bazy danych
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new RuntimeException("Photo not found with id: " + photoId));
 
-    public void deletePhoto(String folderName, String fileName) {
-        logger.debug("Deleting file: {}/{}", folderName, fileName);
+        // Usuwanie z chmury
+        String folderName = photo.getPhotoType().toLowerCase() + "s"; // dynamiczna nazwa folderu
+        String fileName = extractFileNameFromUrl(photo.getUrl());
         cdnService.deleteFile(folderName, fileName);
-        logger.debug("File deleted successfully: {}/{}", folderName, fileName);
+
+        // Usuwanie z bazy danych
+        photoRepository.delete(photo);
+        logger.debug("Photo deleted successfully: {}", fileName);
+    }
+
+    /**
+     * Pobiera wszystkie zdjęcia dla danego bytu.
+     */
+    public List<PhotoDTO> getPhotos(String photoType, Long relatedId) {
+        return photoRepository.findByPhotoTypeAndRelatedId(photoType, relatedId).stream()
+                .map(photo -> {
+                    PhotoDTO dto = new PhotoDTO();
+                    dto.setUrl(photo.getUrl());
+                    dto.setPhotoType(photo.getPhotoType());
+                    dto.setRelatedId(photo.getRelatedId());
+                    return dto;
+                })
+                .toList();
+    }
+
+    /**
+     * Wydobywa nazwę pliku z URL.
+     */
+    private String extractFileNameFromUrl(String url) {
+        return url.substring(url.lastIndexOf('/') + 1);
     }
 }
-

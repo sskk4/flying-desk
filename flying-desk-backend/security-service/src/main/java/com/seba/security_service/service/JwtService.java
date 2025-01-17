@@ -80,4 +80,18 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            Claims claims = extractAllClaims(refreshToken);
+            return claims.getExpiration().after(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String extractTokenFromRefresh(String refreshToken) {
+        return extractAllClaims(refreshToken).getSubject();
+    }
+
 }

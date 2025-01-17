@@ -7,7 +7,13 @@ import com.google.cloud.storage.StorageOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.google.cloud.storage.Blob;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import java.io.IOException;
+import java.util.stream.StreamSupport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +60,14 @@ public class GoogleCloudStorageCDNService implements CDNService {
             logger.error("Failed to delete file: {}/{} from bucket: {}", folderName, fileName, bucketName);
             throw new RuntimeException("Failed to delete file: " + folderName + "/" + fileName);
         }
+    }
+
+    public List<String> listFiles(String folderName) {
+        Iterable<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(folderName + "/")).iterateAll();
+
+        return StreamSupport.stream(blobs.spliterator(), false) // Konwersja Iterable na Stream
+                .map(blob -> String.format("https://storage.googleapis.com/%s/%s", bucketName, blob.getName()))
+                .collect(Collectors.toList());
     }
 }
 

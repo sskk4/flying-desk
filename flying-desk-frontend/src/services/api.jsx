@@ -1,62 +1,60 @@
-import axios from "axios";
-import Swal from "sweetalert2";
+import axios from "./axiosConfig";
 
-// Funkcja do sprawdzania dostępności emaila
-export const checkEmailExistence = async (email) => {
-  try {
-    const response = await axios.get(`http://localhost:8080/api/v1/auth/check-email/${email}`);
-    if (response.status === 200) {
-      return { exists: false };  // Email jest dostępny
-    } else if (response.status === 400) {
-      return { exists: true, error: "This email is already registered." };  // Email już istnieje
-    } else if (response.status === 403) {
-      return { exists: false, error: "Server error, please try again later." };  // Problem z serwerem
+export const useApi = () => {
+  const checkEmail = async (email) => {
+    console.log("Checking email:", email);
+    try {
+      const response = await axios.get(`/auth/check-email/${email}`);
+      console.log("Email check response:", response);
+      return response.status === 200 ? { exists: false } : { exists: true };
+    } catch (error) {
+      console.error("Error during email check:", error);
+      throw error;
     }
-  } catch (error) {
-    console.error("Error during email existence check:", error);
-    Swal.fire({
-      icon: "error",
-      title: "An Error Occurred",
-      text: "Please check your internet connection or try again later.",
-      confirmButtonText: "OK",
-    });
-    return { exists: false, error: "Unable to check email. Please try again." };  // Problem z połączeniem
-  }
-};
+  };
 
-// Funkcja do rejestracji użytkownika
-export const registerUser = async (formData) => {
-  try {
-    const response = await axios.post("http://localhost:8080/api/v1/auth/register", {
-      firstname: formData.firstName,
-      lastname: formData.lastName,
-      email: formData.email,
-      password: formData.password,
-    });
-
-    if (response.status === 200) {
-      return { success: true, message: "Registration Successful!" };
-    } else {
-      return { success: false, message: "Registration Failed. Please try again later." };
+  const register = async (formData) => {
+    console.log("Registering user with data:", formData);
+    try {
+      const response = await axios.post("/auth/register", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Registration response:", response);
+      return response.data;
+    } catch (error) {
+      console.error("Error during registration:", error);
+      if (error.response?.status === 400 || error.response?.status === 403) {
+        throw new Error(error.response.data?.message || "Registration failed.");
+      }
+      throw error;
     }
-  } catch (error) {
-    console.error("Error during registration:", error);
-    return { success: false, message: "An error occurred during registration." };
-  }
-};
+  };
 
-export const authenticateUser = async (email, password) => {
-  try {
-    const response = await axios.post("http://localhost:8080/api/v1/auth/authenticate", {
-      email,
-      password,
-    });
 
-    if (response.status === 200) {
-      return { success: true, data: response.data };
+  const authenticate = async (email, password) => {
+    try {
+      const response = await axios.post(`/auth/authenticate`, { email, password });
+      return response.data; // Zwraca accessToken, refreshToken
+    } catch (error) {
+      console.error("Authentication failed:", error);
+      throw error;
     }
-  } catch (error) {
-    console.error("Error during authentication:", error);
-    return { success: false, error: "Invalid email or password." };
-  }
+  };
+
+
+  const activate = async (token) => {
+    console.log("Activating email with token:", token);
+    try {
+      const response = await axios.get(`/auth/activate/${token}`);
+      console.log("Email activation response:", response);
+      return response.data;
+    } catch (error) {
+      console.error("Error during email activation:", error);
+      throw error;
+    }
+  };
+
+  return { checkEmail, register, authenticate, activate };
 };

@@ -27,17 +27,17 @@ public class AddressController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Address createAddress(@RequestParam("title") AddressDTO address) {
-        log.info(TAG + "Create new address: {}", address.getAddress());
-        return addressService.saveAddress(null, address);
+    public Address createAddress(@RequestBody AddressDTO addressDTO) {
+        log.info("Create new address: Street={}, Building={}, ZipCode={}",
+                addressDTO.getStreet(), addressDTO.getBuildingNumber(), addressDTO.getZipCode());
+        return addressService.saveAddress(null, addressDTO);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Address updateAddress(@PathVariable Long id,
-                                 @RequestBody AddressDTO addressDetails) {
-        log.info(TAG + "Update address with id: {}", id);
-        return addressService.saveAddress(id, addressDetails);
+    public Address updateAddress(@PathVariable Long id, @RequestBody AddressDTO addressDTO) {
+        log.info("Update address with id: {}", id);
+        return addressService.saveAddress(id, addressDTO);
     }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,3 @@
-import { checkEmailExistence } from "../services/api";  // Importowanie funkcji z api.js
-
 export const checkPasswordStrength = (password) => {
   if (password.length > 8 && /[A-Z]/.test(password) && /\d/.test(password)) {
     return "strong";
@@ -10,22 +8,13 @@ export const checkPasswordStrength = (password) => {
   }
 };
 
-export const validateStep = async (step, formData) => {
+export const validateStep = (step, formData) => {
   const newErrors = {};
 
   if (step === 1) {
     // Walidacja emaila
     if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
       newErrors.email = "Invalid email address.";
-    } else {
-      const { exists, error } = await checkEmailExistence(formData.email);
-      
-      if (exists) {
-        newErrors.email = error;  // Jeśli email już istnieje, wyświetlamy błąd
-      } else if (error) {
-        // Jeśli wystąpił błąd serwera, dodajemy ogólny komunikat
-        newErrors.email = "Unable to check email. Please try again.";
-      }
     }
   }
 
