@@ -2,12 +2,15 @@ package com.seba.office_service.controller;
 
 import com.seba.office_service.dto.BuildingDTO;
 import com.seba.office_service.model.Building;
+import com.seba.office_service.repository.BuildingRepository;
 import com.seba.office_service.service.BuildingService;
+import com.seba.office_service.utils.BuildingSpecification;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -44,20 +47,16 @@ public class BuildingController {
         return buildingService.createBuilding(buildingDTO, userId, files);
     }
 
-    /**
-     * Pobiera wszystkie budynki z opcjonalnym filtrowaniem według statusu akceptacji.
-     *
-     * @param isApproved Opcjonalny status akceptacji (true/false)
-     * @param pageable   Parametry paginacji
-     * @return Strona budynków
-     */
+
+
     @GetMapping
-    public Page<Building> getAllBuildings(
-            @RequestParam(value = "isApproved", required = false) Boolean isApproved,
+    public Page<Building> getBuildings(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Boolean isApproved,
+            @RequestParam(required = false) Building.Status status,
             Pageable pageable
     ) {
-        log.info("Fetching buildings with approval status: {}", isApproved);
-        return buildingService.getBuildingsByApprovalStatus(isApproved, pageable);
+        return buildingService.getBuildings(search, isApproved, status, pageable);
     }
 
     /**

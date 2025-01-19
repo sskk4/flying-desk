@@ -48,10 +48,20 @@ export const useApi = () => {
     console.log("Activating email with token:", token);
     try {
       const response = await axios.get(`/auth/activate/${token}`);
-      console.log("Email activation response:", response);
-      return response.data;
+      if (response.status === 200) {
+        console.log("Email activation successful");
+        return response.data;
+      }
+      throw new Error(`Unexpected response: ${response.status}`);
     } catch (error) {
-      console.error("Error during email activation:", error);
+      if (error.response) {
+        console.error(
+          `Activation failed with status: ${error.response.status}`,
+          error.response.data
+        );
+      } else {
+        console.error("Error during email activation:", error);
+      }
       throw error;
     }
   };
