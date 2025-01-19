@@ -13,3 +13,13 @@ Thumbs.db
 # Logs
 **/logs/
 **/*.log
+flying-desk-backend/security-service/.gradle/file-system.probe
+flying-desk-backend/security-service/.gradle/8.8/executionHistory/executionHistory.bin
+flying-desk-backend/security-service/.gradle/8.8/executionHistory/executionHistory.lock
+flying-desk-backend/security-service/.gradle/8.8/fileHashes/fileHashes.bin
+flying-desk-backend/security-service/.gradle/8.8/fileHashes/fileHashes.lock
+flying-desk-backend/security-service/.gradle/8.8/fileHashes/resourceHashesCache.bin
+flying-desk-backend/security-service/.gradle/buildOutputCleanup/buildOutputCleanup.lock
+flying-desk-backend/security-service/.gradle/buildOutputCleanup/outputFiles.bin
+flying-desk-backend/security-service/.idea/dataSources.xml
+flying-desk-backend/security-service/build/tmp/compileJava/previous-compilation-data.bin
