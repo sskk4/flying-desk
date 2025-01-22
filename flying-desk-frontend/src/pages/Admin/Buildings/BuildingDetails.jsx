@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Importujemy useNavigate
 import axios from "axios";
 import { useAuth } from "../../../services/AuthProvider";
 
 const BuildingsDetails = () => {
     const { id } = useParams();
     const { accessToken } = useAuth();
+    const navigate = useNavigate(); // Inicjalizacja useNavigate
     const [building, setBuilding] = useState(null);
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
@@ -47,12 +48,26 @@ const BuildingsDetails = () => {
         }
     };
 
+    // Nawigacja do strony dodawania pokoju
+    const navigateToAddRoom = () => {
+        navigate(`/admin-fd/buildings/${id}/add-room`);
+    };
+    const navigateToRooms = () => {
+        navigate(`/admin-fd/buildings/${id}/rooms`);
+    };
+
+
     if (error) return <p className="error-message">{error}</p>;
     if (!building) return <p>Loading...</p>;
 
     return (
         <div className="ap-details-container">
-
+           <button onClick={navigateToAddRoom} className="login-button action-button">
+                Add Room to This Building
+            </button>
+            <button onClick={navigateToRooms} className="create-button action-button">
+                Rooms in this Building
+            </button>
             {successMessage && <p className="success-message">{successMessage}</p>}
 
             <p><strong>ID:</strong> {building.id}</p>
@@ -92,7 +107,8 @@ const BuildingsDetails = () => {
                 )}
             </div>
 
-
+            {/* Nowy przycisk nawigacji */}
+ 
         </div>
     );
 };

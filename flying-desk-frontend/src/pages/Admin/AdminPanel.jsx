@@ -14,6 +14,7 @@ import BuildingDetails from './Buildings/BuildingDetails';
 import Rooms from './Rooms/Rooms'; 
 import RoomAdd from './Rooms/AddRoom'; 
 import RoomDetails from './Rooms/RoomDetails'; 
+import RoomsInBuilding from './Rooms/RoomsInBuilding';
 
 import Desks from './Desks/Desks';
 import DeskAdd from './Desks/AddDesk';
@@ -36,8 +37,8 @@ const AdminPanel = () => {
         deskadd: { title: 'Add desk', addButtonText: 'Back', addPath:"/admin-fd/desks"},
         deskdetails: { title: 'Desk details', addButtonText: 'Back', addPath:"/admin-fd/desks"},
 
-        rooms: { title: 'Rooms', addButtonText: '+ Add Room', addPath:"/admin-fd/rooms/add"  },
-        roomadd: { title: 'Add rooom', addButtonText: 'Back', addPath:"/admin-fd/rooms"  },
+        rooms: { title: 'Rooms', addButtonText: '+ Add Room', addPath:"/admin-fd/buildings"  },
+        roomadd: { title: 'Add rooom', addButtonText: 'Back', addPath:"/admin-fd/buildings/:buildingId/rooms"  },
         roomdetails: { title: 'Room details', addButtonText: 'Back', addPath:"/admin-fd/rooms" },
     };
 
@@ -45,6 +46,7 @@ const AdminPanel = () => {
         <div className="admin-panel">
             <Sidebar />
             <div className="main-content">
+
                 <Routes>
                     <Route
                         path="/submissions"
@@ -74,6 +76,7 @@ const AdminPanel = () => {
                             </>
                         }
                     />
+
 
 <Route
                         path="/buildings"
@@ -143,7 +146,7 @@ const AdminPanel = () => {
                         }
                     />
                     <Route
-                        path="/rooms/add"
+                        path="/buildings/:buildingId/add-room"
                         element={
                             <>
                                 <Header {...views.roomadd} />
@@ -158,6 +161,19 @@ const AdminPanel = () => {
                             <>
                                 <Header {...views.roomdetails} />
                                 <RoomDetails />
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/buildings/:buildingId/rooms"
+                        element={
+                            <>
+                                      <Header
+                                        title="Rooms in building"
+                                        addButtonText="+ Add Room"
+                                        addPath={`/admin-fd/buildings/:buildingId/add-room`} 
+                                    />
+                                <RoomsInBuilding />
                             </>
                         }
                     />

@@ -45,14 +45,19 @@ public class DeskService {
      * @return Strona z biurkami spełniającymi warunki filtrowania.
      */
     public Page<Desk> getDesksByApprovalStatus(Boolean isApproved, Pageable pageable) {
+        // Pobranie biurek bez filtrowania
         if (isApproved == null) {
             log.info("Fetching all desks without filtering approval status");
             return deskRepository.findAll(pageable);
-        } else {
+        }
+        // Pobranie biurek z filtrowaniem
+        else {
             log.info("Fetching desks with approval status: {}", isApproved);
             return deskRepository.findByIsApproved(isApproved, pageable);
         }
     }
+
+
 
     /**
      * Pobiera wszystkie biurka z możliwością paginacji i sortowania.
@@ -82,6 +87,33 @@ public class DeskService {
         log.info("Fetched details for desk ID: {}", deskId);
         return desk;
     }
+
+    /**
+     * Pobiera biurka w określonym budynku z możliwością filtrowania według statusu zatwierdzenia.
+     *
+     * @param buildingId ID budynku
+     * @param isApproved Opcjonalny status akceptacji (true/false)
+     * @param pageable   Parametry paginacji
+     * @return Strona biurek
+     * @throws ResourceNotFoundException Jeśli budynek o podanym ID nie istnieje
+     */
+    public Page<Desk> getDesksByBuildingId(Long buildingId, Boolean isApproved, Pageable pageable) {
+        // Sprawdzenie, czy budynek istnieje
+        Building building = buildingRepository.findById(buildingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Building not found with ID: " + buildingId));
+
+        // Pobranie biurek bez filtrowania
+        if (isApproved == null) {
+            log.info("Fetching all desks for building ID: {}", buildingId);
+            return deskRepository.findByBuilding(building, pageable);
+        }
+        // Pobranie biurek z filtrem zatwierdzenia
+        else {
+            log.info("Fetching desks for building ID: {} with approval status: {}", buildingId, isApproved);
+            return deskRepository.findByBuildingAndIsApproved(building, isApproved, pageable);
+        }
+    }
+
 
     /**
      * Tworzy nowe biurko i zapisuje powiązane zdjęcia (jeśli dostarczono).

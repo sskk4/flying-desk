@@ -1,38 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../../services/AuthProvider";
 
 const Rooms = () => {
   const { accessToken } = useAuth();
+  const { buildingId } = useParams(); // Pobranie ID budynku z URL
   const [rooms, setRooms] = useState([]);
   const [page, setPage] = useState(0);
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState("");
-  const [search, setSearch] = useState(""); // Wyszukiwanie
-  const [filter, setFilter] = useState(""); // Filtrowanie po statusie
-  const [isApproved, setIsApproved] = useState(""); // Filtrowanie po zatwierdzeniu
-  const [sort, setSort] = useState("creationDate,desc"); // Sortowanie
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("creationDate,desc");
   const navigate = useNavigate();
 
-  // Pobieranie danych pokoi
+  // Pobieranie pokoi dla budynku
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        setError(""); // Reset błędu przed zapytaniem
+        setError("");
         const params = {
           page,
           size,
           sort,
           search,
-          filter,
-          isApproved: isApproved === "" ? null : isApproved,
         };
 
-        console.log("Fetching rooms with params:", params); // Debug parametrów
-
-        const response = await axios.get(`http://localhost:8081/api/v1/building/rooms`, {
+        const response = await axios.get(`http://localhost:8081/api/v1/building/${buildingId}/rooms`, {
           params,
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -41,11 +36,11 @@ const Rooms = () => {
         setTotalPages(response.data.totalPages);
       } catch (err) {
         console.error("Error fetching rooms:", err);
-        setError("Failed to load rooms.");
+        setError("Failed to load rooms for this building.");
       }
     };
     fetchRooms();
-  }, [accessToken, page, size, sort, search, filter, isApproved]);
+  }, [accessToken, buildingId, page, size, sort, search]);
 
   const goToNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages - 1));
   const goToPreviousPage = () => setPage((prev) => Math.max(prev - 1, 0));
@@ -58,35 +53,15 @@ const Rooms = () => {
       <div className="filters-container">
         <input
           type="text"
-          placeholder="Search by name or description"
+          placeholder="Search by room name or description"
           value={search}
-          onChange={(e) => setSearch(e.target.value)} // Aktualizacja stanu wyszukiwania
+          onChange={(e) => setSearch(e.target.value)}
           className="ap-search-bar"
         />
 
         <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)} // Aktualizacja stanu filtrowania
-          className="filter-select"
-        >
-          <option value="">All Statuses</option>
-          <option value="available">Available</option>
-          <option value="occupied">Occupied</option>
-        </select>
-
-        <select
-          value={isApproved}
-          onChange={(e) => setIsApproved(e.target.value)} // Aktualizacja stanu zatwierdzenia
-          className="filter-select"
-        >
-          <option value="">All Approvals</option>
-          <option value="1">Approved</option>
-          <option value="0">Not Approved</option>
-        </select>
-
-        <select
           value={sort}
-          onChange={(e) => setSort(e.target.value)} // Aktualizacja stanu sortowania
+          onChange={(e) => setSort(e.target.value)}
           className="sort-select"
         >
           <option value="creationDate,desc">Newest First</option>
@@ -103,7 +78,6 @@ const Rooms = () => {
             <th>ID</th>
             <th>Name</th>
             <th>Equipment</th>
-            <th>Building</th>
             <th>Description</th>
             <th>Max Occupants</th>
             <th>Status</th>
@@ -112,26 +86,33 @@ const Rooms = () => {
           </tr>
         </thead>
         <tbody>
-          {rooms.map((room) => (
-            <tr key={room.id}>
-              <td>{room.id}</td>
-              <td>{room.room}</td>
-              <td>{room.equipment}</td>
-              <td>{room.building?.building || "N/A"}</td>
-              <td>{room.description}</td>
-              <td>{room.maxOccupants}</td>
-              <td className={`status-${room.status.toLowerCase()}`}>{room.status}</td>
-              <td>{room.isApproved ? "Yes" : "No"}</td>
-              <td>
-                <button
-                  className="create-button"
-                  onClick={() => navigate(`/admin-fd/rooms/${room.id}`)}
-                >
-                  Details
-                </button>
+          {rooms.length > 0 ? (
+            rooms.map((room) => (
+              <tr key={room.id}>
+                <td>{room.id}</td>
+                <td>{room.room}</td>
+                <td>{room.equipment}</td>
+                <td>{room.description}</td>
+                <td>{room.maxOccupants}</td>
+                <td className={`status-${room.status.toLowerCase()}`}>{room.status}</td>
+                <td>{room.isApproved ? "Yes" : "No"}</td>
+                <td>
+                  <button
+                    className="create-button"
+                    onClick={() => navigate(`/admin-fd/rooms/${room.id}`)}
+                  >
+                    Details
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="8" style={{ textAlign: "center" }}>
+                No rooms found for this building.
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 

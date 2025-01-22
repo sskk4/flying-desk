@@ -34,7 +34,13 @@
     cursor:pointer;
 
   }
-  
+
+  .menu-bar-button.active {
+    background-size: 100% 0.1em, 100% 0.1em; /* Podświetlone aktywne linki */
+    background-position-x: 0%;
+    color: #7360DF; /* Opcjonalnie zmiana koloru tekstu */
+  }
+
   .slide-in-out {
     background-position-x: 100%;
   }
@@ -87,6 +93,11 @@
 }
 
   /* auth buttons */
+
+  .active-button
+  {
+    background-color:#7360DF!important;
+  }
 
 
 

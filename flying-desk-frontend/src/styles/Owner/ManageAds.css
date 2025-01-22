@@ -188,3 +188,18 @@
     padding:1vh 2vh;
     margin:1vh 2vh;
   }
+
+  .result-count
+  {
+    color:#909090;
+   width:10%;
+    margin:1vh 1vh 0 7vh;
+    font-size:13px;
+    font-weight: 200;
+  }
+
+  .result-count hr
+  {
+
+    margin-top:4px!important;
+  }

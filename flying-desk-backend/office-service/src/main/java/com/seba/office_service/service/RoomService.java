@@ -14,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.seba.office_service.utils.RoomSpecification;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,6 +40,18 @@ public class RoomService {
     private static final int MAX_FILES_ALLOWED = 5; // Maksymalna liczba plików
     private static final long MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // Maksymalny rozmiar pliku (5 MB)
 
+
+
+    public Page<Room> getAllRoomsWithFilters(Long buildingId, Boolean isApproved, String name, Pageable pageable) {
+
+        Specification<Room> specification = Specification
+                .where(RoomSpecification.withBuildingId(buildingId))
+                .and(RoomSpecification.withApprovalStatus(isApproved))
+                .and(RoomSpecification.withNameContaining(name));
+
+        log.info("Fetching all rooms with filters: buildingId={}, isApproved={}, name={}", buildingId, isApproved, name);
+        return roomRepository.findAll(specification, pageable);
+    }
 
     /**
      * Pobiera pokoje w określonym budynku z możliwością filtrowania według statusu zatwierdzenia.

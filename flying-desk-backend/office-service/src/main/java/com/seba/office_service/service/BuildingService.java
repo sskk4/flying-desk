@@ -59,14 +59,32 @@ public class BuildingService {
         return buildings;
     }
 
+    /**
+     * Pobiera budynki z możliwością opcjonalnego filtrowania według różnych kryteriów oraz paginacji.
+     *
+     * @param search      Opcjonalny tekst do wyszukiwania po nazwie lub opisie.
+     * @param isApproved  Opcjonalny status zatwierdzenia (true/false), jeśli null, zwraca wszystkie budynki.
+     * @param status      Opcjonalny status budynku.
+     * @param pageable    Parametry paginacji i sortowania.
+     * @return Strona z budynkami spełniającymi warunki filtrowania.
+     */
     public Page<Building> getBuildings(String search, Boolean isApproved, Building.Status status, Pageable pageable) {
+        // Tworzymy specyfikację filtrowania
         Specification<Building> spec = Specification
                 .where(BuildingSpecification.hasIsApproved(isApproved))
                 .and(BuildingSpecification.hasStatus(status))
                 .and(BuildingSpecification.hasSearch(search));
 
+        // Pobieramy budynki z repozytorium
+        Page<Building> buildings = buildingRepository.findAll(spec, pageable);
 
-        return buildingRepository.findAll(spec, pageable);
+        // Dodajemy zdjęcia do każdego budynku
+        buildings.forEach(building -> {
+            List<PhotoDTO> photos = photoService.getPhotos("BUILDING", building.getId());
+            building.setPhotos(photos);
+        });
+
+        return buildings;
     }
 
     /**

@@ -14,7 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserInformationResponse {
 
-
+    private String firstName;
+    private String lastName;
     private Long userId;
     private String role;
     private String email;

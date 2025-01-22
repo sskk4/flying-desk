@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "../../../components/Header/Header";
 import Sidebar from "../../../components/SideBar/SideBar";
+import Footer from "../../../components/Footer/Footer";
 import { useAuth } from "../../../services/AuthProvider";
 
 import { ReactComponent as DestinationIcon } from "../../../assets/icons/destination.svg";
@@ -117,7 +118,8 @@ const SubmissionsForm = () => {
   return (
     <div>
       <Header />
-      <div className="container">
+      <div className="container"> 
+ 
         <Sidebar header="Add Submission" items={sidebarItems} />
         <main className="content-container">
           <div className="form-container with-sidebar">
@@ -202,24 +204,27 @@ const SubmissionsForm = () => {
 <hr></hr>
 <h2>Office photos and authorization document</h2>
               <div>
-                <label>Upload Photos:</label>
+   
                 <input type="file" multiple onChange={handleFileChange} />
               </div>
               {error && <p className="error-message">{error}</p>}
               {message && <p className="success-message">{message}</p>}
               <div className="buttons">
-                <button type="button" onClick={handleReset} disabled={loading}>
+                <button className="create-button short"onClick={handleReset} disabled={loading}>
                   Reset
                 </button>
-                <button type="submit" onClick={handleSubmit} disabled={loading}>
+                <button type="submit" className="login-button wide" onClick={handleSubmit} disabled={loading}>
                   {loading ? "Submitting..." : "Create Submission"}
                 </button>
               </div>
             </div>
           </div>
         </main>
+        
       </div>
+      
     </div>
+
   );
 };
 

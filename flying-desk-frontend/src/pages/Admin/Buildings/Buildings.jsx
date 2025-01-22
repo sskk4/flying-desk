@@ -61,7 +61,7 @@ const Buildings = () => {
           placeholder="Search by name or description"
           value={search}
           onChange={(e) => setSearch(e.target.value)} // Aktualizacja stanu wyszukiwania
-          className="search-input"
+          className="ap-search-bar"
         />
 
         <select

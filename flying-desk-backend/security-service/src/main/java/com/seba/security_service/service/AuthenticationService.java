@@ -239,6 +239,8 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UserFailedAuthentication("Authentication failed"));
 
         return UserInformationResponse.builder()
+                .firstName(user.getFirstname())
+                .lastName(user.getLastname())
                 .email(user.getEmail())
                 .userId(user.getId())
                 .role(user.getRole().name())

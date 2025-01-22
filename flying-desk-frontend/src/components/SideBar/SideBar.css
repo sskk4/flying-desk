@@ -12,14 +12,19 @@ a:visited{
   color:black;
 }
 
-.container {
-    color: #222;
-    display: flex;
-    justify-content: center;
-    background-color: #ECECEC;
-    padding: 20px;
+.sidebar h2
+{
+  border-bottom: 2px solid #ececec;
+  border-radius: 0.5px;
+  transition: 0.2s;
+  padding-bottom:5px;
+}
+
+  .sidebar h2:hover
+  {
+    border-bottom: 2px solid #d9d9d9;
   }
-  
+
   .side-bar-li
   {
     padding-top:1vh;

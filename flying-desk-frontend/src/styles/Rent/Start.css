@@ -83,3 +83,28 @@
     font-size: 16px;
     color: #333;
   }
+
+  .fancy-text{
+    font-weight: 600;
+    font-size: 70px;
+    line-height:65px;
+    letter-spacing: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 400%;
+    animation: move 5s ease infinite;
+    background-image: linear-gradient( 68.7deg,  #9D8CFF 13.2%, #6c54f6 29.8%, #9D8CFF 48.9%, #7360DF 68.2%, #9D8CFF 86.4% );
+}
+
+@keyframes move {
+    0%,100%{
+        background-position: 200% 0%;
+    }
+
+    50%{
+        background-position: 0% 200%;
+    }
+}

@@ -17,3 +17,15 @@
     height: 50px;
 }
 
+
+.leafs {
+    position: absolute;
+    left: 0;
+    top: 0; /* Przyklejenie do lewej strony i góry */
+  }
+  
+  .women {
+    position: absolute;
+    right: 0;
+    top: 0; /* Przyklejenie do prawej strony i góry */
+  }

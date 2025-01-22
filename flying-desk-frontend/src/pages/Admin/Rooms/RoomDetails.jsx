@@ -12,7 +12,7 @@ const RoomsDetails = () => {
     useEffect(() => {
         const fetchRoomDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:8081/api/v1/room/${id}`, {
+                const response = await axios.get(`http://localhost:8081/api/v1/building/room/${id}`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 setRoom(response.data);
