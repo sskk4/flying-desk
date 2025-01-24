@@ -20,6 +20,8 @@ import Desks from './Desks/Desks';
 import DeskAdd from './Desks/AddDesk';
 import DeskDetails from './Desks/DeskDetails';
 
+import AdminPanelPhoto from '../../assets/png/giphy.gif';
+
 
 // Importy dla innych komponentów jak Rooms, Payments itd.
 
@@ -48,6 +50,27 @@ const AdminPanel = () => {
             <div className="main-content">
 
                 <Routes>
+
+                    <Route path="/" element={
+
+<div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    backgroundColor: '#f0f0f0' 
+}}>
+    <img 
+        src={AdminPanelPhoto} 
+        alt="Admin Panel" 
+        style={{
+            width: '20%', 
+            height: 'auto', 
+            objectFit: 'contain' 
+        }} 
+    />
+</div>
+                    } />
                     <Route
                         path="/submissions"
                         element={

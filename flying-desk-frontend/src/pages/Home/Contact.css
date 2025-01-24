@@ -1,0 +1,107 @@
+/* Kontener strony kontaktowej */
+.contact-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    position: relative;
+    min-height: 70vh;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-top:5vh;
+  }
+  
+  /* Główny kontener formularza */
+  .contact-content {
+    background-color: #d9d9d9;
+    border-radius: 5vh 5vh 1vh 1vh;
+    margin-bottom:-5vh;
+    width: 50%; /* Szerokość formularza */
+    padding: 1vh 5vh 5vh 5vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* Tytuł formularza */
+  .contact-title {
+    font-size: 2rem;
+    font-weight: 200;
+    color: #7360DF;
+    margin-bottom: 5vh;
+  }
+  
+  /* Styl formularza */
+  .contact-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dwie kolumny */
+    gap: 2vh 2vw; /* Odstępy między wierszami i kolumnami */
+    width: 100%;
+    align-items: start;
+    margin-bottom: 5vh;
+  }
+  
+  /* Grupa pól */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Szerokość dopasowana do kolumny */
+  }
+  
+  /* Etykiety pól formularza */
+  .form-group label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+  }
+  
+  /* Pola tekstowe i textarea */
+  .form-group input,
+  .form-group textarea {
+    padding: 2vh;
+    background-color:#ececec;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 2vh;
+    width: 100%;
+    
+    box-sizing: border-box;
+  }
+  
+  /* Pole textarea */
+  .form-group textarea {
+    resize: none;
+    width: 100%;
+    height: 200px;
+  }
+
+  .form-group.full-width {
+  grid-column: span 2; /* Zajmuje pełną szerokość */
+}
+  
+  /* Przycisk Submit */
+  .contact-submit {
+    grid-column: span 2; /* Przycisk na całej szerokości formularza */
+    justify-self: center;
+
+    height: auto;
+
+  }
+  
+
+  
+  /* Obrazek kontaktowy */
+  .contact-image {
+    position: absolute;
+    right: 7%;
+    bottom: -20px;
+    z-index: -1;
+    width: 300px;
+  }
+  
+  .contact-image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  

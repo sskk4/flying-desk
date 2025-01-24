@@ -374,7 +374,15 @@ table th:hover {
     margin:4vh;
  }
 
+.admin-panel-photo
+{
+    width:20%;
+    height:100%;
+    object-fit:cover;
+    border-radius:10px;
+}
 
+ 
  /* Dla ekranów średnich (np. tablety) */
 @media (max-width: 1420px) {
     .ap-sidebar {

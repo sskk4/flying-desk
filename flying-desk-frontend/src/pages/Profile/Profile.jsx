@@ -70,6 +70,7 @@ const Profile = () => {
             <Route
               path="/"
               element={
+                <div>
                 <div className="profile-title-container">
                   <img src={Leafs} alt="leafs" className="leafs" />
                   <h1 className="owner-title">Welcome to your profile!</h1>
@@ -81,7 +82,16 @@ const Profile = () => {
                   </Link>
                   <h4>User id {user?.userId}</h4>
                   <img src={Women} alt="women" className="women" />
+
+
+
                 </div>
+                                  <div className="contact-button-container">
+                                  <a href="/contact" className="contact-button">
+                                      <span>Contact us</span>
+                                  </a>
+                                  </div>
+                                  </div>
               }
             />
           </Routes>

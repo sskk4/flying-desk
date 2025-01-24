@@ -33,6 +33,7 @@ const Footer = () => {
           <a href="#register">register</a>
         </div>
       </div>
+      
     </div>
   );
 };
