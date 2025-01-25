@@ -1,80 +1,162 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { useAuth } from '../../../services/AuthProvider';
+import axios from "axios";
+import { useAuth } from "../../../services/AuthProvider";
 
 const Rooms = () => {
-    const { accessToken } = useAuth();
-    const [rooms, setRooms] = useState([]);
-    const [page, setPage] = useState(0);
-    const [size] = useState(10);
-    const [totalPages, setTotalPages] = useState(1);
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
+  const { accessToken } = useAuth();
+  const [rooms, setRooms] = useState([]);
+  const [page, setPage] = useState(0);
+  const [size] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState(""); // Wyszukiwanie
+  const [filter, setFilter] = useState(""); // Filtrowanie po statusie
+  const [isApproved, setIsApproved] = useState(""); // Filtrowanie po zatwierdzeniu
+  const [sort, setSort] = useState("creationDate,desc"); // Sortowanie
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchRooms = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8081/api/v1/room`, {
-                    params: { page, size, sort: "creationDate,desc" },
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
-                setRooms(response.data.content);
-                setTotalPages(response.data.totalPages);
-            } catch (err) {
-                console.error("Error fetching rooms:", err);
-                setError("Failed to load rooms.");
-            }
+  // Pobieranie danych pokoi
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        setError(""); // Reset błędu przed zapytaniem
+        const params = {
+          page,
+          size,
+          sort,
+          search,
+          filter,
+          isApproved: isApproved === "" ? null : isApproved,
         };
-        fetchRooms();
-    }, [accessToken, page, size]);
 
-    const goToNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages - 1));
-    const goToPreviousPage = () => setPage((prev) => Math.max(prev - 1, 0));
+        console.log("Fetching rooms with params:", params); // Debug parametrów
 
-    if (error) return <p className="ap-error error-message">{error}</p>;
+        const response = await axios.get(`http://localhost:8081/api/v1/building/rooms`, {
+          params,
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
 
-    return (
-        <div className="rooms-container">
-            <table className="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Equipment</th>
-                        <th>Building</th>
-                        <th>Description</th>
-                        <th>Max Occupants</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rooms.map((room) => (
-                        <tr key={room.id}>
-                            <td>{room.id}</td>
-                            <td>{room.room}</td>
-                            <td>{room.equipment}</td>
-                            <td>{room.building.building}</td>
-                            <td>{room.description}</td>
-                            <td>{room.maxOccupants}</td>
-                            <td className={`status-${room.status.toLowerCase()}`}>
-                                {room.status}
-                            </td>
-                            <td>
-                                <button className="create-button" onClick={() => navigate(`/admin-fd/rooms/${room.id}`)}>Details</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <div className="ap-pagination-controls">
-                <button className="ap-paggination-button ap-p-b-left" onClick={goToPreviousPage} disabled={page === 0}>Previous</button>
-                <span className="ap-paggination-text">Page {page + 1} of {totalPages}</span>
-                <button className="ap-paggination-button ap-p-b-right" onClick={goToNextPage} disabled={page === totalPages - 1}>Next</button>
-            </div>
-        </div>
-    );
+        setRooms(response.data.content);
+        setTotalPages(response.data.totalPages);
+      } catch (err) {
+        console.error("Error fetching rooms:", err);
+        setError("Failed to load rooms.");
+      }
+    };
+    fetchRooms();
+  }, [accessToken, page, size, sort, search, filter, isApproved]);
+
+  const goToNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages - 1));
+  const goToPreviousPage = () => setPage((prev) => Math.max(prev - 1, 0));
+
+  if (error) return <p className="ap-error error-message">{error}</p>;
+
+  return (
+    <div className="rooms-container">
+      {/* Filtry i wyszukiwanie */}
+      <div className="filters-container">
+        <input
+          type="text"
+          placeholder="Search by name or description"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)} // Aktualizacja stanu wyszukiwania
+          className="ap-search-bar"
+        />
+
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)} // Aktualizacja stanu filtrowania
+          className="filter-select"
+        >
+          <option value="">All Statuses</option>
+          <option value="available">Available</option>
+          <option value="occupied">Occupied</option>
+        </select>
+
+        <select
+          value={isApproved}
+          onChange={(e) => setIsApproved(e.target.value)} // Aktualizacja stanu zatwierdzenia
+          className="filter-select"
+        >
+          <option value="">All Approvals</option>
+          <option value="1">Approved</option>
+          <option value="0">Not Approved</option>
+        </select>
+
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)} // Aktualizacja stanu sortowania
+          className="sort-select"
+        >
+          <option value="creationDate,desc">Newest First</option>
+          <option value="creationDate,asc">Oldest First</option>
+          <option value="room,asc">Room Name (A-Z)</option>
+          <option value="room,desc">Room Name (Z-A)</option>
+        </select>
+      </div>
+
+      {/* Tabela pokoi */}
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Equipment</th>
+            <th>Building</th>
+            <th>Description</th>
+            <th>Max Occupants</th>
+            <th>Status</th>
+            <th>Approval</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rooms.map((room) => (
+            <tr key={room.id}>
+              <td>{room.id}</td>
+              <td>{room.room}</td>
+              <td>{room.equipment}</td>
+              <td>{room.building?.building || "N/A"}</td>
+              <td>{room.description}</td>
+              <td>{room.maxOccupants}</td>
+              <td className={`status-${room.status.toLowerCase()}`}>{room.status}</td>
+              <td>{room.isApproved ? "Yes" : "No"}</td>
+              <td>
+                <button
+                  className="create-button"
+                  onClick={() => navigate(`/admin-fd/rooms/${room.id}`)}
+                >
+                  Details
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Paginacja */}
+      <div className="ap-pagination-controls">
+        <button
+          className="ap-paggination-button ap-p-b-left"
+          onClick={goToPreviousPage}
+          disabled={page === 0}
+        >
+          Previous
+        </button>
+        <span className="ap-paggination-text">
+          Page {page + 1} of {totalPages}
+        </span>
+        <button
+          className="ap-paggination-button ap-p-b-right"
+          onClick={goToNextPage}
+          disabled={page === totalPages - 1}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default Rooms;

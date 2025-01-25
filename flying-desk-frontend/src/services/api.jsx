@@ -13,6 +13,18 @@ export const useApi = () => {
     }
   };
 
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      const response = await axios.post("/auth/pw/change", {
+        currentPassword,
+        newPassword,
+      });
+      return response.data; // Assume the response has a success message
+    } catch (error) {
+      throw error.response?.data?.message || "Failed to change password.";
+    }
+  };
+
   const register = async (formData) => {
     console.log("Registering user with data:", formData);
     try {
@@ -66,5 +78,5 @@ export const useApi = () => {
     }
   };
 
-  return { checkEmail, register, authenticate, activate };
+  return { checkEmail, register, authenticate, activate, changePassword };
 };

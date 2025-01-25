@@ -34,7 +34,13 @@
     cursor:pointer;
 
   }
-  
+
+  .menu-bar-button.active {
+    background-size: 100% 0.1em, 100% 0.1em; /* Podświetlone aktywne linki */
+    background-position-x: 0%;
+    color: #7360DF; /* Opcjonalnie zmiana koloru tekstu */
+  }
+
   .slide-in-out {
     background-position-x: 100%;
   }
@@ -87,6 +93,11 @@
 }
 
   /* auth buttons */
+
+  .active-button
+  {
+    background-color:#7360DF!important;
+  }
 
 
 
@@ -177,3 +188,64 @@
     border:1px solid #2D297D;
     background-color: #2D297D;
 }
+
+/* Kontener dla przycisku kontaktowego */
+.contact-button-container {
+
+  display: flex;
+  justify-content: center;
+}
+
+/* Styl przycisku kontaktowego */
+.contact-button {
+  font-size: 1.25rem;
+  font-weight: 400;
+  text-decoration: none;
+  padding: 0.5rem 5rem;
+  border-radius: 50px 0 50px 50px; 
+  cursor: pointer;
+  position: relative;
+  background: #9D8CFF;
+  transition: all 0.4s ease-in-out;
+}
+
+
+
+.contact-button span {
+  color: white;
+  transition: color 0.4s ease-in-out;
+}
+
+.contact-button:hover span {
+  color: #000000;
+}
+
+.contact-button::after,
+.contact-button::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  width: 98%;
+  height: 100%;
+  top: 0;
+  left: 1%;
+  z-index: -1;
+  transition: all 0.4s ease-in-out;
+  border-radius:  50px 10px 50px 50px;
+  transform: translate(0px, 0px);
+  background-color: #9D8CFF ;
+  
+}
+
+.contact-button:hover::after {
+  transform: translate(12px, 12px);
+  z-index: -2;
+  background: #2D297D ; /* Stała wartość gradientu */
+}
+
+.contact-button:hover::before {
+  transform: translate(6px, 6px);
+  z-index: -1;
+  background: #7360DF ; /* Stała wartość gradientu */
+}
+

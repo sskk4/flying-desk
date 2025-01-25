@@ -1,11 +1,12 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Link } from "react-router-dom";
 import { Navigate } from "react-router-dom"; // Do przekierowania na login
 
 import Sidebar from "../../components/SideBar/SideBar";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer"
 import Personal from "./Personal"; // Komponent Personal
+import ChangePassword from "./Password";
 
 import { useAuth } from "../../services/AuthProvider";
 
@@ -13,11 +14,22 @@ import { ReactComponent as HomeIcon } from "../../assets/icons/desk.svg";
 import { ReactComponent as LockIcon } from "../../assets/icons/summary.svg";
 import { ReactComponent as KeyIcon } from "../../assets/icons/key.svg";
 
+import Leafs from "../../assets/png/leafs.png"
+import Women from "../../assets/png/women.png"
+
 const Profile = () => {
   const { user, isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
+  }
+
+  let linkPath = '';
+
+  if (user?.role === 'ADMIN') {
+    linkPath = '/admin-fd';
+  } else if (user?.role === 'OWNER') {
+    linkPath = '/owner';
   }
 
   const sidebarItems = [
@@ -30,7 +42,12 @@ const Profile = () => {
     <div>
       <Header />
       <div className="container">
-        <Sidebar header="Account Management" items={sidebarItems} />
+       <div className="conent">
+      <Sidebar 
+        header="Account Management" 
+        headerPath="/profile" // Ścieżka, na którą przenosi nagłówek
+        items={sidebarItems} 
+      />
         <main className="content-container">
           <Routes>
             <Route
@@ -48,26 +65,38 @@ const Profile = () => {
             />
             <Route
               path="account-signin"
-              element={
-                <div>
-                  <h2>Account Sign-In</h2>
-                  <p>Manage your sign-in preferences here.</p>
-                </div>
-              }
+              element={<ChangePassword />}
             />
             <Route
               path="/"
               element={
+                <div>
                 <div className="profile-title-container">
+                  <img src={Leafs} alt="leafs" className="leafs" />
                   <h1 className="owner-title">Welcome to your profile!</h1>
-                  <h2>User ID: {user?.userId}</h2>
-                  <p>Role: {user?.role}</p>
-   
+                  <h3 className="fancy-text" >{user?.firstName}</h3>
+                  
+                  <h4>Role </h4>
+                  <Link to={linkPath}>
+                  <h2>{user?.role}</h2>
+                  </Link>
+                  <h4>User id {user?.userId}</h4>
+                  <img src={Women} alt="women" className="women" />
+
+
+
                 </div>
+                                  <div className="contact-button-container">
+                                  <a href="/contact" className="contact-button">
+                                      <span>Contact us</span>
+                                  </a>
+                                  </div>
+                                  </div>
               }
             />
           </Routes>
         </main>
+      </div>
       </div>
       <Footer />
     </div>

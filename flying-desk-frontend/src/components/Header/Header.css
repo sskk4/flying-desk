@@ -66,10 +66,16 @@
     user-select: auto;
 }
 
+.highlighted {
+    background-color: #7360DF;
+
+}
+
 .bottom-nav
 {
     display:none;
 }
+
 
   
   /* Dropdown menu */

@@ -56,6 +56,17 @@ public class RoomController {
         return roomService.getRoomByIdWithPhotos(roomId);
     }
 
+    @GetMapping("/rooms")
+    public Page<Room> getAllRooms(
+            @RequestParam(value = "buildingId", required = false) Long buildingId,
+            @RequestParam(value = "isApproved", required = false) Boolean isApproved,
+            @RequestParam(value = "name", required = false) String name,
+            Pageable pageable
+    ) {
+        log.info("Fetching rooms with buildingId={}, isApproved={}, name={}", buildingId, isApproved, name);
+        return roomService.getAllRoomsWithFilters(buildingId, isApproved, name, pageable);
+    }
+
     /**
      * Pobiera pokoje z opcjonalnym filtrowaniem według statusu akceptacji.
      *

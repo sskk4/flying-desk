@@ -21,6 +21,9 @@ import BecomeOwner from "../pages/Owner/BecomeOwner";
 import OwnerWaitingContainer from "../pages/Error/Owner/Approve";
 import OwnerRejectedContainer from "../pages/Error/Owner/Wrong";
 
+import Info from "../pages/Home/Info";
+import Contact from "../pages/Home/Contact";
+
 import OwnerPanel from "../pages/Owner/OwnerPanel";
 
 import AdminPanel from "../pages/Admin/AdminPanel";
@@ -119,6 +122,8 @@ const AppRoutes = () => {
         }
       />
 
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/info" element={<Info />} />
       <Route path="/error-403" element={<Error403 />} />
       <Route path="/error-404" element={<Error404 />} />
     </Routes>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../services/AuthProvider"; // Import kontekstu autoryzacji
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../services/AuthProvider";
 import "./Header.css";
 import logo from "../../assets/images/flyingdesk.png";
 import menuIcon from "../../assets/icons/menu.svg";
@@ -12,38 +12,64 @@ import infoIcon from "../../assets/icons/info.svg";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuth(); // Pobranie statusu logowania i funkcji wylogowania
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // Uzyskaj aktualny URL
 
-  // Funkcja do przełączania widoczności menu
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  // Funkcja wylogowania
   const handleLogout = async () => {
     try {
-      await logout(); // Wywołanie funkcji wylogowania
-      navigate("/login"); // Przekierowanie na stronę logowania
+      await logout();
+      navigate("/login");
     } catch (error) {
       console.error("Błąd podczas wylogowywania:", error);
     }
+  };
+
+  const isActiveLink = (paths) => {
+    if (Array.isArray(paths)) {
+      return paths.some((path) => location.pathname === path);
+    }
+    return location.pathname === paths;
   };
 
   return (
     <>
       <div className="top-bar">
         <div className="top-bar-left">
-          <Link className="menu-bar-button slide-in-out" to="/">
+                  <Link
+            className={`menu-bar-button slide-in-out ${
+              isActiveLink("/") ? "active" : ""
+            }`}
+            to="/"
+          >
             office spaces
           </Link>
-          <Link className="menu-bar-button slide-in-out" to="/start-rent">
+          <Link
+            className={`menu-bar-button slide-in-out ${
+              isActiveLink("/start-rent") ? "active" : ""
+            }`}
+            to="/start-rent"
+          >
             for customers
           </Link>
-          <Link className="menu-bar-button slide-in-out" to="/become-owner">
-            for owners
-          </Link>
-          <Link className="menu-bar-button slide-in-out" to="/info">
+          <Link
+          className={`menu-bar-button slide-in-out ${
+            isActiveLink(["/become-owner", "/owner"]) ? "active" : ""
+          }`}
+          to="/become-owner"
+        >
+          for owners
+        </Link>
+          <Link
+            className={`menu-bar-button slide-in-out ${
+              isActiveLink("/info") ? "active" : ""
+            }`}
+            to="/info"
+          >
             more info
           </Link>
         </div>
@@ -58,14 +84,15 @@ const Header = () => {
         </div>
 
         <div
-          className={`top-bar-right-panel ${isDropdownOpen ? "top-bar-right-panel-open" : ""}`}
-          onClick={toggleDropdown}
-        >
+      className={`top-bar-right-panel ${
+        isDropdownOpen ? "top-bar-right-panel-open" : ""
+      } ${location.pathname === "/profile" ? "highlighted" : ""}`}
+      onClick={toggleDropdown}
+    >
           <img className="top-bar-right-panel-menu-img" src={menuIcon} alt="Menu" />
           <img className="top-bar-right-panel-menu-img" src={userIcon} alt="User" />
         </div>
 
-        {/* Wyświetlanie menu w zależności od stanu */}
         {isDropdownOpen && (
           <div className={`dropdown-menu ${isDropdownOpen ? "open" : ""}`}>
             {isAuthenticated ? (
@@ -73,10 +100,10 @@ const Header = () => {
                 <Link to="/profile" className="dropdown-item">
                   Profile
                 </Link>
-                <Link to="/settings" className="dropdown-item">
+                <Link to="/profile/personal-info" className="dropdown-item">
                   Settings
                 </Link>
-                <Link to="/help" className="dropdown-item">
+                <Link to="/info" className="dropdown-item">
                   Help
                 </Link>
                 <div className="dropdown-item logout" onClick={handleLogout}>
@@ -98,28 +125,34 @@ const Header = () => {
       </div>
 
       <div className="bottom-nav">
-        <Link to="/customers">
+        <Link
+          to="/start-rent"
+          className={isActiveLink("/start-rent") ? "active" : ""}
+        >
           <img
             className="nav-bar-menu-img nav-bar-smaller"
             src={forCustomerIcon}
             alt="For Customers"
           />
         </Link>
-        <Link to="/become-owner">
+        <Link
+          to="/become-owner"
+          className={isActiveLink("/become-owner") ? "active" : ""}
+        >
           <img
             className="nav-bar-menu-img nav-bar-smaller"
             src={forOwnerIcon}
             alt="For Owners"
           />
         </Link>
-        <Link to="/">
+        <Link to="/" className={isActiveLink("/") ? "active" : ""}>
           <img
             className="nav-bar-menu-img nav-bar-bigger"
             src={officesIcon}
             alt="Offices"
           />
         </Link>
-        <Link to="/info">
+        <Link to="/info" className={isActiveLink("/info") ? "active" : ""}>
           <img
             className="nav-bar-menu-img nav-bar-smaller"
             src={infoIcon}
@@ -127,7 +160,7 @@ const Header = () => {
           />
         </Link>
         {isAuthenticated && (
-          <Link to="/profile">
+          <Link to="/profile" className={isActiveLink("/profile") ? "active" : ""}>
             <img
               className="nav-bar-menu-img nav-bar-bigger"
               src={userIcon}

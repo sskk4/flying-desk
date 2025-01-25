@@ -18,7 +18,10 @@ body
     margin:0;
     padding:0;
     font-family: "Segoe UI", sans-serif;
+    
 }
+
+
 
 
 h2 {
@@ -31,6 +34,12 @@ h3 {
     cursor:default;
     color:#aaa;
     margin-bottom:5vh;
+}
+
+h4 {
+    font-weight: 200;
+    cursor:default;
+    color:#aaa;
 }
 
 ul {
@@ -61,3 +70,15 @@ hr {
     border-top: 1px solid #CBCBCB;
     margin-top:5vh;
 }
+
+.container {
+    color: #222;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .content {
+    flex: 1; 
+  }

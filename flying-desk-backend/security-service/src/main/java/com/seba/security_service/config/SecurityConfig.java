@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/register",
                                 "/api/v1/auth/authenticate",
                                 "/api/v1/auth/pw/recovery",
+                                "/api/v1/auth/pw/recovery",
                                 "/api/v1/auth/pw/recovery/**",
                                 "/api/v1/auth/check-email",
                                 "/api/v1/auth/check-email/**",

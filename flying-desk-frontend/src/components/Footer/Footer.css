@@ -4,9 +4,11 @@
     background-color: #d9d9d9;
     color: #2D297D;
     padding: 2%; 
-    margin-top:5vh;
+    margin-top: auto;
     padding-bottom:6.2%;
-  }
+    height: 20vh;
+
+    }
   
 
   .footer-logo {

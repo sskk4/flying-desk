@@ -1,6 +1,3 @@
-import React, { useState } from "react";
-import "./FormField.css";
-
 const FormField = ({
   id,
   label,
@@ -9,6 +6,7 @@ const FormField = ({
   onChange,
   placeholder,
   errorMessage, // Wiadomość błędu
+  disabled = false, // Nowa właściwość
 }) => {
   return (
     <div className={`form-field ${errorMessage ? "wrong-border" : ""}`}>
@@ -23,6 +21,7 @@ const FormField = ({
         placeholder={placeholder}
         autoComplete="off"
         className={errorMessage ? "wrong-text" : ""}
+        disabled={disabled} // Zablokowanie pola
       />
     </div>
   );

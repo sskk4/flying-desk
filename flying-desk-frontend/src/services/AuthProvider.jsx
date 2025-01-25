@@ -98,10 +98,14 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (accessToken) {
             fetchUserData(accessToken)
-                .then(setUser)
+                .then((data) => {
+                    setUser(data);
+                    console.log("User data fetched:", data);
+                })
                 .catch(() => logout());
         }
     }, [accessToken]);
+    
 
     useEffect(() => {
         if (user && user.userId) {
