@@ -13,6 +13,13 @@ import Profile from "../pages/Profile/Profile";
 import OfficeList from "../pages/Office/OfficeList";
 import OfficeDetails from "../pages/Office/OfficeDetails";
 
+import RoomList from "../pages/Office/RoomList";
+import RoomDetails from "../pages/Office/RoomDetails";
+
+import DeskList from "../pages/Office/DeskList";
+import DeskDetails from "../pages/Office/DeskDetails";
+
+
 import TestBuilding from "../utils/test-components/building/TestBuilding";
 
 import RentContainer from "../pages/Rent/Start";
@@ -39,6 +46,8 @@ const AppRoutes = () => {
     <Routes>
     
       <Route path="/" element={<OfficeList />} />
+      <Route path="/rooms" element={<RoomList />} />
+
 
       <Route
         path="/login"
