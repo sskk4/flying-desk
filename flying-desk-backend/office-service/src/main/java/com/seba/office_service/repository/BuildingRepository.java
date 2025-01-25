@@ -4,10 +4,11 @@ import com.seba.office_service.model.Building;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
-public interface BuildingRepository extends JpaRepository<Building, Long> {
+public interface BuildingRepository extends JpaRepository<Building, Long>, JpaSpecificationExecutor<Building> {
 
     /**
      * Znajduje budynki na podstawie statusu zatwierdzenia.

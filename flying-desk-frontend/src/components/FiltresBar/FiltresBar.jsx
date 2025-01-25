@@ -1,10 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import './FiltresBar.css';
 import { Link} from "react-router-dom";
 import arrowDownIcon from '../../assets/icons/arrow-down.svg';
 import arrowUpIcon from '../../assets/icons/arrow-up.svg';
+import axios from "axios";
 
-const FiltresBar = ({ isFiltersOpen, toggleFilters }) => {
+const FiltresBar = ({ isFiltersOpen, toggleFilters, onFilterChange, onSortChange }) => {
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+
+  // Pobieranie krajów przy montowaniu komponentu
+  useEffect(() => {
+    axios
+      .get("http://localhost:8081/api/v1/country")
+      .then((res) => setCountries(res.data))
+      .catch((err) => console.error("Error fetching countries:", err));
+  }, []);
+
+  // Pobieranie miast po wybraniu kraju
+  useEffect(() => {
+    if (selectedCountry) {
+      axios
+        .get(`http://localhost:8081/api/v1/city/by-country/${selectedCountry}`)
+        .then((res) => setCities(res.data))
+        .catch((err) => console.error("Error fetching cities:", err));
+    } else {
+      setCities([]);
+    }
+  }, [selectedCountry]);
+
+  // Obsługa zmiany kraju
+  const handleCountryChange = (e) => {
+    const countryId = e.target.value;
+    setSelectedCountry(countryId);
+    onFilterChange("countryId", countryId);
+  };
+
+  // Obsługa zmiany miasta
+  const handleCityChange = (e) => {
+    const cityId = e.target.value;
+    setSelectedCity(cityId);
+    onFilterChange("cityId", cityId);
+  };
+
+  // Obsługa zmiany sortowania
+  const handleSortChange = (e) => {
+    onSortChange(e.target.value);
+  };
+
+  // Obsługa zmiany statusu
+  const handleStatusChange = (e) => {
+    onFilterChange("status", e.target.value);
+  };
+
+  // Obsługa zmiany zakresu dat
+  const handleDateRangeChange = (field, value) => {
+    onFilterChange(field, value);
+  };
+
   return (
     <div className="filtres-bar">
       {/* Sekcja filtres-bar-close, która jest widoczna początkowo */}
@@ -18,13 +73,17 @@ const FiltresBar = ({ isFiltersOpen, toggleFilters }) => {
 
           <div className="filtres-bar-right">
             <div className="filtres-bar-right-panel">
-              Destination:
-              <select>
-                <option>Warsaw</option>
-                <option>Option 2</option>
-                <option>Option 3</option>
-              </select>
 
+             <label>  Destination: </label>
+              <select onChange={handleCityChange} value={selectedCity} disabled={!selectedCountry}>
+            <option value="">Select City</option>
+            {cities.map((city) => (
+              <option key={city.id} value={city.id}>
+                {city.city}
+              </option>
+            ))}
+          </select>
+          
               {/* Przycisk strzałki, który otwiera filtry */}
               <div className="arrow-show" onClick={toggleFilters}>
                 <img className="arrow" src={arrowDownIcon} alt="Down Arrow" />
@@ -38,17 +97,58 @@ const FiltresBar = ({ isFiltersOpen, toggleFilters }) => {
       {isFiltersOpen && (
         <div className="filtres-bar-open">
           <div className="filtres-bar-top">
-            {/* Filtry */}
-            {[...Array(6)].map((_, index) => (
-              <div className="filtres-item" key={index}>
-                <label>Destination:</label>
-                <select>
-                  <option>Warsaw</option>
-                  <option>Option 2</option>
-                  <option>Option 3</option>
-                </select>
-              </div>
+            <div className="filtres-item">
+ <label>Country:</label>
+          <select onChange={handleCountryChange} value={selectedCountry}>
+            <option value="">Select Country</option>
+            {countries.map((country) => (
+              <option key={country.id} value={country.id}>
+                {country.country}
+              </option>
             ))}
+          </select>
+          </div>
+
+          <div className="filtres-item">
+          <label>  Destination: </label>
+              <select onChange={handleCityChange} value={selectedCity} disabled={!selectedCountry}>
+            <option value="">Select City</option>
+            {cities.map((city) => (
+              <option key={city.id} value={city.id}>
+                {city.city}
+              </option>
+            ))}
+          </select>
+            </div>
+
+          <div className="filtres-item">
+
+          <label>Status:</label>
+          <select onChange={handleStatusChange}>
+            <option value="">All</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+
+          </div>
+          <div className="filtres-item">
+
+          <label>Date Range From:</label> <br></br>
+          <input
+            type="date"
+            onChange={(e) => handleDateRangeChange("dateFrom", e.target.value)}
+          />
+
+          </div>
+          <div className="filtres-item">
+
+          <label>Date Range To:</label> <br></br>
+          <input
+            type="date"
+            onChange={(e) => handleDateRangeChange("dateTo", e.target.value)}
+          />
+
+          </div>
           </div>
 
           {/* Przycisk strzałki w górę, który zamyka filtry */}
@@ -63,6 +163,12 @@ const FiltresBar = ({ isFiltersOpen, toggleFilters }) => {
           </div>
         </div>
       )}
+         <label>Sort by:</label>
+          <select onChange={handleSortChange}>
+            <option value="asc">Alphabetically (A-Z)</option>
+            <option value="desc">Alphabetically (Z-A)</option>
+            <option value="creationDate">Creation Date</option>
+          </select>
     </div>
   );
 };

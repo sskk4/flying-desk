@@ -77,6 +77,22 @@
     transition: background-color 0.3s;
   }
   
+  .email-title
+  {
+    margin-top:5v !important;
+    margin-bottom:5vh!important;
+    text-align: center;
+    color: #333 !important;
+  }
+
+  .email-illustration
+  {
+    width: 50%;
+    margin-left:10vh;
+    border-radius: 30px;
+    margin-bottom:5vh;
+  }
+
   .tab-button.active {
     background-color: #9f83ff;
     color: white;

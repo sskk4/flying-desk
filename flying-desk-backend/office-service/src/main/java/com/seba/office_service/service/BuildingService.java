@@ -8,11 +8,13 @@ import com.seba.office_service.model.Address;
 import com.seba.office_service.model.Building;
 import com.seba.office_service.repository.AddressRepository;
 import com.seba.office_service.repository.BuildingRepository;
+import com.seba.office_service.utils.BuildingSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,6 +57,16 @@ public class BuildingService {
         });
 
         return buildings;
+    }
+
+    public Page<Building> getBuildings(String search, Boolean isApproved, Building.Status status, Pageable pageable) {
+        Specification<Building> spec = Specification
+                .where(BuildingSpecification.hasIsApproved(isApproved))
+                .and(BuildingSpecification.hasStatus(status))
+                .and(BuildingSpecification.hasSearch(search));
+
+
+        return buildingRepository.findAll(spec, pageable);
     }
 
     /**

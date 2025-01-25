@@ -12,23 +12,36 @@ const OfficeList = () => {
   const [loading, setLoading] = useState(true); // Stan ładowania
   const [page, setPage] = useState(0); // Numer aktualnej strony
   const [totalPages, setTotalPages] = useState(0); // Łączna liczba stron
+  const [filters, setFilters] = useState({
+    countryId: "",
+    cityId: "",
+    status: "",
+    dateFrom: "",
+    dateTo: "",
+    sort: "asc",
+    search: "", // Dodane pole wyszukiwania
+  });
 
-  // Pobieranie budynków zatwierdzonych
+  // Aktualizowanie filtrów
+  const handleFilterChange = (field, value) => {
+    setFilters((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Pobieranie budynków z filtrowaniem
   useEffect(() => {
     const fetchBuildings = async () => {
       try {
         setLoading(true);
 
-        // Pobierz zatwierdzone budynki
         const response = await axios.get("http://localhost:8081/api/v1/building", {
           params: {
-            isApproved: true, // Filtruj tylko zatwierdzone budynki
+            ...filters,
+            isApproved: true,
             page, // Numer strony
             size: 10, // Liczba wyników na stronę
           },
         });
 
-        // Aktualizuj stan komponentu
         setBuildings(response.data.content); // Lista budynków z odpowiedzi
         setTotalPages(response.data.totalPages); // Liczba stron
       } catch (err) {
@@ -40,7 +53,7 @@ const OfficeList = () => {
     };
 
     fetchBuildings();
-  }, [page]);
+  }, [filters, page]); // Odśwież dane po zmianie filtrów lub strony
 
   // Zmiana strony
   const handlePageChange = (newPage) => {
@@ -49,10 +62,10 @@ const OfficeList = () => {
     }
   };
 
-  // Debugowanie danych budynków
-  useEffect(() => {
-    console.log("Buildings data:", buildings);
-  }, [buildings]);
+  // Obsługa wyszukiwania
+  const handleSearchChange = (search) => {
+    setFilters((prev) => ({ ...prev, search }));
+  };
 
   // Obsługa ładowania i błędów
   if (loading) {
@@ -66,8 +79,13 @@ const OfficeList = () => {
   return (
     <div>
       <Header />
-      <SearchBar />
 
+      {/* Wyszukiwarka */}
+      <SearchBar onSearchChange={handleSearchChange}>
+        {/* FiltresBar jest już w SearchBar */}
+      </SearchBar>
+
+      {/* Lista budynków */}
       <div className="card-container">
         {buildings.map((building) => (
           <div className="card" key={building.id}>
@@ -89,7 +107,6 @@ const OfficeList = () => {
             <div className="card-title">{building.building}</div>
             <div className="card-price">
               <span className="card-small-text">Daily</span>
-
             </div>
             <Link to={`/office/${building.id}`}>
               <button className="purple-button card-button">Check</button>
@@ -101,6 +118,7 @@ const OfficeList = () => {
         ))}
       </div>
 
+      {/* Paginacja */}
       <div className="pagination">
         <button
           className="pagination-button"

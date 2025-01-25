@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import FormField from "./AuthFormField";
 import { useApi } from "../../services/api"; 
 import { checkPasswordStrength } from "../../utils/formValidation";
+
+import emailSent from "../../assets/images/email-sent.gif";
 
 const validateStep = (step, data, errors) => {
   if (step === 1) {
@@ -31,6 +34,7 @@ const validateStep = (step, data, errors) => {
 };
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     email: "",
@@ -76,7 +80,6 @@ const RegisterForm = () => {
 
   const handleNext = () => {
     const validationErrors = validateStep(step, formData, {});
-    console.log("Validation Errors:", validationErrors); // Debugowanie
     if (Object.keys(validationErrors).length === 0) {
       setStep((prev) => prev + 1);
     } else {
@@ -85,10 +88,8 @@ const RegisterForm = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("Submit button clicked, preparing to send data:", formData);
     const validationErrors = validateStep(step, formData, {});
     if (Object.keys(validationErrors).length > 0) {
-      console.log("Validation errors found:", validationErrors);
       setErrors(validationErrors);
       return;
     }
@@ -97,17 +98,8 @@ const RegisterForm = () => {
   
     try {
       setIsSubmitting(true);
-      console.log("Sending payload to register function:", payload);
       await register(payload);
-      console.log("Registration successful");
-      setFormData({
-        email: "",
-        firstname: "",
-        lastname: "",
-        password: "",
-        confirmPassword: "",
-      });
-      setStep(1);
+      setStep(4); // Przejście do kroku 4 po udanej rejestracji
     } catch (error) {
       console.error("Error during registration:", error);
       setErrors({ email: "Email already exists or another error occurred." });
@@ -115,7 +107,6 @@ const RegisterForm = () => {
       setIsSubmitting(false);
     }
   };
-  
 
   const renderStep = () => {
     if (step === 1) {
@@ -176,6 +167,23 @@ const RegisterForm = () => {
           />
         </>
       );
+    } else if (step === 4) {
+      return (
+        <div >
+                <img
+          src={emailSent}
+          alt="Approve"
+          className="email-illustration"
+        />
+          <h2 className="email-title">Check your email to activate your account!</h2>
+          <button
+            className="create-button"
+            onClick={() => navigate("/")}
+          >
+            Return to Home
+          </button>
+        </div>
+      );
     }
   };
 
@@ -183,43 +191,35 @@ const RegisterForm = () => {
     <div className="form-container">
       <div className={`form step-${step}`}>
         {renderStep()}
-        <div className="buttons2">
-  {step > 1 && (
-    <button
-      className="create-button"
-      onClick={() => {
-        console.log("Back button clicked");
-        setStep((prev) => prev - 1);
-      }}
-    >
-      Back
-    </button>
-  )}
-  {step < 3 && (
-    <button
-      className="create-button"
-      onClick={() => {
-        console.log("Next button clicked");
-        handleNext();
-      }}
-    >
-      Confirm
-    </button>
-  )}
-  {step === 3 && (
-    <button
-      className="create-button"
-      onClick={() => {
-        console.log("Submit button clicked");
-        handleSubmit();
-      }}
-      disabled={isSubmitting}
-    >
-      {isSubmitting ? "Submitting..." : "Sign Up"}
-    </button>
-  )}
-</div>
-
+        {step < 4 && (
+          <div className="buttons2">
+            {step > 1 && (
+              <button
+                className="create-button"
+                onClick={() => setStep((prev) => prev - 1)}
+              >
+                Back
+              </button>
+            )}
+            {step < 3 && (
+              <button
+                className="create-button"
+                onClick={handleNext}
+              >
+                Confirm
+              </button>
+            )}
+            {step === 3 && (
+              <button
+                className="create-button"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Sign Up"}
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
