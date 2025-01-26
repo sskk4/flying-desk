@@ -79,11 +79,15 @@ const FiltresBar = ({
       {!isFiltersOpen && (
         <div className="filtres-bar-close">
           <div className="filtres-bar-left">
-            <Link className="light-purple-button active-button" to="/add/office">
+          <Link className="light-purple-button active-button" to="/">
               Offices
             </Link>
-            <div className="light-purple-button">Rooms</div>
-            <div className="light-purple-button">Desks</div>
+            <Link className="light-purple-button" to="/rooms">
+              Rooms
+            </Link>
+            <Link className="light-purple-button" to="/desks">
+              Desks
+            </Link>
           </div>
           <div className="filtres-bar-right">
             <div className="filtres-bar-right-panel">
@@ -159,11 +163,15 @@ const FiltresBar = ({
             <img className="arrow" src={arrowUpIcon} alt="Up Arrow" />
           </div>
           <div className="filtres-bar-bottom">
-            <Link className="light-purple-button active-button" to="/add/office">
+            <Link className="light-purple-button active-button" to="/">
               Offices
             </Link>
-            <div className="light-purple-button">Rooms</div>
-            <div className="light-purple-button">Desks</div>
+            <Link className="light-purple-button" to="/rooms">
+              Rooms
+            </Link>
+            <Link className="light-purple-button" to="/desks">
+              Desks
+            </Link>
           </div>
         </div>
       )}

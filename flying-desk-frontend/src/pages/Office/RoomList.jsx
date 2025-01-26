@@ -92,9 +92,16 @@ const RoomsList = () => {
                   alt={room.room}
                 />
                 <h2 className="card-title">{room.room}</h2>
-                <p className="card-description">{room.description}</p>
+                <h4 className="card-title">
+                  
+                 {room.building.address.city.city}, {room.building.address.address}, {room.building.address.country.country}
+            
+          
+                </h4>
+                <p className="card-price"> {room.price} €</p>
+              
                 <Link to={`/room/${room.id}`}>
-                  <button className="purple-button card-button">Details</button>
+                  <button className="purple-button card-button">Check</button>
                 </Link>
               </div>
             </div>

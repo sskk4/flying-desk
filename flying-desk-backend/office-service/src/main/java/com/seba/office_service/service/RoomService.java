@@ -44,13 +44,24 @@ public class RoomService {
 
     public Page<Room> getAllRoomsWithFilters(Long buildingId, Boolean isApproved, String name, Pageable pageable) {
 
+        // Tworzymy specyfikację filtrowania
         Specification<Room> specification = Specification
                 .where(RoomSpecification.withBuildingId(buildingId))
                 .and(RoomSpecification.withApprovalStatus(isApproved))
                 .and(RoomSpecification.withNameContaining(name));
 
         log.info("Fetching all rooms with filters: buildingId={}, isApproved={}, name={}", buildingId, isApproved, name);
-        return roomRepository.findAll(specification, pageable);
+
+        // Pobieramy pokoje z repozytorium
+        Page<Room> rooms = roomRepository.findAll(specification, pageable);
+
+        // Dodajemy zdjęcia do każdego pokoju
+        rooms.forEach(room -> {
+            List<PhotoDTO> photos = photoService.getPhotos("ROOM", room.getId());
+            room.setPhotos(photos);
+        });
+
+        return rooms;
     }
 
     /**

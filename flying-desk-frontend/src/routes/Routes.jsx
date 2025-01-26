@@ -48,6 +48,8 @@ const AppRoutes = () => {
       <Route path="/" element={<OfficeList />} />
       <Route path="/rooms" element={<RoomList />} />
 
+      <Route path="/office/:id" element={<OfficeDetails />} />
+      <Route path="/room/:id" element={<RoomDetails />} />
 
       <Route
         path="/login"
@@ -118,7 +120,8 @@ const AppRoutes = () => {
 
 
       <Route path="/start-rent" element={<RentContainer />} />
-      <Route path="/office/:id" element={<OfficeDetails />} />
+
+      
       <Route path="/test/building" element={<TestBuilding />} />
 
       <Route

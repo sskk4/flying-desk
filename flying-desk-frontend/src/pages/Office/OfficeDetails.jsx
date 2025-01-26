@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "../../components/Ad/Ad.css";
 import "../../components/Ad/AdCard.css";
 import Header from '../../components/Header/Header';
 
 const OfficeDetails = () => {
-  const { id } = useParams(); // Pobierz ID z URL
+  const { id } = useParams(); // Pobierz ID budynku z URL
   const [office, setOffice] = useState(null);
+  const [rooms, setRooms] = useState([]); // Przechowywanie pokoi budynku
   const [error, setError] = useState("");
 
   useEffect(() => {
+    // Pobieranie szczegółów budynku
     const fetchOffice = async () => {
       try {
         const response = await axios.get(
@@ -23,7 +25,20 @@ const OfficeDetails = () => {
       }
     };
 
+    // Pobieranie pokoi powiązanych z budynkiem
+    const fetchRooms = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8081/api/v1/building/${id}/rooms` // API do pokoi w budynku
+        );
+        setRooms(response.data.content || []); // Pobranie pokoi
+      } catch (err) {
+        console.error("Failed to fetch rooms:", err);
+      }
+    };
+
     fetchOffice();
+    fetchRooms();
   }, [id]);
 
   if (error) {
@@ -91,9 +106,8 @@ const OfficeDetails = () => {
           </div>
           <hr />
           <p>{office.description}</p>
-          <hr></hr>
+          <hr />
           <div className="price-section">
-
             <p className="note">Rent online is {office.status}</p>
             <div className="buttons">
               <button className="login-button wide" disabled>
@@ -102,6 +116,33 @@ const OfficeDetails = () => {
               <button className="create-button">Message</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Sekcja wyświetlania pokoi */}
+      <div className="rooms-section">
+        <h2>Rooms in this building</h2>
+        <div className="card-container">
+          {rooms.length > 0 ? (
+            rooms.map((room) => (
+              <div className="card" key={room.id}>
+                <div className="card-image">
+                  <img
+                    src={room.photos?.[0]?.url || "https://via.placeholder.com/400"}
+                    alt={room.room}
+                    className="card-img"
+                  />
+                  <h3 className="card-title">{room.room}</h3>
+                  <p className="card-description">{room.description}</p>
+                  <Link to={`/room/${room.id}`}>
+                    <button className="purple-button card-button">View Details</button>
+                  </Link>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No rooms available in this building.</p>
+          )}
         </div>
       </div>
     </div>
