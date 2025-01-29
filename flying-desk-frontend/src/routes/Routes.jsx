@@ -51,6 +51,9 @@ const AppRoutes = () => {
       <Route path="/office/:id" element={<OfficeDetails />} />
       <Route path="/room/:id" element={<RoomDetails />} />
 
+      <Route path="/desk/:id" element={<DeskDetails />} />
+      <Route path="/desks" element={<DeskList />} />
+
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to="/profile" /> : <Login />}

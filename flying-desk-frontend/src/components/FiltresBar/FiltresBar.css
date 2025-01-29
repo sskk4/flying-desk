@@ -81,12 +81,15 @@
 
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
+    transition: 0.1s;
+    background-color:#d9d9d9;
+
 }
 
 .arrow-show:hover
 {
     background-color:#9D8CFF;
-    border:solid 3px #9D8CFF;
+
 }
 
 
@@ -173,6 +176,10 @@
     display: block; /* Pokaż sekcję, gdy filtres-bar jest otwarty */
 }
 
+.first-option
+{
+    background-color: #9D8CFF;
+}
 
 @media (max-width: 1200px) {
 

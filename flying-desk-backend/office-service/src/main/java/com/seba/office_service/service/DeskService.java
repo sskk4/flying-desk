@@ -8,15 +8,20 @@ import com.seba.office_service.model.Building;
 import com.seba.office_service.model.Desk;
 import com.seba.office_service.repository.BuildingRepository;
 import com.seba.office_service.repository.DeskRepository;
+import com.seba.office_service.utils.DeskSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +41,54 @@ public class DeskService {
 
     private static final int MAX_FILES_ALLOWED = 5; // Maksymalna liczba plików
     private static final long MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // Maksymalny rozmiar pliku (5 MB)
+
+
+    public Page<Desk> getAllDesksWithFilters(
+            Long buildingId,
+            Boolean isApproved,
+            String name,
+            String equipment,
+            Desk.Status status,
+            String country,
+            String city,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Double minPrice,
+            Double maxPrice,
+            String sortBy,
+            String sortDir,
+            Pageable pageable
+    ) {
+        // Tworzymy specyfikację filtrowania
+        Specification<Desk> specification = Specification
+                .where(DeskSpecification.withBuildingId(buildingId))
+                .and(DeskSpecification.withApprovalStatus(isApproved))
+                .and(DeskSpecification.hasSearch(name))
+                .and(DeskSpecification.withEquipmentContaining(equipment))
+                .and(DeskSpecification.withStatus(status))
+                .and(DeskSpecification.withBuildingCountry(country))
+                .and(DeskSpecification.withBuildingCity(city))
+                .and(DeskSpecification.withCreationDateBetween(startDate, endDate))
+                .and(DeskSpecification.withPriceBetween(minPrice, maxPrice));
+
+        // Tworzymy obiekt sortowania
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        // Tworzymy pageable z sortowaniem
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        // Pobieramy biurka z repozytorium
+        Page<Desk> desks = deskRepository.findAll(specification, pageable);
+
+        // Dodajemy zdjęcia do każdego biurka
+        desks.forEach(desk -> {
+            List<PhotoDTO> photos = photoService.getPhotos("DESK", desk.getId());
+            desk.setPhotos(photos);
+        });
+
+        return desks;
+    }
+
 
     /**
      * Pobiera biurka z możliwością opcjonalnego filtrowania według statusu zatwierdzenia oraz paginacji.
@@ -220,7 +273,7 @@ public class DeskService {
     private Desk buildDeskEntity(DeskDTO deskDTO, Building building) {
         Desk desk = new Desk();
         desk.setDesk(deskDTO.getDesk());
-        desk.setEquipment(Desk.Equipment.valueOf(deskDTO.getEquipment()));
+        desk.setEquipment(deskDTO.getEquipment());
         desk.setDescription(deskDTO.getDescription());
         desk.setPrice(deskDTO.getPrice());
         desk.setStatus(Desk.Status.valueOf(deskDTO.getStatus().toUpperCase()));

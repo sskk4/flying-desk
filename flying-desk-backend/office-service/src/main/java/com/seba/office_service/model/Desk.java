@@ -24,8 +24,7 @@ public class Desk {
     private String desk;
 
     @Column(name = "equipment", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Equipment equipment;
+    private String equipment;
 
     @ManyToOne
     @JoinColumn(name = "building_id")
@@ -55,10 +54,6 @@ public class Desk {
 
     public enum Status {
        AVAILABLE, BOOKED, OUT_OF_SERVICE
-    }
-
-    public enum Equipment {
-        MONITOR, COMPUTER, LAMP, KEYBOARD
     }
 
     @Transient // Pole nie zapisuje się w bazie

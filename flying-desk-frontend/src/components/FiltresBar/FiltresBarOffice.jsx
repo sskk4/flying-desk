@@ -38,23 +38,20 @@ const FiltresBar = ({
     }
   }, [selectedCountry]);
 
-  // Obsługa zmiany kraju
+
   const handleCountryChange = (e) => {
-    const countryId = e.target.value;
-    setSelectedCountry(countryId);
-    console.log("Country changed:", countryId); // Logowanie zmiany kraju
-    onFilterChange("countryId", countryId);
+    const countryName = e.target.selectedOptions[0]?.text;
+    setSelectedCountry(e.target.value);
+    onFilterChange("countryId", countryName); // Przekazuj nazwę kraju, jeśli API tego wymaga
   };
-
-  // Obsługa zmiany miasta
+  
   const handleCityChange = (e) => {
-    const cityId = e.target.value;
-    setSelectedCity(cityId);
-    console.log("City changed:", cityId); // Logowanie zmiany miasta
-    onFilterChange("cityId", cityId);
+    const cityName = e.target.selectedOptions[0]?.text;
+    setSelectedCity(e.target.value);
+    onFilterChange("cityId", cityName); // Przekazuj nazwę miasta
   };
 
-  // Obsługa zmiany sortowania
+
   const handleSortChange = (e) => {
     const sortValue = e.target.value;
     console.log("Sort order changed:", sortValue); // Logowanie zmiany sortowania
@@ -74,6 +71,16 @@ const FiltresBar = ({
     onFilterChange(field, value);
   };
 
+  const handleSortDropdownChange = (e) => {
+    const sortValue = e.target.value;
+    if (sortValue.includes("-")) { // Prosta walidacja
+      onSortChange(sortValue);
+    } else {
+      console.error("Invalid sort value:", sortValue);
+    }
+  };
+  
+
   return (
     <div className="filtres-bar">
       {!isFiltersOpen && (
@@ -92,12 +99,13 @@ const FiltresBar = ({
           <div className="filtres-bar-right">
             <div className="filtres-bar-right-panel">
         
-              <label>Sort by:</label>
-              <select onChange={handleSortChange}>
-                <option value="asc">Alphabetically (A-Z)</option>
-                <option value="desc">Alphabetically (Z-A)</option>
-                <option value="creationDate">Creation Date</option>
-              </select>
+            <select onChange={handleSortDropdownChange}>
+              <option className="first-option" value="">Sort by</option>
+              <option value="building-desc">Name (A-Z)</option>
+              <option value="building-asc">Name (Z-A)</option>
+              <option value="creationDate-desc">Creation Date (Oldest)</option>
+              <option value="creationDate-asc">Creation Date (Newest)</option>
+            </select>
  
               <div className="arrow-show" onClick={toggleFilters}>
                 <img className="arrow" src={arrowDownIcon} alt="Down Arrow" />
@@ -113,7 +121,7 @@ const FiltresBar = ({
             <div className="filtres-item">
               <label>Country:</label>
               <select onChange={handleCountryChange} value={selectedCountry}>
-                <option value="">Select Country</option>
+                <option value=""></option>
                 {countries.map((country) => (
                   <option key={country.id} value={country.id}>
                     {country.country}
@@ -128,7 +136,7 @@ const FiltresBar = ({
                 value={selectedCity}
                 disabled={!selectedCountry}
               >
-                <option value="">Select City</option>
+                <option value=""></option>
                 {cities.map((city) => (
                   <option key={city.id} value={city.id}>
                     {city.city}
@@ -139,20 +147,20 @@ const FiltresBar = ({
             <div className="filtres-item">
               <label>Status:</label>
               <select onChange={handleStatusChange}>
-                <option value="">All</option>
+                <option value=""> </option>
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>
               </select>
             </div>
             <div className="filtres-item">
-              <label>Date Range From:</label>
+              <label>Date Range From:</label> <br></br>
               <input
                 type="date"
                 onChange={(e) => handleDateRangeChange("dateFrom", e.target.value)}
               />
             </div>
             <div className="filtres-item">
-              <label>Date Range To:</label>
+              <label>Date Range To:</label><br></br>
               <input
                 type="date"
                 onChange={(e) => handleDateRangeChange("dateTo", e.target.value)}

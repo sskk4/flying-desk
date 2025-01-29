@@ -139,7 +139,7 @@ public class RoomService {
      * @param buildingId ID budynku, do którego przypisany jest pokój.
      * @param files      Lista zdjęć do powiązania z tworzonym pokojem.
      * @return Zapisany pokój.
-     * @throws IOException W przypadku problemów z zapisem zdjęć.
+     * @throws IOException               W przypadku problemów z zapisem zdjęć.
      * @throws ResourceNotFoundException Jeśli budynek o podanym ID nie istnieje.
      */
     public Room createRoom(RoomDTO roomDTO, Long buildingId, List<MultipartFile> files) throws IOException {
@@ -237,7 +237,7 @@ public class RoomService {
     private Room buildRoomEntity(RoomDTO roomDTO, Building building) {
         Room room = new Room();
         room.setRoom(roomDTO.getRoom());
-        room.setEquipment(Room.Equipment.valueOf(roomDTO.getEquipment()));
+        room.setEquipment(roomDTO.getEquipment());
         room.setDescription(roomDTO.getDescription());
         room.setMaxOccupants(roomDTO.getMaxOccupants());
         room.setPrice(roomDTO.getPrice());

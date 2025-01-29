@@ -8,11 +8,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -43,6 +47,43 @@ public class DeskController {
         return deskService.createDesk(deskDTO, buildingId, files);
     }
 
+    @GetMapping("/desks")
+    public Page<Desk> getDesks(
+            @RequestParam(required = false) String search, // Wyszukiwanie po nazwie lub opisie
+            @RequestParam(required = false) Boolean isApproved, // Filtrowanie po zatwierdzeniu
+            @RequestParam(required = false) Desk.Status status, // Filtrowanie po statusie
+            @RequestParam(required = false) String country, // Filtrowanie po kraju budynku
+            @RequestParam(required = false) String city, // Filtrowanie po mieście budynku
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate, // Filtrowanie po dacie początkowej
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate, // Filtrowanie po dacie końcowej
+            @RequestParam(required = false) String equipment, // Filtrowanie po wyposażeniu
+            @RequestParam(required = false) Double minPrice, // Minimalna cena
+            @RequestParam(required = false) Double maxPrice, // Maksymalna cena
+            @RequestParam(defaultValue = "id") String sortBy, // Pole do sortowania
+            @RequestParam(defaultValue = "asc") String sortDir, // Kierunek sortowania
+            @PageableDefault(size = 10) Pageable pageable // Domyślna paginacja
+    ) {
+        // Wywołanie metody serwisu
+        return deskService.getAllDesksWithFilters(
+                null, // `buildingId` może być dodane później, jeśli będzie potrzebne
+                isApproved,
+                search,
+                equipment,
+                status,
+                country,
+                city,
+                startDate,
+                endDate,
+                minPrice,
+                maxPrice,
+                sortBy,
+                sortDir,
+                pageable
+        );
+    }
+
+
+
     /**
      * Pobiera szczegóły biurka na podstawie jego ID.
      *
@@ -72,6 +113,8 @@ public class DeskController {
         log.info("Fetching desks in building ID: {}, with approval status: {}", buildingId, isApproved);
         return deskService.getDesksByBuildingId(buildingId, isApproved, pageable);
     }
+
+
 
     /**
      * Zmienia status akceptacji biurka.

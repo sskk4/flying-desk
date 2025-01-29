@@ -1,6 +1,26 @@
-# Getting Started with Create React App
+# Getting Started with Flying Desk
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Components
+
+In the project directory, you can use components for:
+
+### Card 
+
+### Filtres Bar
+
+### Search Bar
+
+### Footer
+
+### Header
+
+### Form with side menu bar
+
+### Errors
+
+
 
 ## Available Scripts
 

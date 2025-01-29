@@ -24,8 +24,7 @@ public class Room {
     private String room;
 
     @Column(name = "equipment", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Equipment equipment;
+    private String equipment;
 
     @ManyToOne
     @JoinColumn(name = "building_id")

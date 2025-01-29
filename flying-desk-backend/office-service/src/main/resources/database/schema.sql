@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS building (
 CREATE TABLE IF NOT EXISTS room (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     room VARCHAR(255),
-    equipment ENUM('PROJECTOR', 'TV', 'SPEAKER', 'WHITEBOARD'),
+    equipment TEXT,
     building_id BIGINT,
     description TEXT,
     max_occupants INT,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS room (
 CREATE TABLE IF NOT EXISTS desk (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     desk VARCHAR(255),
-    equipment ENUM('MONITOR', 'COMPUTER', 'LAMP'),
+    equipment TEXT,
     building_id BIGINT,
     description TEXT,
     price DECIMAL(10, 2),

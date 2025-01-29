@@ -24,6 +24,14 @@
     padding:5%;
 }
 
+.loader-container
+{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:50vh;
+}
+
 .loader {
     position: absolute;
     left: 50%;
@@ -51,3 +59,4 @@
     50%   {transform:scaleY(-1) rotate(0deg)}
     100%  {transform:scaleY(-1) rotate(-135deg)}
   }
+

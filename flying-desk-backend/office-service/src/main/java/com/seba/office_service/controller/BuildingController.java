@@ -11,12 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -54,10 +57,17 @@ public class BuildingController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) Boolean isApproved,
             @RequestParam(required = false) Building.Status status,
-            Pageable pageable
+            @RequestParam(required = false) String country, // Filtr po kraju
+            @RequestParam(required = false) String city, // Filtr po mieście
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, // Filtr po dacie początkowej
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate, // Filtr po dacie końcowej
+            @RequestParam(defaultValue = "id") String sortBy, // Pole do sortowania
+            @RequestParam(defaultValue = "asc") String sortDir, // Kierunek sortowania
+            @PageableDefault(size = 10) Pageable pageable // Domyślne parametry paginacji
     ) {
-        return buildingService.getBuildings(search, isApproved, status, pageable);
+        return buildingService.getBuildings(search, isApproved, status, country, city, startDate, endDate, sortBy, sortDir, pageable);
     }
+
 
     /**
      * Pobiera szczegóły budynku na podstawie jego ID.

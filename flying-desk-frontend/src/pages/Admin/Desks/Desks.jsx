@@ -15,7 +15,7 @@ const Desks = () => {
     useEffect(() => {
         const fetchDesks = async () => {
             try {
-                const response = await axios.get(`http://localhost:8081/api/v1/desk`, {
+                const response = await axios.get(`http://localhost:8081/api/v1/building/desk`, {
                     params: { page, size, sort: "creationDate,desc" },
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });

@@ -1,29 +1,67 @@
-import React, { useState } from 'react';
-import './SearchBar.css';
-import FiltresBar from '../FiltresBar/FiltresBar';
-import searchIcon from '../../assets/icons/search.svg';
-import filterIcon from '../../assets/icons/filter.svg';
+import React, { useState } from "react";
+import "./SearchBar.css";
+import FiltresBarOffice from "../FiltresBar/FiltresBarOffice"; // Filtry dla Office
+import FiltresBarDesks from "../FiltresBar/FiltresBarDesk"; // Filtry dla Desks
+import searchIcon from "../../assets/icons/search.svg";
+import filterIcon from "../../assets/icons/filter.svg";
 
-const SearchBar = ({ onSearchChange, onFilterChange, onSortChange }) => {
+const SearchBar = ({ filterType, onSearchChange, onFilterChange, onSortChange }) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [inputValue, setInputValue] = useState(""); // Stan lokalny dla wpisywanego tekstu
 
-  // Funkcja do przełączania widoczności filtrów
+  // Obsługa przełączania widoczności filtrów
   const toggleFilters = () => {
-    console.log("Toggling filters visibility");
     setIsFiltersOpen((prevState) => !prevState);
   };
 
-  // Obsługa zmiany tekstu w polu wyszukiwania
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    console.log("Search text changed: ", value); // Logowanie zmiany tekstu
-    if (onSearchChange) {
-      onSearchChange(value);
+  // Funkcja do wyszukiwania (bezpośrednie użycie inputValue)
+  const handleSearch = () => {
+    const trimmedValue = inputValue.trim(); // Usuń białe znaki
+    onSearchChange(trimmedValue); // Wywołaj wyszukiwanie niezależnie od wartości (również dla pustego pola)
+  };
+
+  // Obsługa klawisza Enter
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch(); // Wykonaj wyszukiwanie
+    }
+  };
+
+  // Obsługa kliknięcia ikony wyszukiwania
+  const handleButtonClick = () => {
+    handleSearch(); // Wykonaj wyszukiwanie
+  };
+
+  // Wybór odpowiedniego komponentu filtrów
+  const renderFiltresBar = () => {
+    switch (filterType) {
+      case "office":
+        return (
+          <FiltresBarOffice
+            isFiltersOpen={isFiltersOpen}
+            toggleFilters={toggleFilters}
+            onFilterChange={onFilterChange}
+            onSortChange={onSortChange}
+          />
+        );
+      case "desk":
+        return (
+          <FiltresBarDesks
+            isFiltersOpen={isFiltersOpen}
+            toggleFilters={toggleFilters}
+            onFilterChange={onFilterChange}
+            onSortChange={onSortChange}
+          />
+        );
+      default:
+        console.warn(`Unknown filter type: ${filterType}`);
+        return null;
     }
   };
 
   return (
     <>
+      {/* Główna belka wyszukiwania */}
       <div className="search-bar">
         <div className="search-bar-left"></div>
         <div className="search-bar-center">
@@ -31,25 +69,30 @@ const SearchBar = ({ onSearchChange, onFilterChange, onSortChange }) => {
             className="search-bar-text-input"
             type="text"
             placeholder="Search..."
-            onChange={handleInputChange} // Obsługa zmian tekstu
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)} // Aktualizacja lokalnego stanu
+            onKeyDown={handleKeyDown} // Obsługa wciśnięcia Enter
           />
-          <img className="search-bar-button" src={searchIcon} alt="Search" />
+          <img
+            className="search-bar-button"
+            src={searchIcon}
+            alt="Search"
+            onClick={handleButtonClick} // Obsługa kliknięcia w ikonę
+          />
         </div>
         <div className="search-bar-right">
-          <div className="search-bar-filtres" onClick={toggleFilters}>
+          <div
+            className={`search-bar-filtres ${isFiltersOpen ? "active" : ""}`}
+            onClick={toggleFilters}
+          >
             <img className="search-bar-filtres-img" src={filterIcon} alt="Filter" />
             <span className="search-bar-filtres-text">Filters</span>
           </div>
         </div>
       </div>
 
-      {/* Przekazanie stanu i funkcji do FiltresBar */}
-      <FiltresBar
-        isFiltersOpen={isFiltersOpen}
-        toggleFilters={toggleFilters}
-        onFilterChange={onFilterChange} // Przekazanie funkcji zmiany filtrów
-        onSortChange={onSortChange} // Przekazanie funkcji zmiany sortowania
-      />
+      {/* Dynamicznie renderowany panel filtrów */}
+      {renderFiltresBar()}
     </>
   );
 };

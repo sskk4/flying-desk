@@ -13,12 +13,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,12 +71,24 @@ public class BuildingService {
      * @param pageable    Parametry paginacji i sortowania.
      * @return Strona z budynkami spełniającymi warunki filtrowania.
      */
-    public Page<Building> getBuildings(String search, Boolean isApproved, Building.Status status, Pageable pageable) {
+    public Page<Building> getBuildings(
+            String search, Boolean isApproved, Building.Status status,
+            String country, String city, LocalDate startDate, LocalDate endDate,
+            String sortBy, String sortDir, Pageable pageable) {
         // Tworzymy specyfikację filtrowania
         Specification<Building> spec = Specification
                 .where(BuildingSpecification.hasIsApproved(isApproved))
                 .and(BuildingSpecification.hasStatus(status))
-                .and(BuildingSpecification.hasSearch(search));
+                .and(BuildingSpecification.hasSearch(search))
+                .and(BuildingSpecification.hasCountry(country))
+                .and(BuildingSpecification.hasCity(city))
+                .and(BuildingSpecification.hasCreationDateBetween(startDate, endDate)); 
+
+        // Tworzymy obiekt sortowania
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        // Tworzymy pageable z sortowaniem
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
         // Pobieramy budynki z repozytorium
         Page<Building> buildings = buildingRepository.findAll(spec, pageable);
@@ -86,6 +101,7 @@ public class BuildingService {
 
         return buildings;
     }
+
 
     /**
      * Pobiera wszystkie budynki z możliwością stronicowania i sortowania.
