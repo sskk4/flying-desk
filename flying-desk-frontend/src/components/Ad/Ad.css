@@ -43,3 +43,55 @@
 .thumbnail:hover {
     border: 2px solid #7360DF;
 }
+
+.building-section {
+    background-color: #F4F4F4;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 20px;
+}
+
+.building-section h2
+{
+    font-size: 1.5rem;
+    margin: 0;
+    text-align:center;
+    color:#555;
+    margin-top: 100px
+}
+
+.building-section .details
+{
+    width:50%;
+    margin-left:25%;
+}
+
+.building-section .detail-item
+{
+    background-color: rgb(237, 237, 237);
+}
+
+.building-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width:50%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.building-photos {
+    margin-top: 10px;
+}
+
+.photo-grid {
+    display: flex;
+    gap: 10px;
+}
+
+.building-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    object-fit: cover;
+}

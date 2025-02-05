@@ -10,57 +10,56 @@ const DeskDetails = () => {
   const { id } = useParams(); 
   const [desk, setDesk] = useState(null);
   const [rooms, setRooms] = useState([]); 
-  const [office, setOffice] = useState(null);
+  const [building, setBuilding] = useState(null);
   const [error, setError] = useState("");
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  
 
   useEffect(() => {
-
     const fetchDesk = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8081/api/v1/building/desk/${id}` 
-        );
+        const response = await axios.get(`http://localhost:8081/api/v1/building/desk/${id}`);
         setDesk(response.data);
+        setSelectedPhoto(response.data.photos?.[0]?.url || "https://via.placeholder.com/400");
+
+        // Po pobraniu biurka, pobierz budynek i pokoje
+        if (response.data.building?.id) {
+          fetchBuilding(response.data.building.id);
+          fetchRooms(response.data.building.id);
+        }
       } catch (err) {
         setError("Failed to fetch desk details.");
         console.error(err);
       }
     };
 
-
-    const fetchRooms = async () => {
+    const fetchBuilding = async (buildingId) => {
       try {
-        const response = await axios.get(
-          `http://localhost:8081/api/v1/building/${id}/rooms` 
-        );
-        setRooms(response.data.content || []); // Pobranie pokoi
+        const response = await axios.get(`http://localhost:8081/api/v1/building/${buildingId}`);
+        setBuilding(response.data);
+      } catch (err) {
+        setError("Failed to fetch building details.");
+        console.error(err);
+      }
+    };
+
+    const fetchRooms = async (buildingId) => {
+      try {
+        const response = await axios.get(`http://localhost:8081/api/v1/building/${buildingId}/rooms`);
+        setRooms(response.data.content || []);
       } catch (err) {
         console.error("Failed to fetch rooms:", err);
       }
     };
 
-    const fetchOffice = async () => {
-        try {
-          const response = await axios.get(
-            `http://localhost:8081/api/v1/building/${id}` // Pobieranie danych budynku
-          );
-          setOffice(response.data);
-        } catch (err) {
-          setError("Failed to fetch office details.");
-          console.error(err);
-        }
-      };
-
     fetchDesk();
-    fetchOffice();
-    fetchRooms();
   }, [id]);
 
   if (error) {
     return <p style={{ color: "red" }}>{error}</p>;
   }
 
-  if (!desk) {
+  if (!desk || !building) {
     return <p>Loading desk details...</p>;
   }
 
@@ -69,61 +68,56 @@ const DeskDetails = () => {
       <Header />
 
       <div className="ad-container">
-        {/* Sekcja zdjęć */}
+        {/* 🔹 Sekcja zdjęć */}
         <div className="image-section">
-          {desk.photos && desk.photos.length > 0 ? (
-            <>
+          <img
+            src={selectedPhoto}
+            alt={`Main photo of ${desk.desk}`}
+            className="main-image"
+          />
+          <div className="thumbnail-section">
+            {desk.photos?.map((photo, index) => (
               <img
-                src={desk.photos[0].url}
-                alt={`Main photo of ${desk.desk}`}
-                className="main-image"
+                key={index}
+                src={photo.url}
+                alt={`Thumbnail ${index + 1}`}
+                className={`thumbnail ${selectedPhoto === photo.url ? "active" : ""}`}
+                onClick={() => setSelectedPhoto(photo.url)} // 🔥 Obsługa kliknięcia
               />
-              <div className="thumbnail-section">
-                {desk.photos.slice(1).map((photo, index) => (
-                  <img
-                    key={index}
-                    src={photo.url}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="thumbnail"
-                  />
-                ))}
-              </div>
-            </>
-          ) : (
-            <p>No photos available.</p>
-          )}
+            ))}
+          </div>
         </div>
 
-        {/* Sekcja szczegółów */}
+        {/* Sekcja szczegółów biurka */}
         <div className="details-section">
           <h2>{desk.desk}</h2>
           <hr />
           <p className="location">
-            📍 {desk.building.address.city.city}, {desk.building.address.address}, {desk.building.address.country.country}
+            📍 {building.address.city.city}, {building.address.address}, {building.address.country.country}
           </p>
           <div className="details">
             <div className="detail-item">
-              <span>Surface</span>
-              <strong>50m²</strong>
+              <span>Equipment</span>
+              <strong>{desk.equipment}</strong>
             </div>
             <div className="detail-item">
-              <span>Rooms</span>
-              <strong>4</strong>
+              <span>Price</span>
+              <strong>${desk.price} / hour</strong>
             </div>
             <div className="detail-item">
-              <span>Desks</span>
-              <strong>3</strong>
+              <span>Status</span>
+              <strong>{desk.status}</strong>
             </div>
             <div className="detail-item">
               <span>Available from</span>
-              <strong>{office.creationDate}</strong>
+              <strong>{new Date(desk.creationDate).toLocaleDateString()}</strong>
             </div>
           </div>
           <hr />
-          <p>{office.description}</p>
+          <p>{desk.description}</p>
           <hr />
           <div className="price-section">
-            <p className="note">Rent online is {office.status}</p>
+            <p className="note">Rent online is {building.status}</p>
             <div className="buttons">
               <button className="login-button wide" disabled>
                 Rent
@@ -134,9 +128,56 @@ const DeskDetails = () => {
         </div>
       </div>
 
+      {/* 🔹 Sekcja informacji o budynku */}
+      <div className="building-section">
+        <h2 className="owner-title">Building Information</h2>
+        <div className="building-details">
+          <h3>{building.building}</h3>
+          <p>{building.description}</p>
+          <p>
+            📍 {building.address.city.city}, {building.address.address}, {building.address.country.country}
+          </p>
+          <div className="details">
+            <div className="detail-item">
+              <span>Approved</span>
+              <strong>{building.isApproved ? "Yes" : "No"}</strong>
+            </div>
+            <div className="detail-item">
+              <span>Status</span>
+              <strong>{building.status}</strong>
+            </div>
+            <div className="detail-item">
+              <span>Added by</span>
+              <strong>User ID: {building.userId}</strong>
+            </div>
+            <div className="detail-item">
+              <span>Created at</span>
+              <strong>{new Date(building.creationDate).toLocaleDateString()}</strong>
+            </div>
+            <div className="detail-item">
+              <span>Last edited</span>
+              <strong>{new Date(building.editDate).toLocaleDateString()}</strong>
+            </div>
+          </div>
+          {/* Zdjęcia budynku */}
+          <div className="building-photos">
+            <h3>Building Photos</h3>
+            {building.photos && building.photos.length > 0 ? (
+              <div className="photo-grid">
+                {building.photos.map((photo, index) => (
+                  <img key={index} src={photo.url} alt={`Building ${index + 1}`} className="building-photo" />
+                ))}
+              </div>
+            ) : (
+              <p>No photos available.</p>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Sekcja wyświetlania pokoi */}
-      <div className="rooms-section">
-        <h2>Rooms in this building</h2>
+      <div className="building-section">
+        <h2 className="owner-title">Rooms in building</h2>
         <div className="card-container">
           {rooms.length > 0 ? (
             rooms.map((room) => (
@@ -160,6 +201,7 @@ const DeskDetails = () => {
           )}
         </div>
       </div>
+
       <Footer />
     </div>
   );

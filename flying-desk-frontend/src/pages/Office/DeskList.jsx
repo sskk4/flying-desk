@@ -168,7 +168,7 @@ const DeskList = () => {
             {desk.building.address.country.country}
           </h4>
           <h4 className="card-status">{desk.building.status}</h4>
-          <Link to={`/desk/${desk.building.id}`}>
+          <Link to={`/desk/${desk.id}`}>
             <button className="purple-button card-button">Check</button>
           </Link>
         </div>

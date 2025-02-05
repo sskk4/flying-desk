@@ -19,6 +19,7 @@ import RoomsInBuilding from './Rooms/RoomsInBuilding';
 import Desks from './Desks/Desks';
 import DeskAdd from './Desks/AddDesk';
 import DeskDetails from './Desks/DeskDetails';
+import DesksInBuilding from './Desks/DesksInBuilding';
 
 import AdminPanelPhoto from '../../assets/png/giphy.gif';
 
@@ -35,8 +36,8 @@ const AdminPanel = () => {
         buildingadd: { title: 'Add building', addButtonText: 'Back', addPath:"/admin-fd/buildings"},
         buildingdetails: { title: 'Building details', addButtonText: 'Back', addPath:"/admin-fd/buildings"},
 
-        desks: { title: 'Desks', addButtonText: '+ Add Desk', addPath:"/admin-fd/desks/add"},
-        deskadd: { title: 'Add desk', addButtonText: 'Back', addPath:"/admin-fd/desks"},
+        desks: { title: 'Desks', addButtonText: '+ Add Desk', addPath:"/admin-fd/buildings"},
+        deskadd: { title: 'Add desk', addButtonText: 'Back', addPath:"/admin-fd/buildings/:buildingId/desks"},
         deskdetails: { title: 'Desk details', addButtonText: 'Back', addPath:"/admin-fd/desks"},
 
         rooms: { title: 'Rooms', addButtonText: '+ Add Room', addPath:"/admin-fd/buildings"  },
@@ -130,7 +131,7 @@ const AdminPanel = () => {
                         }
                     />
 
-<Route
+                    <Route
                         path="/desks"
                         element={
                             <>
@@ -138,26 +139,39 @@ const AdminPanel = () => {
                                 <Desks />
                             </>
                         }
-                    />
-                    <Route
-                        path="/desks/add"
-                        element={
-                            <>
-                                <Header {...views.deskadd} />
-                                <DeskAdd />
-                            </>
-                        }
-                    />
+                />
+            <Route
+                path="/buildings/:buildingId/add-desk"
+                element={
+                    <>
+                        <Header {...views.deskadd} />
+                        <DeskAdd />
+                    </>
+                }
+            />
+            <Route
+                path="/desks/:id"
+                element={
+                    <>
+                        <Header {...views.deskdetails} />
+                        <DeskDetails />
+                    </>
+                }
+            />
+            <Route
+                path="/buildings/:buildingId/desks"
+                element={
+                    <>
+                        <Header
+                            title="Desks in building"
+                            addButtonText="+ Add Desk"
+                            addPath={`/admin-fd/buildings/:buildingId/add-desk`}
+                        />
+                        <DesksInBuilding />
+                    </>
+                }
+            />
 
-                    <Route
-                        path="/desks/:id"
-                        element={
-                            <>
-                                <Header {...views.deskdetails} />
-                                <DeskDetails />
-                            </>
-                        }
-                    />
 
 <Route
                         path="/rooms"

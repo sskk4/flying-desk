@@ -56,12 +56,28 @@ const BuildingsDetails = () => {
         navigate(`/admin-fd/buildings/${id}/rooms`);
     };
 
+    const navigateToAddDesk = () => {
+        navigate(`/admin-fd/buildings/${id}/add-desk`);
+    };
+    
+    const navigateToDesks = () => {
+        navigate(`/admin-fd/buildings/${id}/desks`);
+    };
+
 
     if (error) return <p className="error-message">{error}</p>;
     if (!building) return <p>Loading...</p>;
 
     return (
         <div className="ap-details-container">
+
+            <button onClick={navigateToAddDesk} className="login-button action-button">
+                Add Desk to This Building
+            </button>
+            <button onClick={navigateToDesks} className="create-button action-button">
+                Desks in this Building
+            </button>
+
            <button onClick={navigateToAddRoom} className="login-button action-button">
                 Add Room to This Building
             </button>

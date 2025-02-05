@@ -30,6 +30,16 @@
     margin-left:14%;
 }
 
+.ap-form select
+{
+    width:50%;
+    margin-left:auto;
+    margin-right:auto;
+    border-radius:20vh;
+    padding:1%;
+    background-color:#ded9ff;
+}
+
 .ap-logo
 {
     margin-left:auto;

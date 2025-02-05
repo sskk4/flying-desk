@@ -12,7 +12,7 @@ const DesksDetails = () => {
     useEffect(() => {
         const fetchDeskDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:8081/api/v1/desk/${id}`, {
+                const response = await axios.get(`http://localhost:8081/api/v1/building/desk/${id}`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 setDesk(response.data);

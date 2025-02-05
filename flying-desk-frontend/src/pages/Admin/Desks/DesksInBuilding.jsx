@@ -1,38 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../../services/AuthProvider";
 
-const Desks = () => {
+const DesksInBuilding = () => {
   const { accessToken } = useAuth();
+  const { buildingId } = useParams(); // Pobranie ID budynku z URL
   const [desks, setDesks] = useState([]);
   const [page, setPage] = useState(0);
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState("");
-  const [search, setSearch] = useState(""); // Wyszukiwanie
-  const [filter, setFilter] = useState(""); // Filtrowanie po statusie
-  const [isApproved, setIsApproved] = useState(""); // Filtrowanie po zatwierdzeniu
-  const [sort, setSort] = useState("creationDate,desc"); // Sortowanie
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("creationDate,desc");
   const navigate = useNavigate();
 
-  // Pobieranie danych biurek
+  // Pobieranie biurek dla budynku
   useEffect(() => {
     const fetchDesks = async () => {
       try {
-        setError(""); // Reset błędu przed zapytaniem
+        setError("");
         const params = {
           page,
           size,
           sort,
           search,
-          filter,
-          isApproved: isApproved === "" ? null : isApproved,
         };
 
-        console.log("Fetching desks with params:", params); // Debug parametrów
-
-        const response = await axios.get(`http://localhost:8081/api/v1/building/desks`, {
+        const response = await axios.get(`http://localhost:8081/api/v1/building/${buildingId}/desks`, {
           params,
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -41,11 +36,11 @@ const Desks = () => {
         setTotalPages(response.data.totalPages);
       } catch (err) {
         console.error("Error fetching desks:", err);
-        setError("Failed to load desks.");
+        setError("Failed to load desks for this building.");
       }
     };
     fetchDesks();
-  }, [accessToken, page, size, sort, search, filter, isApproved]);
+  }, [accessToken, buildingId, page, size, sort, search]);
 
   const goToNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages - 1));
   const goToPreviousPage = () => setPage((prev) => Math.max(prev - 1, 0));
@@ -58,36 +53,15 @@ const Desks = () => {
       <div className="filters-container">
         <input
           type="text"
-          placeholder="Search by name or description"
+          placeholder="Search by desk name or description"
           value={search}
-          onChange={(e) => setSearch(e.target.value)} // Aktualizacja stanu wyszukiwania
+          onChange={(e) => setSearch(e.target.value)}
           className="ap-search-bar"
         />
 
         <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)} // Aktualizacja stanu filtrowania
-          className="filter-select"
-        >
-          <option value="">All Statuses</option>
-          <option value="available">Available</option>
-          <option value="booked">Booked</option>
-          <option value="out_of_service">Out of Service</option>
-        </select>
-
-        <select
-          value={isApproved}
-          onChange={(e) => setIsApproved(e.target.value)} // Aktualizacja stanu zatwierdzenia
-          className="filter-select"
-        >
-          <option value="">All Approvals</option>
-          <option value="1">Approved</option>
-          <option value="0">Not Approved</option>
-        </select>
-
-        <select
           value={sort}
-          onChange={(e) => setSort(e.target.value)} // Aktualizacja stanu sortowania
+          onChange={(e) => setSort(e.target.value)}
           className="sort-select"
         >
           <option value="creationDate,desc">Newest First</option>
@@ -104,7 +78,6 @@ const Desks = () => {
             <th>ID</th>
             <th>Name</th>
             <th>Equipment</th>
-            <th>Building</th>
             <th>Description</th>
             <th>Price</th>
             <th>Status</th>
@@ -119,7 +92,6 @@ const Desks = () => {
                 <td>{desk.id}</td>
                 <td>{desk.desk}</td>
                 <td>{desk.equipment}</td>
-                <td>{desk.building?.building || "N/A"}</td>
                 <td>{desk.description}</td>
                 <td>{desk.price}</td>
                 <td className={`status-${desk.status.toLowerCase()}`}>{desk.status}</td>
@@ -136,8 +108,8 @@ const Desks = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="9" style={{ textAlign: "center" }}>
-                No desks found.
+              <td colSpan="8" style={{ textAlign: "center" }}>
+                No desks found for this building.
               </td>
             </tr>
           )}
@@ -168,4 +140,4 @@ const Desks = () => {
   );
 };
 
-export default Desks;
+export default DesksInBuilding;
