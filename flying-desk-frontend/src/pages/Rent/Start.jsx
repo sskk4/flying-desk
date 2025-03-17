@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Link } from "react-router-dom";
 import "../../styles/Rent/Start.css";
 import Footer from "../../components/Footer/Footer";
 import Header from '../../components/Header/Header';
@@ -16,6 +17,7 @@ const OwnerContainer = () => {
         <Header />
     <div className="owner-container">
 
+    <Link to="/desks">
       <div className="image-hover-container">
       <div className="image-wrapper">
         <img
@@ -30,8 +32,10 @@ const OwnerContainer = () => {
         />
       </div>
     </div>
-
+    </Link>
+    <Link to="/desks">
     <button className="rent-button create-button">Start rent</button>
+    </Link>
 
     <div className="terms-agreement">
       <CheckBox />

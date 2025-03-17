@@ -14,7 +14,7 @@ import { ReactComponent as HomeIcon } from "../../assets/icons/desk.svg";
 import { ReactComponent as LockIcon } from "../../assets/icons/summary.svg";
 import { ReactComponent as KeyIcon } from "../../assets/icons/key.svg";
 
-import Leafs from "../../assets/png/leafs.png"
+
 import Women from "../../assets/png/women.png"
 
 const Profile = () => {
@@ -72,7 +72,7 @@ const Profile = () => {
               element={
                 <div>
                 <div className="profile-title-container">
-                  <img src={Leafs} alt="leafs" className="leafs" />
+                  
                   <h1 className="owner-title">Welcome to your profile!</h1>
                   <h3 className="fancy-text" >{user?.firstName}</h3>
                   

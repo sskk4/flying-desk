@@ -14,6 +14,7 @@ const DeskDetails = () => {
   const [error, setError] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   
+  
 
   useEffect(() => {
     const fetchDesk = async () => {
@@ -118,19 +119,31 @@ const DeskDetails = () => {
           <hr />
           <div className="price-section">
             <p className="note">Rent online is {building.status}</p>
-            <div className="buttons">
-              <button className="login-button wide" disabled>
-                Rent
-              </button>
-              <button className="create-button">Message</button>
+            <div >
+              <Link className="buttons" to={`/desk/${id}/rent`}>
+                <button className="login-button wide">Rent</button> 
+              </Link>
+
+              <Link to={`/office/${building.id}`}>
+        <button className="create-button">View Building Details</button> 
+      </Link>
+
+              <Link to={`/contact`}>
+              <button className="create-button ">Message</button>
+              </Link>
+
+
             </div>
           </div>
         </div>
       </div>
 
       {/* 🔹 Sekcja informacji o budynku */}
+ 
       <div className="building-section">
         <h2 className="owner-title">Building Information</h2>
+
+            <Link to={`/office/${building.id}`}>
         <div className="building-details">
           <h3>{building.building}</h3>
           <p>{building.description}</p>
@@ -138,10 +151,7 @@ const DeskDetails = () => {
             📍 {building.address.city.city}, {building.address.address}, {building.address.country.country}
           </p>
           <div className="details">
-            <div className="detail-item">
-              <span>Approved</span>
-              <strong>{building.isApproved ? "Yes" : "No"}</strong>
-            </div>
+
             <div className="detail-item">
               <span>Status</span>
               <strong>{building.status}</strong>
@@ -173,6 +183,7 @@ const DeskDetails = () => {
             )}
           </div>
         </div>
+        </Link>
       </div>
 
       {/* Sekcja wyświetlania pokoi */}

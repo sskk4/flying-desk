@@ -1,6 +1,7 @@
 package com.seba.rent_service.config;
 
 
+import com.seba.rent_service.config.CustomPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -42,6 +43,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain)
             throws ServletException, IOException {
+
+        String requestPath = request.getRequestURI();
+
+        if (requestPath.startsWith("/api/v1/building")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
 
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {

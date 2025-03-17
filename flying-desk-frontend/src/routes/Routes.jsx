@@ -7,7 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import ActivateAccountPage from "../pages/Auth/ActivateAccount";
-
+import RentDesk from "../pages/Rent/RentDesk";
 import Profile from "../pages/Profile/Profile";
 
 import OfficeList from "../pages/Office/OfficeList";
@@ -51,6 +51,14 @@ const AppRoutes = () => {
       <Route path="/office/:id" element={<OfficeDetails />} />
       <Route path="/room/:id" element={<RoomDetails />} />
 
+      <Route
+    path="/desk/:deskid/rent"
+    element={
+      <ProtectedRoute>
+        <RentDesk />
+      </ProtectedRoute>
+    }
+  />
       <Route path="/desk/:id" element={<DeskDetails />} />
       <Route path="/desks" element={<DeskList />} />
 

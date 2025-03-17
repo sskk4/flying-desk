@@ -29,7 +29,7 @@ const OfficeDetails = () => {
     const fetchRooms = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8081/api/v1/building/${id}/rooms` // API do pokoi w budynku
+          `http://localhost:8081/api/v1/building/${id}/desks` // API do pokoi w budynku
         );
         setRooms(response.data.content || []); // Pobranie pokoi
       } catch (err) {
@@ -110,9 +110,6 @@ const OfficeDetails = () => {
           <div className="price-section">
             <p className="note">Rent online is {office.status}</p>
             <div className="buttons">
-              <button className="login-button wide" disabled>
-                Rent
-              </button>
               <button className="create-button">Message</button>
             </div>
           </div>
@@ -121,7 +118,7 @@ const OfficeDetails = () => {
 
       {/* Sekcja wyświetlania pokoi */}
       <div className="rooms-section">
-        <h2>Rooms in this building</h2>
+        <h2>Desks in this building</h2>
         <div className="card-container">
           {rooms.length > 0 ? (
             rooms.map((room) => (
@@ -132,16 +129,18 @@ const OfficeDetails = () => {
                     alt={room.room}
                     className="card-img"
                   />
-                  <h3 className="card-title">{room.room}</h3>
-                  <p className="card-description">{room.description}</p>
-                  <Link to={`/room/${room.id}`}>
+                  <h3 className="card-title">{room.desk}</h3>
+                  <h4 className="card-title">{room.description}</h4>
+                  <h2 className="card-title">{room.price} $/per hour</h2>
+   
+                  <Link to={`/desk/${room.id}`}>
                     <button className="purple-button card-button">View Details</button>
                   </Link>
                 </div>
               </div>
             ))
           ) : (
-            <p>No rooms available in this building.</p>
+            <p>No desks available in this building.</p>
           )}
         </div>
       </div>

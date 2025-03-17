@@ -155,17 +155,26 @@ public class DeskService {
         Building building = buildingRepository.findById(buildingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Building not found with ID: " + buildingId));
 
-        // Pobranie biurek bez filtrowania
+        Page<Desk> desks;
+
+        // Pobranie biurek w zależności od statusu zatwierdzenia
         if (isApproved == null) {
             log.info("Fetching all desks for building ID: {}", buildingId);
-            return deskRepository.findByBuilding(building, pageable);
-        }
-        // Pobranie biurek z filtrem zatwierdzenia
-        else {
+            desks = deskRepository.findByBuilding(building, pageable);
+        } else {
             log.info("Fetching desks for building ID: {} with approval status: {}", buildingId, isApproved);
-            return deskRepository.findByBuildingAndIsApproved(building, isApproved, pageable);
+            desks = deskRepository.findByBuildingAndIsApproved(building, isApproved, pageable);
         }
+
+        // Pobranie zdjęć dla każdego biurka
+        desks.forEach(desk -> {
+            List<PhotoDTO> photos = photoService.getPhotos("DESK", desk.getId());
+            desk.setPhotos(photos);
+        });
+
+        return desks;
     }
+
 
 
     /**
