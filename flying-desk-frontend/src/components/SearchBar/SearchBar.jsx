@@ -1,38 +1,38 @@
 import React, { useState } from "react";
 import "./SearchBar.css";
-import FiltresBarOffice from "../FiltresBar/FiltresBarOffice"; // Filtry dla Office
-import FiltresBarDesks from "../FiltresBar/FiltresBarDesk"; // Filtry dla Desks
+import FiltresBarOffice from "../FiltresBar/FiltresBarOffice"; 
+import FiltresBarDesks from "../FiltresBar/FiltresBarDesk"; 
 import searchIcon from "../../assets/icons/search.svg";
 import filterIcon from "../../assets/icons/filter.svg";
 
 const SearchBar = ({ filterType, onSearchChange, onFilterChange, onSortChange }) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-  const [inputValue, setInputValue] = useState(""); // Stan lokalny dla wpisywanego tekstu
+  const [inputValue, setInputValue] = useState("");
 
-  // Obsługa przełączania widoczności filtrów
+
   const toggleFilters = () => {
     setIsFiltersOpen((prevState) => !prevState);
   };
 
-  // Funkcja do wyszukiwania (bezpośrednie użycie inputValue)
+
   const handleSearch = () => {
-    const trimmedValue = inputValue.trim(); // Usuń białe znaki
-    onSearchChange(trimmedValue); // Wywołaj wyszukiwanie niezależnie od wartości (również dla pustego pola)
+    const trimmedValue = inputValue.trim(); 
+    onSearchChange(trimmedValue); 
   };
 
-  // Obsługa klawisza Enter
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      handleSearch(); // Wykonaj wyszukiwanie
+      handleSearch(); 
     }
   };
 
-  // Obsługa kliknięcia ikony wyszukiwania
+
   const handleButtonClick = () => {
-    handleSearch(); // Wykonaj wyszukiwanie
+    handleSearch(); 
   };
 
-  // Wybór odpowiedniego komponentu filtrów
+
   const renderFiltresBar = () => {
     switch (filterType) {
       case "office":
@@ -70,14 +70,14 @@ const SearchBar = ({ filterType, onSearchChange, onFilterChange, onSortChange })
             type="text"
             placeholder="Search..."
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)} // Aktualizacja lokalnego stanu
-            onKeyDown={handleKeyDown} // Obsługa wciśnięcia Enter
+            onChange={(e) => setInputValue(e.target.value)} 
+            onKeyDown={handleKeyDown} 
           />
           <img
             className="search-bar-button"
             src={searchIcon}
             alt="Search"
-            onClick={handleButtonClick} // Obsługa kliknięcia w ikonę
+            onClick={handleButtonClick} 
           />
         </div>
         <div className="search-bar-right">

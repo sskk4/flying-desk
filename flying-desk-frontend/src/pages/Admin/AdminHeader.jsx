@@ -1,10 +1,10 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom"; // Dodano useParams
+import { useNavigate, useParams } from "react-router-dom"; 
 import "./AdminPanel.css";
 
 const Header = ({ title, addButtonText, addPath }) => {
   const navigate = useNavigate();
-  const params = useParams(); // Pobranie dynamicznych parametrów z URL
+  const params = useParams(); 
 
   const handleAddClick = () => {
     if (!addPath) {
@@ -12,11 +12,11 @@ const Header = ({ title, addButtonText, addPath }) => {
       return;
     }
 
-    // Zamień dynamiczne segmenty URL (np. :buildingId) na ich wartości z params
+  
     const resolvedPath = addPath.replace(/:([a-zA-Z]+)/g, (_, key) => {
       if (!params[key]) {
         console.error(`Parameter ${key} not found in the current URL.`);
-        return `:${key}`; // Zachowaj klucz jako placeholder
+        return `:${key}`; 
       }
       return params[key];
     });

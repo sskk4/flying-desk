@@ -12,7 +12,7 @@ import { ReactComponent as LockIcon } from "../../../assets/icons/summary.svg";
 import { ReactComponent as PhotosIcon } from "../../../assets/icons/photos.svg";
 
 const SubmissionsForm = () => {
-  const { accessToken, user } = useAuth();
+  const { accessToken, user, logout } = useAuth();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -95,7 +95,10 @@ const SubmissionsForm = () => {
           "X-User-Id": user.userId,
         },
       });
-      navigate("/waiting-status"); 
+
+      logout();
+
+      navigate("/login"); 
       
     } catch (err) {
       console.error("Error submitting form:", err.response?.data || err.message);

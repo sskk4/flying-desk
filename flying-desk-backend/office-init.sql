@@ -1,0 +1,125 @@
+INSERT INTO `country` (`id`, `country`) VALUES
+(1, 'Polska'),
+(2, 'Niemcy');
+
+INSERT INTO `city` (`id`, `city`, `country_id`) VALUES
+(1, 'Warszawa', 1),
+(2, 'Kraków', 1),
+(3, 'Gdańsk', 1),
+(4, 'Wrocław', 1),
+(5, 'Poznań', 1),
+(6, 'Łódź', 1),
+(7, 'Szczecin', 1),
+(8, 'Lublin', 1),
+(9, 'Katowice', 1),
+(10, 'Gdynia', 1),
+(11, 'Białystok', 1),
+(12, 'Bydgoszcz', 1),
+(13, 'Kielce', 1),
+(14, 'Berlin', 2),
+(15, 'Monachium', 2),
+(16, 'Hamburg', 2),
+(17, 'Frankfurt', 2),
+(18, 'Düsseldorf', 2),
+(19, 'Kolonia', 2),
+(20, 'Stuttgart', 2),
+(21, 'Drezno', 2),
+(22, 'Norymberga', 2),
+(23, 'Leipzig', 2),
+(24, 'Hannover', 2),
+(25, 'Augsburg', 2),
+(26, 'Bremen', 2),
+(27, 'Hanower', 2),
+(28, 'Rzeszów', 1);
+
+
+INSERT INTO `address` (`id`, `address`, `city_id`, `country_id`) VALUES
+(1, 'ul. Marszałkowska 3, 00-626, 00-626', 1, 1),
+(2, 'ul. Centralna 10, 31-123, 31-123', 2, 1),
+(3, 'ul. Długi Targ 15, 80-831, 80-831', 3, 1),
+(4, 'Leopoldstrasse 50, 80802,  80802', 15, 2),
+(5, 'Unter den Linden 23, 10117, 10117', 14, 2),
+(6, 'ul. Marszałkowska 3, 00-626, 00-626', 1, 1),
+(7, 'ul. Kolumba 55, 70-035, 70-035', 7, 1),
+(8, 'Mainzer Landstrasse 10, 60325, 60325', 16, 2),
+(9, 'Mainzer Landstrasse 10, 662, 523', 16, 2),
+(10, 'Prager Str. 7, 01069, 01069', 21, 2),
+(11, '123, 123, 123', 4, 1),
+(12, '6710 S Claremont Ave, 1, 60636', 1, 1),
+(13, 'Gwoździec 68, 1, 37-433', 1, 1);
+
+INSERT INTO `building` (`id`, `building`, `description`, `address_id`, `user_id`, `creation_date`, `edit_date`, `status`, `is_approved`) VALUES
+(1, 'Biuro Warszawskie', 'Nowoczesne biuro zlokalizowane w samym sercu Warszawy, oferujące szeroki zakres usług biznesowych i administracyjnych, z dedykowanym zespołem obsługi klienta i innowacyjnymi rozwiązaniami technologicznymi.', 1, 32, '2025-01-28 20:22:23', '2025-01-28 20:22:41', 'ACTIVE', 1),
+(2, 'Kraków Hub', 'Kreatywne biuro w jednym z najpiękniejszych miast w Polsce. Idealne miejsce dla startupów i firm technologicznych, które szukają dynamicznego środowiska pracy i możliwości współpracy z innymi firmami.', 2, 6, '2025-01-28 20:24:41', '2025-01-28 20:30:42', 'ACTIVE', 1),
+(3, 'Gdańsk Centrum', 'Biuro zlokalizowane w nadmorskiej okolicy Gdańska, z widokiem na Morze Bałtyckie. Oferuje przestrzeń do spotkań biznesowych oraz usługi wspierające rozwój regionalnych firm i przedsiębiorstw.', 3, 6, '2025-01-28 20:25:35', '2025-01-28 20:30:46', 'ACTIVE', 1),
+(4, 'Monachium Innovation Hub', 'Biuro w Monachium skoncentrowane na rozwoju technologii, projektach inżynieryjnych oraz finansowych. Dynamiczne środowisko pracy sprzyjające współpracy między różnymi branżami.', 4, 6, '2025-01-28 20:26:33', '2025-01-28 20:30:58', 'ACTIVE', 1),
+(5, 'Berlin Business Center', 'Centrala biura w Berlinie oferująca usługi dla firm startupowych i międzynarodowych przedsiębiorstw, z szeroką ofertą przestrzeni coworkingowych i sal konferencyjnych, sprzyjających innowacji i kreatywnemu myśleniu.', 5, 6, '2025-01-28 20:27:19', '2025-01-28 20:31:03', 'ACTIVE', 1),
+(6, 'Smart Office', 'Biuro stworzone z myślą o nowoczesnych rozwiązaniach biurowych i mobilności. Lublin Smart Office to miejsce, które przyciąga innowatorów oraz zespoły realizujące projekty z zakresu IoT i smart cities.', 6, 32, '2025-01-28 20:28:51', '2025-01-28 20:30:54', 'ACTIVE', 1),
+(7, 'Szczecin Gateway', 'Ulica: ul. Kolumba 55 Numer: 70-035 Kod pocztowy: 70-035, Szczecin, Polska', 7, 32, '2025-01-28 20:29:57', '2025-01-28 20:30:50', 'ACTIVE', 1),
+(8, 'Hamburg Hub', 'Nowoczesne biuro w Hamburgu położone w jednym z najważniejszych portów Europy, wspiera globalne operacje logistyczne i handel międzynarodowy, zapewniając zasoby i przestrzeń do dalszego rozwoju biznesu.', 8, 32, '2025-01-28 20:38:10', '2025-01-28 20:40:04', 'ACTIVE', 1),
+(9, 'Finance Office', 'Mainzer Landstrasse 10', 9, 32, '2025-01-28 20:38:43', '2025-01-28 20:40:10', 'ACTIVE', 1),
+(10, 'Drezno Digital Campus', ' Prager Str. 7', 10, 32, '2025-01-28 20:39:36', '2025-01-28 20:40:42', 'ACTIVE', 1),
+(12, 'Biuro', 'W warszawie', 12, 39, '2025-03-12 01:26:20', '2025-03-12 01:27:32', 'ACTIVE', 1);
+
+
+INSERT INTO `desk` (`id`, `desk`, `equipment`, `building_id`, `description`, `price`, `creation_date`, `edit_date`, `status`, `is_approved`) VALUES
+(1, 'Biurko przy oknie', 'Monitor, Krzesło ergonomiczne', 1, 'Wygodne biurko z widokiem na miasto', 200.00, '2025-02-03 18:38:05', '2025-02-03 18:38:05', 'AVAILABLE', 0),
+(2, 'Comfortable desk ', 'Projector, monitor', 5, 'Desk in this building', 10.00, '2025-02-03 19:02:11', '2025-02-03 19:02:11', 'AVAILABLE', 0),
+(4, 'Comfortable desk ', 'PROJECTOR', 2, '2', 22.00, '2025-02-11 17:49:24', '2025-02-11 17:49:24', 'AVAILABLE', 0),
+(5, 'Biurko w biurze Warszawskim', 'Monitor', 12, 'Opis', 10.00, '2025-03-12 01:28:22', '2025-03-12 01:28:22', 'BOOKED', 0);
+
+
+INSERT INTO `room` (`id`, `room`, `equipment`, `building_id`, `description`, `max_occupants`, `price`, `creation_date`, `edit_date`, `status`, `is_approved`) VALUES
+(1, 'Room for rent in Maiami', 'PROJECTOR', 1, 'a', 1, 250.00, '2025-02-11 17:48:13', '2025-02-11 17:48:13', 'BOOKED', 0);
+
+INSERT INTO `photo` (`id`, `photo_type`, `related_id`, `url`) VALUES
+(98, 'SUBMISSION', 24, 'https://storage.googleapis.com/office-images/submissions/94388d6d-ff30-4f7c-98ca-407d099ed631.jpg'),
+(99, 'SUBMISSION', 24, 'https://storage.googleapis.com/office-images/submissions/81c0b1d0-d869-432e-9389-e6809c00e1a6.jpg'),
+(100, 'SUBMISSION', 24, 'https://storage.googleapis.com/office-images/submissions/eccb4aae-2af6-4b25-a303-07365267ce56.jpg'),
+(101, 'BUILDING', 1, 'https://storage.googleapis.com/office-images/buildings/3dd6f4d8-33bb-46ac-aa2c-08e1ba57afb3.jpg'),
+(102, 'BUILDING', 1, 'https://storage.googleapis.com/office-images/buildings/cba0a8e5-8eda-4676-85d1-067ced99a0c5.jpg'),
+(103, 'BUILDING', 1, 'https://storage.googleapis.com/office-images/buildings/6e202879-d554-4d23-b934-0e2b94ec1575.jpg'),
+(104, 'BUILDING', 2, 'https://storage.googleapis.com/office-images/buildings/ef5331b2-4560-4124-82c5-e40092c22432.jpg'),
+(105, 'BUILDING', 2, 'https://storage.googleapis.com/office-images/buildings/379e9694-fb29-4f1f-8742-67b2b1fe3878.jpg'),
+(106, 'BUILDING', 2, 'https://storage.googleapis.com/office-images/buildings/2fdf814b-6d07-4e8c-926d-48555d82ed94.jpg'),
+(107, 'BUILDING', 3, 'https://storage.googleapis.com/office-images/buildings/e6ee76f2-4342-4b10-8374-125092e4c6c4.jpg'),
+(108, 'BUILDING', 3, 'https://storage.googleapis.com/office-images/buildings/f21676c2-43b8-4080-95fa-8c108f8d8495.jpg'),
+(109, 'BUILDING', 3, 'https://storage.googleapis.com/office-images/buildings/964c9dd3-8ac1-4877-b7cb-b14ebc10e72a.jpg'),
+(110, 'BUILDING', 4, 'https://storage.googleapis.com/office-images/buildings/b11eb99b-dc65-4f9f-9335-bd4261454c2d.jpg'),
+(111, 'BUILDING', 4, 'https://storage.googleapis.com/office-images/buildings/f9a2d512-8f83-40d9-9700-86201cc43205.jpg'),
+(112, 'BUILDING', 4, 'https://storage.googleapis.com/office-images/buildings/d486a19e-33ff-4787-b358-3fc5b9123354.webp'),
+(113, 'BUILDING', 5, 'https://storage.googleapis.com/office-images/buildings/f234163f-9bd2-4c32-9d29-1431c1cb53e9.jpg'),
+(114, 'BUILDING', 5, 'https://storage.googleapis.com/office-images/buildings/f7a2d5b8-1b23-4cad-a79d-184823aeb8ab.webp'),
+(115, 'BUILDING', 5, 'https://storage.googleapis.com/office-images/buildings/16476a0a-2f77-486c-ad99-4d787ad54d45.jpg'),
+(116, 'BUILDING', 6, 'https://storage.googleapis.com/office-images/buildings/2fc31218-3d5f-44e1-848e-4b588d629162.jpg'),
+(117, 'BUILDING', 6, 'https://storage.googleapis.com/office-images/buildings/41cf2d85-1a86-4d1f-9ac8-070ea61b6704.jpg'),
+(118, 'BUILDING', 6, 'https://storage.googleapis.com/office-images/buildings/c6929f52-cbdf-4f35-8ee6-eb6d8971f678.jpg'),
+(119, 'BUILDING', 7, 'https://storage.googleapis.com/office-images/buildings/fd97375b-a8a1-4fd1-8c0f-8f531074dde7.jpg'),
+(120, 'BUILDING', 7, 'https://storage.googleapis.com/office-images/buildings/e8b07fa7-024a-4770-bc1d-221105329109.jpg'),
+(121, 'BUILDING', 7, 'https://storage.googleapis.com/office-images/buildings/379d0c09-a933-477e-9e9b-df991031f057.jpg'),
+(122, 'BUILDING', 8, 'https://storage.googleapis.com/office-images/buildings/e2879f03-7814-4ef3-a09a-1a5149129f43.jpg'),
+(123, 'BUILDING', 8, 'https://storage.googleapis.com/office-images/buildings/d7178804-c6b4-4044-a8b3-2ac671442da5.jpg'),
+(124, 'BUILDING', 8, 'https://storage.googleapis.com/office-images/buildings/d488676d-340a-4087-8e70-d78edaed4ea8.jpg'),
+(125, 'BUILDING', 9, 'https://storage.googleapis.com/office-images/buildings/f68bc6d7-3ac3-490e-8b76-70abb9a12b98.jpg'),
+(126, 'BUILDING', 9, 'https://storage.googleapis.com/office-images/buildings/54ce730e-e34a-4b57-afaa-fbe728a50099.jpg'),
+(127, 'BUILDING', 9, 'https://storage.googleapis.com/office-images/buildings/5f5ed1f5-969e-4656-8780-f1682ece6597.jpg'),
+(128, 'BUILDING', 10, 'https://storage.googleapis.com/office-images/buildings/ea2c484b-1b4a-49f5-84af-609ca89bf9ff.jpg'),
+(129, 'BUILDING', 10, 'https://storage.googleapis.com/office-images/buildings/d1a3f470-6333-466d-9084-181c3a9ac2b8.jpg'),
+(130, 'BUILDING', 10, 'https://storage.googleapis.com/office-images/buildings/e71e57aa-26ea-4a4e-b94f-6cf88234a076.jpg'),
+(135, 'DESK', 1, 'https://storage.googleapis.com/office-images/desks/8f49b25d-81ae-459a-ad08-f89c9a7e9b70.jpg'),
+(136, 'DESK', 1, 'https://storage.googleapis.com/office-images/desks/e5194e23-4bbf-482b-993e-daae418af7f2.jpg'),
+(137, 'DESK', 2, 'https://storage.googleapis.com/office-images/desks/dde9c3bd-3e9d-480e-8807-26e9db5c3cc1.jpg'),
+(138, 'DESK', 2, 'https://storage.googleapis.com/office-images/desks/ba37f42b-6859-4a40-af06-69294376cb98.jpg'),
+(139, 'DESK', 3, 'https://storage.googleapis.com/office-images/desks/97841832-0ee6-4a8e-9544-fd47c326d425.jpg'),
+(140, 'DESK', 3, 'https://storage.googleapis.com/office-images/desks/e6ab67a6-cba6-4bc8-aa79-6c1d123a39a4.jpg'),
+(144, 'BUILDING', 11, 'https://storage.googleapis.com/office-images/buildings/9418f710-d0a3-470f-850e-2d9a674e87c7.jpg'),
+(145, 'BUILDING', 11, 'https://storage.googleapis.com/office-images/buildings/f0b05d9d-a282-474b-a992-b0180cf6a9fb.jpg'),
+(146, 'ROOM', 1, 'https://storage.googleapis.com/office-images/rooms/cd07bc71-b453-4582-8793-f0827eae3eb7.jpg'),
+(147, 'ROOM', 1, 'https://storage.googleapis.com/office-images/rooms/f5c98f93-0fa3-47c8-a27c-6593a7c66274.jpg'),
+(148, 'DESK', 4, 'https://storage.googleapis.com/office-images/desks/3c32ce18-4a4d-4888-8c66-611a3c29e1f9.webp'),
+(155, 'BUILDING', 12, 'https://storage.googleapis.com/office-images/buildings/9531330e-caa9-4b2e-b389-fbefe4b13327.jpg'),
+(156, 'DESK', 5, 'https://storage.googleapis.com/office-images/desks/38a343cf-db8d-4331-9a76-bc3d6f50333c.jpg'),
+(158, 'BUILDING', 13, 'https://storage.googleapis.com/office-images/buildings/3fa66f5a-f8f8-4734-8c6c-71c60957ccf7.jpg'),
+(159, 'BUILDING', 13, 'https://storage.googleapis.com/office-images/buildings/239439cb-0110-48e3-b2c5-a878378c60b7.jpg'),
+(160, 'DESK', 6, 'https://storage.googleapis.com/office-images/desks/42045e7a-1e12-4ea9-bad1-286a0ac61f9a.jpg');
+

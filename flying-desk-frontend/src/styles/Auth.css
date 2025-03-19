@@ -130,7 +130,7 @@ html
     width:50%;
     color: #707070;
     background-color: #e1c2be;
-    border:0.2px solid #e1c2be; /* czerwony */
+    border:0.2px solid #e1c2be; 
     transition: color 0.3s ease;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
@@ -140,19 +140,19 @@ html
   .password-strength.weak {
     color: white;
     background-color: #cf493a;
-    border:0.2px solid #cf493a; /* czerwony */
+    border:0.2px solid #cf493a; 
   }
   
   .password-strength.medium {
     color: white;
     background-color: #d0b340;
-    border:0.2px solid #d0b340;/* żółty */
+    border:0.2px solid #d0b340;
   }
   
   .password-strength.strong {
     color: white;
     background-color: #208048;
-    border:0.2px solid #208048; /* zielony */
+    border:0.2px solid #208048;
   }
   
 .submit

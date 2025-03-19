@@ -4,7 +4,7 @@ import "./Contact.css";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
-import ContactImage from "../../assets/png/contact-image.png"; // Ścieżka do obrazu
+import ContactImage from "../../assets/png/contact-image.png";
 
 const Contact = () => {
   return (

@@ -10,17 +10,17 @@ const Desks = () => {
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState("");
-  const [search, setSearch] = useState(""); // Wyszukiwanie
-  const [filter, setFilter] = useState(""); // Filtrowanie po statusie
-  const [isApproved, setIsApproved] = useState(""); // Filtrowanie po zatwierdzeniu
-  const [sort, setSort] = useState("creationDate,desc"); // Sortowanie
+  const [search, setSearch] = useState(""); 
+  const [filter, setFilter] = useState(""); 
+  const [isApproved, setIsApproved] = useState("");
+  const [sort, setSort] = useState("creationDate,desc"); 
   const navigate = useNavigate();
 
-  // Pobieranie danych biurek
+ 
   useEffect(() => {
     const fetchDesks = async () => {
       try {
-        setError(""); // Reset błędu przed zapytaniem
+        setError(""); 
         const params = {
           page,
           size,

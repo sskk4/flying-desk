@@ -19,7 +19,7 @@ export const useApi = () => {
         currentPassword,
         newPassword,
       });
-      return response.data; // Assume the response has a success message
+      return response.data; 
     } catch (error) {
       throw error.response?.data?.message || "Failed to change password.";
     }
@@ -48,7 +48,7 @@ export const useApi = () => {
   const authenticate = async (email, password) => {
     try {
       const response = await axios.post(`/auth/authenticate`, { email, password });
-      return response.data; // Zwraca accessToken, refreshToken
+      return response.data; 
     } catch (error) {
       console.error("Authentication failed:", error);
       throw error;

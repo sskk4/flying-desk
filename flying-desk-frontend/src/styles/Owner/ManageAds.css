@@ -1,4 +1,4 @@
-/* Container for the entire view */
+
 .manage-ads-container {
     display: flex;
     flex-direction: column;
@@ -8,19 +8,17 @@
     height: 90%;
     padding: 5%;
     margin-bottom:10vh;
-    background-image: url('../../assets/png/background3.png'); /* Replace with your image URL */
+    background-image: url('../../assets/png/background3.png'); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
   }
   
-  /* Header text styling */
   .manage-ads-container h2 {
     margin-bottom: 10px;
     color: #333;
   }
   
-  /* Divider line */
   .manage-ads-container hr {
     width: 80%;
     border: none;
@@ -59,7 +57,6 @@
   }
     
 
-  /* Tabs section */
   .manage-ads-buttons {
     display: flex;
     justify-content: center;
@@ -102,7 +99,6 @@
     background-color: #d0c4ff;
   }
   
-  /* Ads container */
   .ads-container {
     display: flex;
     flex-wrap: wrap;
@@ -113,7 +109,6 @@
     margin-bottom: 30px;
   }
   
-  /* Individual ad card */
   .ad-card {
     background: #d9d9d9;
     border-radius: 10px;
@@ -148,7 +143,6 @@
     margin-bottom: 10px;
   }
   
-  /* Button inside ad card */
   .details-button {
 
     width: 100%;
@@ -157,7 +151,6 @@
   
 
   
-  /* Place an ad button */
   .add-button {
     margin-top: 20px;
     padding: 15px 30px;

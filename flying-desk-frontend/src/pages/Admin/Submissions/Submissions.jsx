@@ -20,7 +20,7 @@ const Submissions = () => {
                     params: { page, size, sort: "createdAt,desc" },
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
-                setSubmissions(response.data.content); // Przyjęto, że API zwraca paginowany wynik
+                setSubmissions(response.data.content); 
                 setTotalPages(response.data.totalPages);
             } catch (err) {
                 console.error("Error fetching submissions:", err);

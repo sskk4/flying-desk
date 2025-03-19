@@ -30,7 +30,7 @@ const BuildingForm = () => {
     setLoading(true);
   
     try {
-      // Upload photos
+
       const uploadedUrls = await uploadPhotos(formData.photos, "buildings");
   
       if (uploadedUrls.length === 0) {
@@ -39,7 +39,7 @@ const BuildingForm = () => {
         return;
       }
   
-      // Prepare building data
+
       const buildingData = {
         building: formData.buildingName,
         description: formData.description,
@@ -47,7 +47,7 @@ const BuildingForm = () => {
         photos: uploadedUrls,
       };
   
-      // Add building
+
       const response = await addBuilding(buildingData);
       setMessage("Building added successfully!");
       setFormData({ buildingName: "", description: "", addressId: "", photos: [] });

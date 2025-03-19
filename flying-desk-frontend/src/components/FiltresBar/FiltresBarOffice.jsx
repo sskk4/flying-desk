@@ -8,15 +8,15 @@ import "./FiltresBar.css";
 const FiltresBar = ({
   isFiltersOpen,
   toggleFilters,
-  onFilterChange = () => {}, // Domyślna funkcja, jeśli brak propsa
-  onSortChange = () => {}, // Domyślna funkcja, jeśli brak propsa
+  onFilterChange = () => {}, 
+  onSortChange = () => {}, 
 }) => {
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
 
-  // Pobieranie krajów przy montowaniu komponentu
+  
   useEffect(() => {
     console.log("Fetching countries...");
     axios
@@ -25,7 +25,7 @@ const FiltresBar = ({
       .catch((err) => console.error("Error fetching countries:", err));
   }, []);
 
-  // Pobieranie miast po wybraniu kraju
+  
   useEffect(() => {
     if (selectedCountry) {
       console.log("Fetching cities for country: ", selectedCountry);
@@ -42,38 +42,38 @@ const FiltresBar = ({
   const handleCountryChange = (e) => {
     const countryName = e.target.selectedOptions[0]?.text;
     setSelectedCountry(e.target.value);
-    onFilterChange("countryId", countryName); // Przekazuj nazwę kraju, jeśli API tego wymaga
+    onFilterChange("countryId", countryName); 
   };
   
   const handleCityChange = (e) => {
     const cityName = e.target.selectedOptions[0]?.text;
     setSelectedCity(e.target.value);
-    onFilterChange("cityId", cityName); // Przekazuj nazwę miasta
+    onFilterChange("cityId", cityName); 
   };
 
 
   const handleSortChange = (e) => {
     const sortValue = e.target.value;
-    console.log("Sort order changed:", sortValue); // Logowanie zmiany sortowania
+    console.log("Sort order changed:", sortValue);
     onSortChange(sortValue);
   };
 
-  // Obsługa zmiany statusu
+
   const handleStatusChange = (e) => {
     const status = e.target.value;
-    console.log("Status changed:", status); // Logowanie zmiany statusu
+    console.log("Status changed:", status); 
     onFilterChange("status", status);
   };
 
-  // Obsługa zmiany zakresu dat
+
   const handleDateRangeChange = (field, value) => {
-    console.log(`${field} changed to: ${value}`); // Logowanie zmiany zakresu dat
+    console.log(`${field} changed to: ${value}`); 
     onFilterChange(field, value);
   };
 
   const handleSortDropdownChange = (e) => {
     const sortValue = e.target.value;
-    if (sortValue.includes("-")) { // Prosta walidacja
+    if (sortValue.includes("-")) { 
       onSortChange(sortValue);
     } else {
       console.error("Invalid sort value:", sortValue);

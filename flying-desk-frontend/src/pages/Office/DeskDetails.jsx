@@ -23,7 +23,6 @@ const DeskDetails = () => {
         setDesk(response.data);
         setSelectedPhoto(response.data.photos?.[0]?.url || "https://via.placeholder.com/400");
 
-        // Po pobraniu biurka, pobierz budynek i pokoje
         if (response.data.building?.id) {
           fetchBuilding(response.data.building.id);
           fetchRooms(response.data.building.id);

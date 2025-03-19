@@ -22,12 +22,12 @@ const RoomsList = () => {
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
-    setPage(0); // Reset to first page
+    setPage(0); 
   };
 
   const handleSearchChange = debounce((search) => {
     setFilters((prev) => ({ ...prev, search }));
-    setPage(0); // Reset to first page
+    setPage(0); 
   }, 300);
 
   useEffect(() => {

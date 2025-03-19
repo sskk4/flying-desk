@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import debounce from "lodash.debounce";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import SearchBar from "../../components/SearchBar/SearchBar";
@@ -20,11 +19,11 @@ const OfficeList = () => {
     status: "",
     dateFrom: "",
     dateTo: "",
-    sort: "creationDate-desc", // Domyślne sortowanie: klucz + kierunek
+    sort: "creationDate-desc", 
     search: "",
   });
 
-  const [tempFilters, setTempFilters] = useState({ ...filters }); // Tymczasowe filtry do edycji
+  const [tempFilters, setTempFilters] = useState({ ...filters }); 
 
   const applyFilters = () => {
     setFilters((prevFilters) => ({
@@ -35,13 +34,12 @@ const OfficeList = () => {
   };
 
   const handleFilterChange = (field, value) => {
-    // Bezpośrednia synchronizacja filtrów
     setFilters((prev) => ({
       ...prev,
-      [field]: value, // Aktualizacja właściwości
+      [field]: value, 
     }));
     
-    setPage(0); // Resetowanie strony
+    setPage(0); 
   };
 
   const handleSortChange = (sortValue) => {
@@ -62,7 +60,6 @@ const OfficeList = () => {
   };
   
   useEffect(() => {
-    // Aktualizuj URL dla search niezależnie od innych filtrów
     const queryParams = new URLSearchParams(window.location.search);
   
     if (filters.search) {
@@ -75,7 +72,6 @@ const OfficeList = () => {
   }, [filters.search]);
   
   useEffect(() => {
-    // Aktualizuj URL dla pozostałych filtrów i paginacji
     const queryParams = new URLSearchParams();
   
     Object.entries({
@@ -100,11 +96,11 @@ const OfficeList = () => {
       ...prev,
       search: searchValue,
     }));
-    setPage(0); // Reset do pierwszej strony
+    setPage(0); 
     setFilters((prevFilters) => ({
       ...prevFilters,
       search: searchValue,
-    })); // Natychmiastowe ustawienie filtrów
+    })); 
   };
   
         
@@ -150,7 +146,7 @@ const OfficeList = () => {
     };
   
     fetchBuildings();
-  }, [filters, page]); // Filtry i strona jako wyzwalacze
+  }, [filters, page]); 
   
   
 
@@ -160,7 +156,7 @@ const OfficeList = () => {
     <div>
       <Header />
       <SearchBar
-  filterType="office" // Filtry dla biur
+  filterType="office" 
   onSearchChange={handleSearchChange}
   onFilterChange={handleFilterChange}
   onSortChange={handleSortChange}
@@ -197,7 +193,7 @@ const OfficeList = () => {
       </div>
     ))}
   </div>
-) : !loading && !error ? ( // Wyświetlamy tylko, gdy nie ma błędów ani ładowania
+) : !loading && !error ? ( 
   <div className="no-results">
     {filters.search
       ? `No offices found for "${filters.search}". Try adjusting your search.`

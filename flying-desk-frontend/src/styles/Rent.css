@@ -75,14 +75,25 @@
     margin:2vh;
 
 }
-.date-box, .payment-box {
-    width: 120px;
+.date-box {
+    width: 150px;
     padding: 5px;
     border: none;
     border-radius: 5px;
 }
+
+.payment-box
+{
+    margin: 2vh;
+    width: 250px;
+    text-align: center;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+}
+
 .small-box {
-    width: 30px;
+    width: 120px;
     padding: 5px;
     border: none;
     border-radius: 5px;
@@ -114,6 +125,145 @@
     background-color:#dfdfdf;
     cursor:pointer;
 }
+
+
+/* Rentals.css */
+.rentals-container {
+    padding:1vh 5vh 5vh 5vh;
+    background-color: #d9d9d9;
+    border-radius: 5vh;
+
+  }
+  
+  .rentals-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333333;
+    font-weight: 600;
+  }
+  
+  .rentals-loading, .rentals-error {
+    padding: 20px;
+    text-align: center;
+    color: #757575;
+  }
+  
+  .rentals-error {
+    color: #d32f2f;
+  }
+  
+  .no-rentals {
+    text-align: center;
+    padding: 40px 0;
+  }
+  
+
+  
+  .rentals-table-container {
+    overflow-x: auto;
+  }
+  
+  .rentals-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+
+  }
+  
+  .rentals-table th {
+    background-color: #d9d9d9;
+    color: #333;
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 15px;
+    border-radius: 1vh 1vh 0 0;
+    border-bottom: 5px solid #c5c5c5;
+    
+ 
+  }
+  
+  .rentals-table td {
+    padding: 12px 15px;
+    height: 50px;
+    border-bottom: 1px solid #c4c4c4;
+    color: #616161;
+    transition: 0.5s;
+  }
+  
+.rentals-table tr{
+    
+    transition: 0.2s;
+}
+
+  .rentals-table tr:hover {
+    background-color: #e9e9e9;
+  }
+  
+  .badge {
+    padding: 4px 8px;
+    border-radius: 5vh;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .badge.desk {
+    background-color: #2D297D;
+  }
+  
+  .badge.office {
+    background-color: #009688;
+  }
+  
+  .badge.conference {
+    background-color: #9c27b0;
+  }
+  
+  .status-badge {
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+    text-transform: uppercase;
+  }
+  
+  .actions-cell {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .view-details-btn, .cancel-btn {
+    padding: 6px 12px;
+    height: 30px;
+    border: none;
+    border-radius: 5vh;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s;
+  }
+  
+  .view-details-btn {
+    background-color: #2D297D;
+    color: white;
+  }
+  
+  .view-details-btn:hover {
+    background-color: #7360DF;
+  }
+  
+  .cancel-btn {
+    border:solid 1px #2D297D;
+    background-color:#d9d9d9;
+    
+   
+  }
+  
+  .cancel-btn:hover {
+    border:solid 1px #d32f2f;
+    background-color: #d32f2f;
+    color: white;
+  }
 
 @media (max-width: 1308px) {
     .desk-container {

@@ -5,7 +5,7 @@ import { useAuth } from "../../../services/AuthProvider";
 
 const DesksInBuilding = () => {
   const { accessToken } = useAuth();
-  const { buildingId } = useParams(); // Pobranie ID budynku z URL
+  const { buildingId } = useParams(); 
   const [desks, setDesks] = useState([]);
   const [page, setPage] = useState(0);
   const [size] = useState(10);
@@ -15,7 +15,7 @@ const DesksInBuilding = () => {
   const [sort, setSort] = useState("creationDate,desc");
   const navigate = useNavigate();
 
-  // Pobieranie biurek dla budynku
+
   useEffect(() => {
     const fetchDesks = async () => {
       try {

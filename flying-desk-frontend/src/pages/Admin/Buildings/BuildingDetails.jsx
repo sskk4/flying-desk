@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Importujemy useNavigate
+import { useParams, useNavigate } from "react-router-dom"; 
 import axios from "axios";
 import { useAuth } from "../../../services/AuthProvider";
 
 const BuildingsDetails = () => {
     const { id } = useParams();
     const { accessToken } = useAuth();
-    const navigate = useNavigate(); // Inicjalizacja useNavigate
+    const navigate = useNavigate(); 
     const [building, setBuilding] = useState(null);
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
-    // Pobranie szczegółów budynku
+  
     useEffect(() => {
         const fetchBuildingDetails = async () => {
             try {
@@ -27,7 +27,7 @@ const BuildingsDetails = () => {
         fetchBuildingDetails();
     }, [id, accessToken]);
 
-    // Funkcja do przełączania statusu zatwierdzenia budynku
+
     const toggleApprove = async () => {
         try {
             const newStatus = !building.isApproved;
@@ -40,7 +40,7 @@ const BuildingsDetails = () => {
                 }
             );
             setSuccessMessage(`Building ${newStatus ? "approved" : "disapproved"} successfully!`);
-            // Aktualizacja stanu budynku
+
             setBuilding({ ...building, isApproved: newStatus });
         } catch (err) {
             console.error("Error toggling building approval:", err);
@@ -48,7 +48,7 @@ const BuildingsDetails = () => {
         }
     };
 
-    // Nawigacja do strony dodawania pokoju
+
     const navigateToAddRoom = () => {
         navigate(`/admin-fd/buildings/${id}/add-room`);
     };
@@ -123,7 +123,7 @@ const BuildingsDetails = () => {
                 )}
             </div>
 
-            {/* Nowy przycisk nawigacji */}
+   
  
         </div>
     );

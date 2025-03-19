@@ -14,7 +14,7 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); // Uzyskaj aktualny URL
+  const location = useLocation(); 
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);

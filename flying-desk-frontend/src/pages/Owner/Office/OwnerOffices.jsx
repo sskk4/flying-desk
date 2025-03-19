@@ -62,9 +62,21 @@ const ManageAds = () => {
                 <hr />
                 <button
                   className="create-button details-button"
-                  onClick={() => alert(`Viewing details for ID: ${ad.id}`)}
+                  onClick={() => navigate(`/office/${ad.id}`)}
                 >
                   Details
+                </button>
+                <button
+                  className="create-button details-button"
+                  onClick={() => navigate(`/owner/office/${ad.id}/desk/add`)}
+                >
+                  Add Desk 
+                </button>
+                <button
+                  className="create-button details-button"
+                  onClick={() => navigate(`/owner/office/${ad.id}/desks`)}
+                >
+                  Desks in office
                 </button>
               </div>
             </div>

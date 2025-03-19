@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 
 import OwnerOffices from "./Office/OwnerOffices"; 
 import OwnerAddOffice from "./Office/OwnerAddOffice";
+import OwnerAddDesk from "./Office/OwnerAddDesk";
+import OwnerDesksInOffice from "./Office/OwnerDesks";
 
 const OwnerPages = () => {
   return (
@@ -10,7 +12,8 @@ const OwnerPages = () => {
       <Route path="/" element={<OwnerOffices />} />
       <Route path="/offices" element={<div>Offices page content</div>} />
       <Route path="/office/add" element={<OwnerAddOffice />} />
-      <Route path="/desks" element={<div>Desks page content</div>} />
+      <Route path="/office/:buildingId/desk/add" element={<div><OwnerAddDesk /></div>} />
+      <Route path="/office/:buildingId/desks" element={<div><OwnerDesksInOffice /></div>} />
       <Route path="/rooms" element={<div>Rooms page content</div>} />
     </Routes>
   );

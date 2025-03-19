@@ -1,12 +1,13 @@
 import React from "react";
 import { Route, Routes, Link } from "react-router-dom";
-import { Navigate } from "react-router-dom"; // Do przekierowania na login
+import { Navigate } from "react-router-dom"; 
 
 import Sidebar from "../../components/SideBar/SideBar";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer"
-import Personal from "./Personal"; // Komponent Personal
+import Personal from "./Personal"; 
 import ChangePassword from "./Password";
+import Rentals from "./Rentals";
 
 import { useAuth } from "../../services/AuthProvider";
 
@@ -45,7 +46,7 @@ const Profile = () => {
        <div className="conent">
       <Sidebar 
         header="Account Management" 
-        headerPath="/profile" // Ścieżka, na którą przenosi nagłówek
+        headerPath="/profile" 
         items={sidebarItems} 
       />
         <main className="content-container">
@@ -57,10 +58,7 @@ const Profile = () => {
             <Route
               path="rentals"
               element={
-                <div>
-                  <h2>Rentals Page</h2>
-                  <p>Here you can manage your rentals.</p>
-                </div>
+              <Rentals />
               }
             />
             <Route

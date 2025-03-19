@@ -36,9 +36,9 @@
   }
 
   .menu-bar-button.active {
-    background-size: 100% 0.1em, 100% 0.1em; /* Podświetlone aktywne linki */
+    background-size: 100% 0.1em, 100% 0.1em; 
     background-position-x: 0%;
-    color: #7360DF; /* Opcjonalnie zmiana koloru tekstu */
+    color: #7360DF; 
   }
 
   .slide-in-out {
@@ -189,14 +189,13 @@
     background-color: #2D297D;
 }
 
-/* Kontener dla przycisku kontaktowego */
 .contact-button-container {
 
   display: flex;
   justify-content: center;
 }
 
-/* Styl przycisku kontaktowego */
+
 .contact-button {
   font-size: 1.25rem;
   font-weight: 400;
@@ -240,12 +239,12 @@
 .contact-button:hover::after {
   transform: translate(12px, 12px);
   z-index: -2;
-  background: #2D297D ; /* Stała wartość gradientu */
+  background: #2D297D ; 
 }
 
 .contact-button:hover::before {
   transform: translate(6px, 6px);
   z-index: -1;
-  background: #7360DF ; /* Stała wartość gradientu */
+  background: #7360DF ;
 }
 

@@ -25,7 +25,6 @@ const ProtectedRoute = ({
     return <Navigate to="/login" />;
   }
 
-  // Specjalna logika dla /become-owner
   if (isBecomeOwner) {
     if (submissionStatus === "PENDING") {
       return <Navigate to="/waiting-status" />;
@@ -39,7 +38,6 @@ const ProtectedRoute = ({
     return children;
   }
 
-  // Warunek dla ról
   if (
     allowedRoles.length > 0 &&
     (!user?.role || !allowedRoles.includes(user.role.toUpperCase()))
@@ -48,7 +46,6 @@ const ProtectedRoute = ({
     return <Navigate to="/error-403" />;
   }
 
-  // Warunek dla statusów
   if (
     allowedStatuses.length > 0 &&
     !allowedStatuses.includes(submissionStatus) &&

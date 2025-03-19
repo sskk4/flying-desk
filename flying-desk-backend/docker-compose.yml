@@ -1,0 +1,167 @@
+version: '3.8'
+
+services:
+  # Frontend
+  frontend:
+    build: ../flying-desk-frontend  # Buduje frontend z katalogu wyżej
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:80"  # Przekierowuje port 80 (Nginx) na 3000
+    depends_on:
+      - security-service
+      - office-service
+      - rent-service
+    networks:
+      - app-network
+
+  # Baza danych dla security-service
+  mysql-security:
+    image: mysql:8.0
+    container_name: mysql-security
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flying_desk_user
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-security-data:/var/lib/mysql
+      - ./user-init.sql:/docker-entrypoint-initdb.d/user-init.sql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Mikroserwis security
+  security-service:
+    build:
+      context: ./security-service
+      dockerfile: Dockerfile
+    container_name: security-service
+    depends_on:
+      mysql-security:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-security:3306/flying_desk_user
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_OPEN_IN_VIEW=false
+      - SPRING_SQL_INIT_MODE=always
+      - SPRING_SQL_INIT_CONTINUE_ON_ERROR=false
+      - SPRING_SQL_INIT_SCHEMA_LOCATIONS=classpath:database/schema.sql
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=wruumxd@gmail.com
+      - SPRING_MAIL_PASSWORD=wysiszmevdacombw
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_REQUIRED=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_CONNECTIONTIMEOUT=5000
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT=5000
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_WRITETIMEOUT=5000
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  # Usługa bazy danych dla office-service
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flying_desk_office
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-office-data:/var/lib/mysql
+      - ./office-init.sql:/docker-entrypoint-initdb.d/office-init.sql      
+    networks:
+      - app-network
+
+  # Usługa office-service
+  office-service:
+    build: ./office-service  # Ścieżka do katalogu z Dockerfile dla office-service
+    container_name: office-service
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8081"
+    networks:
+      - app-network
+    volumes:
+      - ./gcp-key.json:/app/gcp-key.json  # Plik z kluczem GCP
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/flying_desk_office
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_OPEN_IN_VIEW=false
+      - SPRING_SQL_INIT_MODE=always
+      - SPRING_SQL_INIT_CONTINUE_ON_ERROR=false
+      - SPRING_SQL_INIT_SCHEMA_LOCATIONS=classpath:database/schema.sql
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-key.json  # Ścieżka do pliku z kluczem GCP
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  mysql-rent:
+    image: mysql:8.0
+    container_name: mysql-rent
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flying_desk_rent
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql-rent-data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rent-service:
+    build: ./rent-service  # Ścieżka do katalogu z Dockerfile dla rent-service
+    container_name: rent-service
+    restart: always
+    depends_on:
+      mysql-rent:
+        condition: service_healthy
+    ports:
+      - "8083:8083"
+    networks:
+      - app-network
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-rent:3306/flying_desk_rent
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_OPEN_IN_VIEW=false
+      - SPRING_SQL_INIT_MODE=always
+      - SPRING_SQL_INIT_CONTINUE_ON_ERROR=false
+      - SPRING_SQL_INIT_SCHEMA_LOCATIONS=classpath:database/schema.sql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-security-data:
+  mysql-rent-data:
+  mysql-office-data:

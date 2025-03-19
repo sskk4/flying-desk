@@ -31,7 +31,6 @@ const BuildingForm = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Fetch countries when the component mounts
   useEffect(() => {
     if (accessToken) {
       axios
@@ -45,7 +44,6 @@ const BuildingForm = () => {
     }
   }, [accessToken]);
 
-  // Fetch cities when a country is selected
   useEffect(() => {
     if (formData.address.countryId) {
       axios

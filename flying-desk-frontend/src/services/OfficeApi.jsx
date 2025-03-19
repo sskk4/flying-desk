@@ -14,13 +14,13 @@ export const uploadPhotos = async (files, folderName) => {
     try {
       const response = await axios.post(`${BASE_URL}/photos/upload`, formData, {
         headers: {
-          "folderName": folderName, // Wysyłamy folderName w nagłówku
+          "folderName": folderName, 
           "Authorization": `Bearer ${AuthToken}`,
         },
       });
 
       if (response.status === 200 && response.data.url) {
-        uploadedUrls.push(response.data.url); // Dodaj URL do tablicy
+        uploadedUrls.push(response.data.url); 
       } else {
         console.error("Invalid response from photo upload API:", response.data);
       }

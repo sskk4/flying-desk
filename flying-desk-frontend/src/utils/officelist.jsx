@@ -12,11 +12,11 @@ const handleSearchChange = debounce((search) => {
 }, 300);
 
 const OfficeList = () => {
-  const [buildings, setBuildings] = useState([]); // Lista budynków
-  const [error, setError] = useState(""); // Błąd
-  const [loading, setLoading] = useState(true); // Stan ładowania
-  const [page, setPage] = useState(0); // Numer aktualnej strony
-  const [totalPages, setTotalPages] = useState(0); // Łączna liczba stron
+  const [buildings, setBuildings] = useState([]);
+  const [error, setError] = useState(""); 
+  const [loading, setLoading] = useState(true); 
+  const [page, setPage] = useState(0); 
+  const [totalPages, setTotalPages] = useState(0); 
   const [filters, setFilters] = useState({
     countryId: "",
     cityId: "",
@@ -24,15 +24,15 @@ const OfficeList = () => {
     dateFrom: "",
     dateTo: "",
     sort: "asc",
-    search: "", // Dodane pole wyszukiwania
+    search: "", 
   });
 
-  // Aktualizowanie filtrów
+
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Pobieranie budynków z filtrowaniem
+ 
   useEffect(() => {
     const fetchBuildings = async () => {
       try {
@@ -43,13 +43,13 @@ const OfficeList = () => {
             ...filters,
             search: filters.search || null,
             isApproved: true,
-            page, // Numer strony
-            size: 10, // Liczba wyników na stronę
+            page,
+            size: 10, 
           },
         });
 
-        setBuildings(response.data.content); // Lista budynków z odpowiedzi
-        setTotalPages(response.data.totalPages); // Liczba stron
+        setBuildings(response.data.content); 
+        setTotalPages(response.data.totalPages); 
       } catch (err) {
         setError("Failed to fetch buildings. Please try again later.");
         console.error("Error fetching buildings:", err.response || err.message);
@@ -59,21 +59,21 @@ const OfficeList = () => {
     };
 
     fetchBuildings();
-  }, [filters, page]); // Odśwież dane po zmianie filtrów lub strony
+  }, [filters, page]); 
 
-  // Zmiana strony
+
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
       setPage(newPage);
     }
   };
 
-  // Obsługa wyszukiwania
+
   const handleSearchChange = (search) => {
     setFilters((prev) => ({ ...prev, search }));
   };
 
-  // Obsługa ładowania i błędów
+
   if (loading) {
     return <div className="loader"></div>;
   }
@@ -86,12 +86,12 @@ const OfficeList = () => {
     <div>
       <Header />
 
-      {/* Wyszukiwarka */}
+
       <SearchBar onSearchChange={handleSearchChange}>
-        {/* FiltresBar jest już w SearchBar */}
+
       </SearchBar>
 
-      {/* Lista budynków */}
+
       <div className="card-container">
         {buildings.map((building) => (
           <div className="card" key={building.id}>
@@ -100,8 +100,8 @@ const OfficeList = () => {
                 className="card-img"
                 src={
                   building.photos && building.photos.length > 0
-                    ? building.photos[0].url // Wyświetl pierwszy dostępny URL zdjęcia
-                    : "https://via.placeholder.com/400" // Placeholder, jeśli brak zdjęcia
+                    ? building.photos[0].url 
+                    : "https://via.placeholder.com/400"
                 }
                 alt={building.building}
                 onError={(e) => {

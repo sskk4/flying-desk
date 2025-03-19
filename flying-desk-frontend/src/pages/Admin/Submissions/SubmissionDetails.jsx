@@ -31,12 +31,12 @@ const SubmissionDetails = () => {
     try {
 await axios.patch(
   `http://localhost:8081/api/v1/submissions/${id}/status?status=${newStatus}`,
-  null, // Możesz przekazać `null`, jeśli body nie jest wymagane
+  null, 
   { headers: { Authorization: `Bearer ${accessToken}` } }
 );
           
       setMessage(`Status updated to ${newStatus}`);
-      fetchSubmissionDetails(); // Refresh details
+      fetchSubmissionDetails(); 
     } catch (err) {
       console.error("Error updating submission status:", err);
       setError("Failed to update status.");

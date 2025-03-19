@@ -5,8 +5,8 @@ const FormField = ({
   value,
   onChange,
   placeholder,
-  errorMessage, // Wiadomość błędu
-  disabled = false, // Nowa właściwość
+  errorMessage, 
+  disabled = false,
 }) => {
   return (
     <div className={`form-field ${errorMessage ? "wrong-border" : ""}`}>
@@ -21,7 +21,7 @@ const FormField = ({
         placeholder={placeholder}
         autoComplete="off"
         className={errorMessage ? "wrong-text" : ""}
-        disabled={disabled} // Zablokowanie pola
+        disabled={disabled} 
       />
     </div>
   );

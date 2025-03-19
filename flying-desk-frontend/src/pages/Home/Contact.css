@@ -1,4 +1,4 @@
-/* Kontener strony kontaktowej */
+
 .contact-container {
     display: flex;
     flex-direction: row;
@@ -10,12 +10,12 @@
     margin-top:5vh;
   }
   
-  /* Główny kontener formularza */
+
   .contact-content {
     background-color: #d9d9d9;
     border-radius: 5vh 5vh 1vh 1vh;
     margin-bottom:-5vh;
-    width: 50%; /* Szerokość formularza */
+    width: 50%; 
     padding: 1vh 5vh 5vh 5vh;
     box-sizing: border-box;
     display: flex;
@@ -23,7 +23,7 @@
     align-items: flex-start;
   }
   
-  /* Tytuł formularza */
+
   .contact-title {
     font-size: 2rem;
     font-weight: 200;
@@ -31,31 +31,30 @@
     margin-bottom: 5vh;
   }
   
-  /* Styl formularza */
+
   .contact-form {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dwie kolumny */
-    gap: 2vh 2vw; /* Odstępy między wierszami i kolumnami */
+    grid-template-columns: 1fr 1fr;
+    gap: 2vh 2vw; 
     width: 100%;
     align-items: start;
     margin-bottom: 5vh;
   }
   
-  /* Grupa pól */
   .form-group {
     display: flex;
     flex-direction: column;
-    width: 100%; /* Szerokość dopasowana do kolumny */
+    width: 100%; 
   }
   
-  /* Etykiety pól formularza */
+
   .form-group label {
     font-size: 0.9rem;
     color: #666;
     margin-bottom: 5px;
   }
   
-  /* Pola tekstowe i textarea */
+
   .form-group input,
   .form-group textarea {
     padding: 2vh;
@@ -68,7 +67,7 @@
     box-sizing: border-box;
   }
   
-  /* Pole textarea */
+
   .form-group textarea {
     resize: none;
     width: 100%;
@@ -76,21 +75,17 @@
   }
 
   .form-group.full-width {
-  grid-column: span 2; /* Zajmuje pełną szerokość */
+  grid-column: span 2; 
 }
   
-  /* Przycisk Submit */
   .contact-submit {
-    grid-column: span 2; /* Przycisk na całej szerokości formularza */
+    grid-column: span 2; 
     justify-self: center;
 
     height: auto;
 
   }
   
-
-  
-  /* Obrazek kontaktowy */
   .contact-image {
     position: absolute;
     right: 7%;

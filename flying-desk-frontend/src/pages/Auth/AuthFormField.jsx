@@ -11,7 +11,7 @@ const FormField = ({
   errorMessage,
 }) => {
   const handleInputChange = (e) => {
-    onChange(id, e.target.value); // Przekazanie id i wartości
+    onChange(id, e.target.value); 
   };
 
   return (
@@ -23,7 +23,7 @@ const FormField = ({
         type={type}
         id={id}
         value={value || ""}
-        onChange={handleInputChange} // Poprawione wywołanie
+        onChange={handleInputChange}
         placeholder={placeholder}
         autoComplete="off"
         className={errorMessage ? "wrong-text" : ""}

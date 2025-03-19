@@ -3,14 +3,13 @@ import { useAuth } from "../../services/AuthProvider";
 import FormField from "../../components/Form/FormField";
 
 const Personal = () => {
-  const { user } = useAuth(); // Pobierz dane użytkownika z kontekstu
+  const { user } = useAuth(); 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
   });
 
-  // Synchronizuj dane użytkownika z formularzem
   useEffect(() => {
     if (user) {
       setFormData({
@@ -38,7 +37,6 @@ const Personal = () => {
 
   const handleSave = () => {
     console.log("Saved data:", formData);
-    // Możesz tutaj wywołać endpoint do zapisywania danych użytkownika
   };
 
   return (
@@ -68,7 +66,7 @@ const Personal = () => {
           value={formData.email}
           onChange={(e) => handleChange("email", e.target.value)}
           placeholder="Enter your email"
-          disabled={true} // Zablokowanie pola email
+          disabled={true} 
         />
         <div className="buttons">
           <button className="create-button narrow" onClick={handleCancel}>

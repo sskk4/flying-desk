@@ -2,24 +2,24 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const BuildingForm = () => {
-  const [buildingName, setBuildingName] = useState(""); // Nazwa budynku
-  const [description, setDescription] = useState(""); // Opis budynku
-  const [address, setAddress] = useState(""); // Adres budynku
-  const [city, setCity] = useState(""); // Miasto
-  const [country, setCountry] = useState(""); // Kraj
-  const [errorMessage, setErrorMessage] = useState(""); // Komunikat błędu
+  const [buildingName, setBuildingName] = useState(""); 
+  const [description, setDescription] = useState(""); 
+  const [address, setAddress] = useState(""); 
+  const [city, setCity] = useState(""); 
+  const [country, setCountry] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState(""); 
 
-  // Funkcja obsługująca wysyłanie formularza
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Sprawdzenie, czy wszystkie wymagane pola zostały wypełnione
+  
     if (!buildingName || !description || !address || !city || !country) {
       setErrorMessage("Wszystkie pola muszą być wypełnione!");
       return;
     }
 
-    // Przygotowanie danych JSON do wysłania
+
     const buildingData = {
       id: 3,
       building: buildingName,
@@ -45,10 +45,10 @@ const BuildingForm = () => {
 
     try {
         const token = localStorage.getItem("accessToken");
-      // Wysłanie danych do serwera
+
       const response = await axios.post("http://localhost:8081/buildings", buildingData, {
         headers: {
-          "Content-Type": "application/json", // Nagłówek określający typ danych
+          "Content-Type": "application/json", 
           "Authorization": `Bearer ${token}`,
         },
       });
@@ -67,7 +67,7 @@ const BuildingForm = () => {
     <div className="building-form">
       <h2>Dodaj Budynek</h2>
 
-      {/* Formularz */}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label>Nazwa Budynku:</label>
@@ -118,10 +118,10 @@ const BuildingForm = () => {
           />
         </div>
 
-        {/* Wyświetlanie komunikatu błędu */}
+
         {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-        {/* Przycisk wysyłania */}
+
         <button type="submit">Dodaj Budynek</button>
       </form>
     </div>

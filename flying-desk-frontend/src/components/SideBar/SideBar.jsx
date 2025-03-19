@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom"; // Dodanie NavLink
-import "./SideBar.css"; // Plik CSS dla stylizacji
+import { NavLink } from "react-router-dom"; 
+import "./SideBar.css"; 
 
 const Sidebar = ({ header, headerPath, items }) => {
   return (
@@ -32,10 +32,10 @@ const Sidebar = ({ header, headerPath, items }) => {
   );
 };
 
-// PropTypes do walidacji
+
 Sidebar.propTypes = {
   header: PropTypes.string.isRequired,
-  headerPath: PropTypes.string.isRequired, // Ścieżka dla nagłówka
+  headerPath: PropTypes.string.isRequired, 
   items: PropTypes.arrayOf(
     PropTypes.shape({
       icon: PropTypes.node.isRequired,

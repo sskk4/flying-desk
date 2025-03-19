@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 
+
 import { useAuth } from "../services/AuthProvider";
 import ProtectedRoute from "./ProtectedRoute"; 
 
@@ -121,8 +122,8 @@ const AppRoutes = () => {
   path="/owner/*"
   element={
     <ProtectedRoute
-      allowedRoles={["ADMIN", "OWNER"]} // Upewnij się, że te wartości pasują do user.role
-      allowedSubmissionStatuses={["APPROVED"]} // Zależnie od implementacji
+      allowedRoles={["ADMIN", "OWNER"]} 
+      allowedSubmissionStatuses={["APPROVED"]} 
     >
       <OwnerPanel />
     </ProtectedRoute>
@@ -138,8 +139,7 @@ const AppRoutes = () => {
       <Route
         path="/admin-fd/*"
         element={
-          <ProtectedRoute 
-         >
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
             <AdminPanel />
           </ProtectedRoute>
         }

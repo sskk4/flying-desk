@@ -95,17 +95,17 @@
 .leafs {
   position: absolute;
   width:30%;
-  left:0; /* Wykracza poza kontener */
+  left:0;
   top: 0;
   z-index: -1;
-  transform: translateX(-100%); /* Ustawione "na zewnątrz" */
+  transform: translateX(-100%);
 }
 
 .women {
   position: absolute;
   width:30%;
   z-index:-1;
-  right: 20px; /* Wykracza poza kontener */
+  right: 20px; 
   top: 330px;
-  transform: translateX(100%); /* Ustawione "na zewnątrz" */
+  transform: translateX(100%); 
 }

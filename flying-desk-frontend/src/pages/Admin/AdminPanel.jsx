@@ -24,7 +24,7 @@ import DesksInBuilding from './Desks/DesksInBuilding';
 import AdminPanelPhoto from '../../assets/png/giphy.gif';
 
 
-// Importy dla innych komponentów jak Rooms, Payments itd.
+
 
 const AdminPanel = () => {
     const views = {

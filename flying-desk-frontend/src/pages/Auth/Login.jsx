@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../services/AuthProvider"; // Import funkcji
+import { useAuth } from "../../services/AuthProvider"; 
 import "../../styles/Auth.css";
 import Logo from "../../assets/images/login-logo.png";
 import userIcon from "../../assets/images/user.png";
@@ -9,7 +9,7 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { login } = useAuth(); // Funkcja logowania z kontekstu
+  const { login } = useAuth(); 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,8 +18,8 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      await login(formData.email, formData.password); // Logowanie
-      navigate("/profile"); // Przekierowanie po zalogowaniu
+      await login(formData.email, formData.password); 
+      navigate("/profile"); 
     } catch (err) {
       setError("Nieprawidłowy e-mail lub hasło");
     }

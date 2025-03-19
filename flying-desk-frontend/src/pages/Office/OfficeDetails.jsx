@@ -6,17 +6,17 @@ import "../../components/Ad/AdCard.css";
 import Header from '../../components/Header/Header';
 
 const OfficeDetails = () => {
-  const { id } = useParams(); // Pobierz ID budynku z URL
+  const { id } = useParams(); 
   const [office, setOffice] = useState(null);
-  const [rooms, setRooms] = useState([]); // Przechowywanie pokoi budynku
+  const [rooms, setRooms] = useState([]); 
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Pobieranie szczegółów budynku
+
     const fetchOffice = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8081/api/v1/building/${id}` // Pobieranie danych budynku
+          `http://localhost:8081/api/v1/building/${id}` 
         );
         setOffice(response.data);
       } catch (err) {
@@ -25,13 +25,13 @@ const OfficeDetails = () => {
       }
     };
 
-    // Pobieranie pokoi powiązanych z budynkiem
+ 
     const fetchRooms = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8081/api/v1/building/${id}/desks` // API do pokoi w budynku
+          `http://localhost:8081/api/v1/building/${id}/desks` 
         );
-        setRooms(response.data.content || []); // Pobranie pokoi
+        setRooms(response.data.content || []); 
       } catch (err) {
         console.error("Failed to fetch rooms:", err);
       }

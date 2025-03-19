@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import FormField from "./AuthFormField";
 import { useApi } from "../../services/api"; 
@@ -6,12 +6,27 @@ import { checkPasswordStrength } from "../../utils/formValidation";
 
 import emailSent from "../../assets/images/email-sent.gif";
 
+
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  
+  return debouncedValue;
+};
+
 const validateStep = (step, data, errors) => {
   if (step === 1) {
     if (!data.email.includes("@")) {
       errors.email = "Invalid email address.";
-    } else if (errors.email === "Email already exists.") {
-      errors.email = "Email already exists.";
     }
   } else if (step === 2) {
     if (!data.firstname.trim()) {
@@ -47,38 +62,82 @@ const RegisterForm = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
-
+  const [emailAvailable, setEmailAvailable] = useState(false);
+  
+  const debouncedEmail = useDebounce(formData.email, 500);
+  
   const { register, checkEmail } = useApi(); 
+  
+  const lastCheckedEmailRef = useRef('');
 
-  const handleChange = async (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" }));
+  useEffect(() => {
+
+    if (
+      debouncedEmail && 
+      debouncedEmail.includes('@') && 
+      debouncedEmail.length > 3 && 
+      debouncedEmail !== lastCheckedEmailRef.current &&
+      !isCheckingEmail
+    ) {
+      const verifyEmail = async () => {
+        setIsCheckingEmail(true);
+        setEmailAvailable(false);
+        
+        try {
+          await checkEmail(debouncedEmail);
+          setErrors(prev => ({ ...prev, email: '' }));
+          setEmailAvailable(true);
+        } catch (error) {
+          console.error("Error checking email:", error);
+
+          if (error.response && error.response.status === 400) {
+            setErrors(prev => ({ ...prev, email: "Email already exists." }));
+          } else {
+            setErrors(prev => ({ ...prev, email: "Error checking email." }));
+          }
+          setEmailAvailable(false);
+        } finally {
+          setIsCheckingEmail(false);
+          lastCheckedEmailRef.current = debouncedEmail;
+        }
+      };
+      
+      verifyEmail();
+    }
+  }, [debouncedEmail, checkEmail, isCheckingEmail]);
+
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
 
     if (field === "email") {
-      if (!value.includes("@")) {
-        setErrors((prev) => ({ ...prev, email: "Invalid email address." }));
-        return;
-      }
-      setIsCheckingEmail(true);
-      try {
-        const result = await checkEmail(value);
-        if (result.exists) {
-          setErrors((prev) => ({ ...prev, email: "Email already exists." }));
-        }
-      } catch (error) {
-        console.error("Error checking email:", error);
-        setErrors((prev) => ({ ...prev, email: "Error checking email." }));
-      } finally {
-        setIsCheckingEmail(false);
+      if (!value || !value.includes("@")) {
+        setErrors(prev => ({ ...prev, email: !value ? "" : "Invalid email address." }));
+        setEmailAvailable(false);
       }
     }
 
+
+    if (field !== "email") {
+      setErrors(prev => ({ ...prev, [field]: "" }));
+    }
+    
     if (field === "password") {
       setPasswordStrength(checkPasswordStrength(value));
     }
   };
 
   const handleNext = () => {
+    if (step === 1 && isCheckingEmail) {
+      return;
+    }
+    
+    if (step === 1) {
+      if (errors.email || !emailAvailable) {
+        return;
+      }
+    }
+    
     const validationErrors = validateStep(step, formData, {});
     if (Object.keys(validationErrors).length === 0) {
       setStep((prev) => prev + 1);
@@ -99,7 +158,7 @@ const RegisterForm = () => {
     try {
       setIsSubmitting(true);
       await register(payload);
-      setStep(4); // Przejście do kroku 4 po udanej rejestracji
+      setStep(4); 
     } catch (error) {
       console.error("Error during registration:", error);
       setErrors({ email: "Email already exists or another error occurred." });
@@ -111,14 +170,22 @@ const RegisterForm = () => {
   const renderStep = () => {
     if (step === 1) {
       return (
-        <FormField
-          id="email"
-          label="Email"
-          type="email"
-          value={formData.email}
-          onChange={(id, value) => handleChange(id, value)}
-          errorMessage={errors.email}
-        />
+        <>
+          <FormField
+            id="email"
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={(id, value) => handleChange(id, value)}
+            errorMessage={errors.email}
+          />
+          {formData.email && !errors.email && isCheckingEmail && (
+            <div className="email-checking">Checking email...</div>
+          )}
+          {formData.email && !errors.email && emailAvailable && !isCheckingEmail && (
+            <div className="email-available">Email is available ✓</div>
+          )}
+        </>
       );
     } else if (step === 2) {
       return (
@@ -169,12 +236,12 @@ const RegisterForm = () => {
       );
     } else if (step === 4) {
       return (
-        <div >
-                <img
-          src={emailSent}
-          alt="Approve"
-          className="email-illustration"
-        />
+        <div>
+          <img
+            src={emailSent}
+            alt="Approve"
+            className="email-illustration"
+          />
           <h2 className="email-title">Check your email to activate your account!</h2>
           <button
             className="create-button"
@@ -205,6 +272,7 @@ const RegisterForm = () => {
               <button
                 className="create-button"
                 onClick={handleNext}
+                disabled={step === 1 && (isCheckingEmail || errors.email || (!emailAvailable && formData.email))}
               >
                 Confirm
               </button>

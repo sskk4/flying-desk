@@ -6,7 +6,7 @@ import "../../components/Ad/AdCard.css";
 import Header from '../../components/Header/Header';
 
 const RoomsDetails = () => {
-  const { id } = useParams(); // Pobierz ID pokoju z URL
+  const { id } = useParams(); 
   const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
 
@@ -14,7 +14,7 @@ const RoomsDetails = () => {
     const fetchRoom = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8081/api/v1/building/room/${id}` // Pobieranie danych pokoju
+          `http://localhost:8081/api/v1/building/room/${id}` 
         );
         setRoom(response.data);
       } catch (err) {

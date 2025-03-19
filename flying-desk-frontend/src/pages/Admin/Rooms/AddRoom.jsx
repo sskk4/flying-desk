@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"; // Dodano useParams
+import { useNavigate, useParams } from "react-router-dom"; 
 import axios from "axios";
 import { useAuth } from "../../../services/AuthProvider";
 
 const RoomAdd = () => {
   const { accessToken, user } = useAuth();
-  const { buildingId } = useParams(); // Pobranie buildingId z parametrów trasy
+  const { buildingId } = useParams(); 
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
