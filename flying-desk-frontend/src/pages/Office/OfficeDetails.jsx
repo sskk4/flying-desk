@@ -4,28 +4,29 @@ import { useParams, Link } from "react-router-dom";
 import "../../components/Ad/Ad.css";
 import "../../components/Ad/AdCard.css";
 import Header from '../../components/Header/Header';
+import ImageZoom from "../../components/ImageZoom/ImageZoom";
 
 const OfficeDetails = () => {
   const { id } = useParams(); 
   const [office, setOffice] = useState(null);
   const [rooms, setRooms] = useState([]); 
   const [error, setError] = useState("");
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useEffect(() => {
-
     const fetchOffice = async () => {
       try {
         const response = await axios.get(
           `http://localhost:8081/api/v1/building/${id}` 
         );
         setOffice(response.data);
+        setSelectedPhoto(response.data.photos?.[0]?.url || "https://via.placeholder.com/400");
       } catch (err) {
         setError("Failed to fetch office details.");
         console.error(err);
       }
     };
 
- 
     const fetchRooms = async () => {
       try {
         const response = await axios.get(
@@ -41,6 +42,15 @@ const OfficeDetails = () => {
     fetchRooms();
   }, [id]);
 
+  const generateGoogleMapsUrl = () => {
+    if (!office || !office.address) return null;
+    
+    const fullAddress = `${office.address.address}, ${office.address.city.city}, ${office.address.country.country}`;
+    const encodedAddress = encodeURIComponent(fullAddress);
+    
+    return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+  };
+
   if (error) {
     return <p style={{ color: "red" }}>{error}</p>;
   }
@@ -49,27 +59,28 @@ const OfficeDetails = () => {
     return <p>Loading office details...</p>;
   }
 
+
   return (
     <div>
       <Header />
 
       <div className="ad-container">
-        {/* Sekcja zdjęć */}
+        {/* Photo Section */}
         <div className="image-section">
           {office.photos && office.photos.length > 0 ? (
             <>
-              <img
-                src={office.photos[0].url}
-                alt={`Main photo of ${office.building}`}
-                className="main-image"
-              />
+     <ImageZoom 
+  src={selectedPhoto} 
+  alt={`Main photo of ${office.building}`} 
+/>
               <div className="thumbnail-section">
-                {office.photos.slice(1).map((photo, index) => (
+                {office.photos.map((photo, index) => (
                   <img
                     key={index}
                     src={photo.url}
                     alt={`Thumbnail ${index + 1}`}
-                    className="thumbnail"
+                    className={`thumbnail ${selectedPhoto === photo.url ? "active" : ""}`}
+                    onClick={() => setSelectedPhoto(photo.url)}
                   />
                 ))}
               </div>
@@ -79,44 +90,49 @@ const OfficeDetails = () => {
           )}
         </div>
 
-        {/* Sekcja szczegółów */}
+        {/* Details Section */}
         <div className="details-section">
           <h2>{office.building}</h2>
           <hr />
           <p className="location">
             📍 {office.address.city.city}, {office.address.address}, {office.address.country.country}
           </p>
+
           <div className="details">
             <div className="detail-item">
-              <span>Surface</span>
-              <strong>50m²</strong>
+              <span>Status</span>
+              <strong>{office.status}</strong>
             </div>
+        
             <div className="detail-item">
-              <span>Rooms</span>
-              <strong>4</strong>
-            </div>
-            <div className="detail-item">
-              <span>Desks</span>
-              <strong>3</strong>
-            </div>
-            <div className="detail-item">
-              <span>Available from</span>
-              <strong>{office.creationDate}</strong>
+              <span>Created at</span>
+              <strong>{new Date(office.creationDate).toLocaleDateString()}</strong>
             </div>
           </div>
           <hr />
           <p>{office.description}</p>
           <hr />
           <div className="price-section">
-            <p className="note">Rent online is {office.status}</p>
-            <div className="buttons">
-              <button className="create-button">Message</button>
-            </div>
+            <h3>Added by: User {office.userId} </h3>
           </div>
+          <div className="buttons" >
+        {generateGoogleMapsUrl() && (
+          <a 
+            href={generateGoogleMapsUrl()} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="create-button"
+          >
+            Open in Google Maps
+          </a>
+        )}
+      </div>
         </div>
+        
       </div>
 
-      {/* Sekcja wyświetlania pokoi */}
+
+      {/* Rooms Section */}
       <div className="rooms-section">
         <h2>Desks in this building</h2>
         <div className="card-container">

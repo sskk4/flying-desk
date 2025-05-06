@@ -109,7 +109,7 @@ const OfficeList = () => {
     const fetchBuildings = async () => {
       try {
         setLoading(true);
-  
+    
         const [sortBy, sortDir] = (typeof filters.sort === "string" ? filters.sort : "").split("-");
         const params = {
           country: filters.countryId || null,
@@ -121,21 +121,42 @@ const OfficeList = () => {
           sortBy,
           sortDir,
           page,
-          size: 9,
+          size: 10,
           isApproved: true,
         };
-  
+    
         const filteredParams = Object.fromEntries(
           Object.entries(params).filter(([_, value]) => value !== null)
         );
-  
+    
         console.log("Wysyłane parametry do API:", filteredParams);
-  
+    
         const response = await axios.get("http://localhost:8081/api/v1/building", {
           params: filteredParams,
         });
-  
-        setBuildings(response.data?.content || []);
+    
+        const buildingsData = response.data?.content || [];
+    
+        // Pobieramy biurka dla każdego budynku i filtrujemy tylko te, które mają biurka
+        const buildingsWithDesks = await Promise.all(
+          buildingsData.map(async (building) => {
+            try {
+              const desksResponse = await axios.get(
+                `http://localhost:8081/api/v1/building/${building.id}/desks`
+              );
+    
+              if (desksResponse.data.content.length > 0) {
+                return building;
+              }
+            } catch (error) {
+              console.error(`Błąd przy pobieraniu biurek dla budynku ${building.id}:`, error);
+            }
+            return null;
+          })
+        );
+    
+        // Usuwamy budynki, które nie mają biurek
+        setBuildings(buildingsWithDesks.filter((building) => building !== null));
         setTotalPages(response.data?.totalPages || 0);
       } catch (err) {
         console.error("Błąd podczas pobierania danych:", err);
@@ -165,7 +186,10 @@ const OfficeList = () => {
       <div className="result-count">
         <label>{buildings.length} results</label>
         <hr />
+
+        <h2>Check desk for rent in office spaces </h2>
       </div>
+
 
       {loading &&<div className="loader-container">  <div className="loader"></div> </div>}
       {error && <div className="error-container">{error} <hr></hr></div>}
