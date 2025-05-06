@@ -10,12 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RentRepository extends JpaRepository<Rent, Long>, JpaSpecificationExecutor<Rent> {
-
-
-    Optional<Rent> findById(Long id);
-
-    List<Rent> findAllByUserId(Long userId);
-
-    List<Rent> findAll();
+public interface RentRepository extends JpaRepository<Rent, Long> {
+    List<Rent> findByUserId(Long userId);
+    List<Rent> findByResourceTypeAndResourceId(Rent.ResourceType resourceType, Long resourceId);
 }

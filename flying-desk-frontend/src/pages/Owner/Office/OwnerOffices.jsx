@@ -5,11 +5,15 @@ import { useNavigate } from "react-router-dom";
 import "../../../styles/Owner/ManageAds.css";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
+import OwnerTabs from "./OwnerTabs";
+import "../../../styles/Owner/List.css";
+import { FaMapMarkerAlt, FaCheck, FaTimes, FaBuilding, FaDesktop, FaDoorOpen } from 'react-icons/fa';
 
 const ManageAds = () => {
   const { user, accessToken } = useAuth();
   const [ads, setAds] = useState([]);
   const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState("Offices");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +26,7 @@ const ManageAds = () => {
           },
         });
 
+        console.log("Fetched ads:", response.data.content);
         setAds(response.data.content);
       } catch (err) {
         console.error("Error fetching ads:", err);
@@ -34,59 +39,98 @@ const ManageAds = () => {
     }
   }, [user, accessToken]);
 
+
+
+
   if (error) return <p className="error-message">{error}</p>;
 
   return (
     <div>
       <Header />
       <div className="manage-ads-container">
-        <h2>Here you can manage your office ads</h2>
+        <h2>Here you can manage your offices ads</h2>
         <hr />
-        <div className="manage-ads-buttons">
-          <button className="tab-button active">Offices</button>
-          <button className="tab-button">Rooms</button>
-          <button className="tab-button">Desks</button>
+        <div className="manage-ads-tabs">
+        <OwnerTabs />
         </div>
-        <div className="ads-container">
+        
+        <div className="ads-grid">
           {ads.map((ad) => (
-            <div key={ad.id} className="ad-card">
-              <div className="ad-details">
-                <h3 className="ads-justify-title">{ad.building}</h3>
-                <hr />
-                <p>
-                  {ad.address.address}, {ad.address.city.city},{" "}
-                  {ad.address.city.country.country}
-                </p>
-                <p>Status: {ad.status}</p>
-                <p>Approved: {ad.isApproved ? "Yes" : "No"}</p>
-                <hr />
-                <button
-                  className="create-button details-button"
-                  onClick={() => navigate(`/office/${ad.id}`)}
-                >
-                  Details
-                </button>
-                <button
-                  className="create-button details-button"
-                  onClick={() => navigate(`/owner/office/${ad.id}/desk/add`)}
-                >
-                  Add Desk 
-                </button>
-                <button
-                  className="create-button details-button"
-                  onClick={() => navigate(`/owner/office/${ad.id}/desks`)}
-                >
-                  Desks in office
-                </button>
+            <div key={ad.id} className="office-card">
+              <div className="office-image">
+                <img src={ad.photos?.[0]?.url } alt={`Office at ${ad.address?.address}`} />
+                <div className={`status-badge ${ad.status === 'ACTIVE' ? 'active' : 'inactive'}`}>
+                  {ad.status}
+                </div>
+              </div>
+              
+              <div className="office-content">
+                <h3>{ad.building || `Office ${ad.id}`}</h3>
+                
+                <div className="office-address">
+                  <FaMapMarkerAlt />
+                  <p>{ad.address?.address}, {ad.address?.city?.city}, {ad.address?.city?.country?.country}</p>
+                </div>
+                
+                <div className="approval-status">
+                  <span>Approval Status:</span>
+                  {ad.isApproved ? 
+                    <span className="approved"><FaCheck /> Approved</span> : 
+                    <span className="not-approved"><FaTimes /> Not Approved</span>
+                  }
+                </div>
+                
+                <div className="action-buttons">
+                  <button 
+                    className="primary-button"
+                    onClick={() => navigate(`/office/${ad.id}`)}
+                  >
+                    View Details
+                  </button>
+       
+                  
+                  <div className="button-groups">
+                    <div className="button-group">
+                      <h4><FaDesktop /> Desks</h4>
+                      <div className="group-buttons">
+                        <button onClick={() => navigate(`/owner/office/${ad.id}/desk/add`)}>
+                          Add Desk
+                        </button>
+                        <button onClick={() => navigate(`/owner/office/${ad.id}/desks`)}>
+                          Manage Desks
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="button-group">
+                      <h4><FaDoorOpen /> Rooms</h4>
+                      <div className="group-buttons">
+                        <button onClick={() => navigate(`/owner/office/${ad.id}/room/add`)}>
+                          Add Room
+                        </button>
+                        <button onClick={() => navigate(`/owner/office/${ad.id}/rooms`)}>
+                          Manage Rooms
+                        </button>
+                      </div>
+                    </div>
+                    <button 
+                    className="create-button"
+                    onClick={() => navigate(`/owner/office/${ad.id}/manage`)}
+                  >
+                    Manage
+                  </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
+        
         <button
-          className="add-button"
+          className="floating-add-button"
           onClick={() => navigate("/owner/office/add")}
         >
-          Place an ad
+           Place New Office Ad
         </button>
       </div>
       <Footer />

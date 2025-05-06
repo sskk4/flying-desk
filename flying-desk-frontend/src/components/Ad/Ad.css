@@ -1,3 +1,160 @@
+.availability-section {
+  margin: 20px 0;
+}
+
+.availability-section h3 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 18px;
+  color: #222;
+}
+
+.availability-section .icon {
+  margin-right: 8px;
+  stroke-width: 2px;
+  color: #7360DF;
+}
+
+.schedule-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-card {
+  background-color: #ECECEC;
+  border-radius: 16px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+
+.schedule-date-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #2D297D;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #CBCBCB;
+}
+
+.days-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.day-item {
+  flex: 1;
+  min-width: 130px;
+}
+
+.day-name {
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.time-slots-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.time-slot-pill {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #222;
+  width: fit-content;
+}
+
+.time-slot-pill .time-icon {
+  color: #7360DF;
+  margin-right: 6px;
+}
+
+.no-availability {
+  padding: 16px;
+  text-align: center;
+  color: #AAAAAA;
+  background-color: #ECECEC;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+@media (max-width: 576px) {
+  .days-container {
+    flex-direction: column;
+  }
+  
+  .day-item {
+    width: 100%;
+  }
+}
+
+.tabs-container {
+    width: 90%;
+    margin: 20px auto;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .tab.active {
+    color: #6200ee;
+    border-bottom: 2px solid #6200ee;
+  }
+  
+  .tab:hover {
+    color: #6200ee;
+  }
+  
+  .items-section {
+    width: 90%;
+    margin: 0 auto 30px;
+  }
+  
+  .items-section h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .contact-info {
+    margin: 10px 0;
+  }
+  
+  .contact-info p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+
+
+
 
 .ad-container {
     display: flex;

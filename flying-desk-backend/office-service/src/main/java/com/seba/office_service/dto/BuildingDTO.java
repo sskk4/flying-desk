@@ -1,5 +1,6 @@
 package com.seba.office_service.dto;
 
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,16 @@ public class BuildingDTO {
 
     @NotBlank(message = "Building description is required")
     private String description;
+
+    private String buildingType;
+
+    private Integer totalFloors;
+
+    private Boolean hasElevator;
+
+    private Boolean hasParking;
+
+    private String contactEmail;
+
+    private String contactPhone;
 }

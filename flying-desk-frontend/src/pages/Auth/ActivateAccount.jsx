@@ -15,7 +15,7 @@ const ActivateAccountPage = () => {
   const hasActivated = useRef(false);
 
   useEffect(() => {
-    if (hasActivated.current) return; // Zapobiega wielokrotnemu uruchomieniu
+    if (hasActivated.current) return; 
     hasActivated.current = true;
 
     const activateAccount = async () => {

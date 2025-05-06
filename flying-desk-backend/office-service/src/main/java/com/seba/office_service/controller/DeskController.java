@@ -49,23 +49,22 @@ public class DeskController {
 
     @GetMapping("/desks")
     public Page<Desk> getDesks(
-            @RequestParam(required = false) String search, // Wyszukiwanie po nazwie lub opisie
-            @RequestParam(required = false) Boolean isApproved, // Filtrowanie po zatwierdzeniu
-            @RequestParam(required = false) Desk.Status status, // Filtrowanie po statusie
-            @RequestParam(required = false) String country, // Filtrowanie po kraju budynku
-            @RequestParam(required = false) String city, // Filtrowanie po mieście budynku
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate, // Filtrowanie po dacie początkowej
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate, // Filtrowanie po dacie końcowej
-            @RequestParam(required = false) String equipment, // Filtrowanie po wyposażeniu
-            @RequestParam(required = false) Double minPrice, // Minimalna cena
-            @RequestParam(required = false) Double maxPrice, // Maksymalna cena
-            @RequestParam(defaultValue = "id") String sortBy, // Pole do sortowania
-            @RequestParam(defaultValue = "asc") String sortDir, // Kierunek sortowania
-            @PageableDefault(size = 10) Pageable pageable // Domyślna paginacja
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Boolean isApproved,
+            @RequestParam(required = false) Desk.Status status,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(required = false) String equipment,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @PageableDefault(size = 10) Pageable pageable
     ) {
-        // Wywołanie metody serwisu
         return deskService.getAllDesksWithFilters(
-                null, // `buildingId` może być dodane później, jeśli będzie potrzebne
+                null,
                 isApproved,
                 search,
                 equipment,
@@ -82,6 +81,22 @@ public class DeskController {
         );
     }
 
+
+    /**
+     * Pobiera biurka należące do budynków danego użytkownika.
+     *
+     * @param userId    ID użytkownika
+     * @param pageable  Parametry paginacji
+     * @return Strona biurek
+     */
+    @GetMapping("/user/{userId}/desks")
+    public Page<Desk> getDesksByUserId(
+            @PathVariable("userId") Long userId,
+            Pageable pageable
+    ) {
+        log.info("Fetching desks for user ID: {}", userId);
+        return deskService.getDesksByUserId(userId, pageable);
+    }
 
 
     /**

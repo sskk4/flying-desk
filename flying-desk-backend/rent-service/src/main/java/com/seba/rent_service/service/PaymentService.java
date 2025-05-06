@@ -14,31 +14,15 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
 
-    /**
-     * Tworzy nową płatność.
-     */
     public Payment createPayment(Payment payment) {
         return paymentRepository.save(payment);
     }
 
-    /**
-     * Pobiera płatność po ID.
-     */
-    public Optional<Payment> getPaymentById(Long id) {
-        return paymentRepository.findById(id);
+    public List<Payment> getPaymentsByUser(Long userId) {
+        return paymentRepository.findByUserId(userId);
     }
 
-    /**
-     * Pobiera wszystkie płatności użytkownika.
-     */
-    public List<Payment> getPaymentsByUserId(Long userId) {
-        return paymentRepository.findAllByUserId(userId);
-    }
-
-    /**
-     * Pobiera wszystkie płatności (dla administratora).
-     */
-    public List<Payment> getAllPayments() {
-        return paymentRepository.findAll();
+    public Payment getByTransactionId(String transactionId) {
+        return paymentRepository.findByTransactionId(transactionId);
     }
 }

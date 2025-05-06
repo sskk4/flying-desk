@@ -9,20 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PaymentRepository extends JpaRepository<Payment, Long>, JpaSpecificationExecutor<Payment> {
-
-    /**
-     * Pobiera płatność po ID.
-     */
-    Optional<Payment> findById(Long id);
-
-    /**
-     * Pobiera wszystkie płatności użytkownika.
-     */
-    List<Payment> findAllByUserId(Long userId);
-
-    /**
-     * Pobiera wszystkie płatności (dla administratora).
-     */
-    List<Payment> findAll();
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
+    List<Payment> findByUserId(Long userId);
+    List<Payment> findByRentId(Long rentId);
+    Payment findByTransactionId(String transactionId);
 }

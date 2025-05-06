@@ -15,46 +15,35 @@ import java.time.LocalDateTime;
 @Table(name = "payments")
 public class Payment {
 
+    public enum PaymentMethod { CARD, PAYPAL, BLIK, TRANSFER }
+    public enum PaymentStatus { PENDING, COMPLETED, FAILED }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "rent_id", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "rent_id")
     private Rent rent;
 
-    @NotNull
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @NotNull
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)
     private PaymentMethod paymentMethod;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private PaymentStatus status;
 
-    @NotNull
     @Column(name = "transaction_id", nullable = false, unique = true)
     private String transactionId;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
-
-    public enum PaymentMethod {
-        CARD, PAYPAL, BLIK, TRANSFER
-    }
-
-    public enum PaymentStatus {
-        PENDING, COMPLETED, FAILED
-    }
 }

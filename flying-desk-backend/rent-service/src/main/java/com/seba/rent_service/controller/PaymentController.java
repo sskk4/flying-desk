@@ -16,42 +16,21 @@ import java.util.Optional;
 @RequestMapping("/api/v1/payment")
 public class PaymentController {
 
+
     private final PaymentService paymentService;
 
-    /**
-     * Tworzy nową płatność.
-     */
     @PostMapping
     public ResponseEntity<Payment> createPayment(@RequestBody Payment payment) {
-        Payment savedPayment = paymentService.createPayment(payment);
-        return ResponseEntity.ok(savedPayment);
+        return ResponseEntity.ok(paymentService.createPayment(payment));
     }
 
-    /**
-     * Pobiera płatność po ID.
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
-        Optional<Payment> payment = paymentService.getPaymentById(id);
-        return payment.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Pobiera wszystkie płatności użytkownika.
-     */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Payment>> getPaymentsByUserId(@PathVariable Long userId) {
-        List<Payment> payments = paymentService.getPaymentsByUserId(userId);
-        return ResponseEntity.ok(payments);
+    public ResponseEntity<List<Payment>> getPaymentsByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(paymentService.getPaymentsByUser(userId));
     }
 
-    /**
-     * Pobiera wszystkie płatności (dla administratora).
-     */
-    @GetMapping
-    public ResponseEntity<List<Payment>> getAllPayments() {
-        List<Payment> payments = paymentService.getAllPayments();
-        return ResponseEntity.ok(payments);
+    @GetMapping("/transaction/{transactionId}")
+    public ResponseEntity<Payment> getPaymentByTransactionId(@PathVariable String transactionId) {
+        return ResponseEntity.ok(paymentService.getByTransactionId(transactionId));
     }
 }

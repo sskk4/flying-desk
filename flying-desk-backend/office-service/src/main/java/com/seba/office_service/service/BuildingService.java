@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -103,6 +104,7 @@ public class BuildingService {
     }
 
 
+
     /**
      * Pobiera wszystkie budynki z możliwością stronicowania i sortowania.
      *
@@ -141,7 +143,15 @@ public class BuildingService {
      */
     public Page<Building> getBuildingsByUserId(Long userId, Pageable pageable) {
         log.info("Fetching paginated buildings for user ID: {}", userId);
-        return buildingRepository.findAllByUserId(userId, pageable);
+
+        Page<Building> buildings = buildingRepository.findAllByUserId(userId, pageable);
+
+        buildings.forEach(building -> {
+            List<PhotoDTO> photos = photoService.getPhotos("BUILDING", building.getId());
+            building.setPhotos(photos);
+        });
+
+        return buildings;
     }
 
 
@@ -157,16 +167,10 @@ public class BuildingService {
     public Building createBuilding(BuildingDTO buildingDTO, Long userId, List<MultipartFile> files) throws IOException {
         validateFiles(files);
 
-        // Tworzenie lub pobieranie adresu
         Address address = addressService.saveAddress(null, buildingDTO.getAddress());
-
-        // Tworzenie obiektu Building
         Building building = buildBuildingEntity(buildingDTO, userId, address);
-
-        // Zapis budynku w bazie danych
         Building savedBuilding = buildingRepository.save(building);
 
-        // Przypisywanie zdjęć, jeśli istnieją
         if (files != null && !files.isEmpty()) {
             savePhotosForBuilding(files, savedBuilding.getId());
         }
@@ -257,6 +261,12 @@ public class BuildingService {
         building.setBuilding(buildingDTO.getBuilding());
         building.setDescription(buildingDTO.getDescription());
         building.setAddress(address);
+        building.setBuildingType(Building.BuildingType.valueOf(buildingDTO.getBuildingType()));
+        building.setTotalFloors(buildingDTO.getTotalFloors());
+        building.setHasElevator(buildingDTO.getHasElevator());
+        building.setHasParking(buildingDTO.getHasParking());
+        building.setContactEmail(buildingDTO.getContactEmail());
+        building.setContactPhone(buildingDTO.getContactPhone());
         building.setIsApproved(false);
         building.setStatus(Building.Status.ACTIVE);
         return building;

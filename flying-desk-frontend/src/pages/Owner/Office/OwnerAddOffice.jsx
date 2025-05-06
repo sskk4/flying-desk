@@ -21,6 +21,12 @@ const BuildingForm = () => {
       cityId: "",
       countryId: "",
     },
+    buildingType: "",
+    totalFloors: "",
+    hasElevator: false,
+    hasParking: false,
+    contactEmail: "",
+    contactPhone: "",
     photos: [],
   });
 
@@ -99,6 +105,12 @@ const BuildingForm = () => {
         cityId: parseInt(formData.address.cityId, 10),
         countryId: parseInt(formData.address.countryId, 10),
       },
+      buildingType: formData.buildingType,
+      totalFloors: parseInt(formData.totalFloors, 10),
+      hasElevator: formData.hasElevator,
+      hasParking: formData.hasParking,
+      contactEmail: formData.contactEmail,
+      contactPhone: formData.contactPhone
     };
 
     const formDataToSend = new FormData();
@@ -131,7 +143,7 @@ const BuildingForm = () => {
       <div className="manage-ads-container">
         <div className="form-container">
           <form onSubmit={handleSubmit}>
-          <button
+            <button
               className="create-button back-button"
               type="button"
               onClick={() => navigate("/owner")}
@@ -156,40 +168,40 @@ const BuildingForm = () => {
               onChange={(e) => handleChange("description", e.target.value)}
             />
             <hr />
-
+            
             <div className="select-form"> 
-            <label className="custom-label" htmlFor="countryId">Country</label>
-            <select className="custom-select"
-              id="countryId"
-              value={formData.address.countryId}
-              onChange={(e) => handleChange("countryId", e.target.value, "address")}
-            >
-              <option value="">Select Country</option>
-              {countries.map((country) => (
-                <option key={country.id} value={country.id}>
-                  {country.country}
-                </option>
-              ))}
-            </select>
-            <br></br>
-            <label htmlFor="cityId">City</label>
-<br></br>
-            <select
-              id="cityId"
-              value={formData.address.cityId}
-              onChange={(e) => handleChange("cityId", e.target.value, "address")}
-              disabled={!formData.address.countryId}
-            >
-              <option value="">Select City</option>
-              {cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.city}
-                </option>
-              ))}
-            </select>
+              <label className="custom-label" htmlFor="countryId">Country</label>
+              <select className="custom-select"
+                id="countryId"
+                value={formData.address.countryId}
+                onChange={(e) => handleChange("countryId", e.target.value, "address")}
+              >
+                <option value="">Select Country</option>
+                {countries.map((country) => (
+                  <option key={country.id} value={country.id}>
+                    {country.country}
+                  </option>
+                ))}
+              </select>
+              <br></br>
+              <label htmlFor="cityId">City</label>
+              <br></br>
+              <select
+                id="cityId"
+                value={formData.address.cityId}
+                onChange={(e) => handleChange("cityId", e.target.value, "address")}
+                disabled={!formData.address.countryId}
+              >
+                <option value="">Select City</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.city}
+                  </option>
+                ))}
+              </select>
             </div>
 
-              <hr></hr>
+            <hr></hr>
             <FormField
               id="street"
               label="Street"
@@ -211,8 +223,72 @@ const BuildingForm = () => {
               value={formData.address.zipCode}
               onChange={(e) => handleChange("zipCode", e.target.value, "address")}
             />
-      
-   
+
+            <hr />
+
+            <div className="select-form">
+              <label htmlFor="buildingType">Building Type</label>
+              <br></br>
+              <select
+                id="buildingType"
+                value={formData.buildingType}
+                onChange={(e) => handleChange("buildingType", e.target.value)}
+              >
+                <option value="">Select Building Type</option>
+                <option value="OFFICE">OFFICE</option>
+                <option value="COWORKING">COWORKING</option>
+                <option value="WAREHOUSE">WAREHOUSE</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            
+            <hr></hr>
+
+            <FormField
+              id="totalFloors"
+              label="Total Floors"
+              type="number"
+              value={formData.totalFloors}
+              onChange={(e) => handleChange("totalFloors", e.target.value)}
+            />
+            
+            <div className="checkbox-field">
+              <input
+                id="hasElevator"
+                type="checkbox"
+                checked={formData.hasElevator}
+                onChange={(e) => handleChange("hasElevator", e.target.checked)}
+              />
+              <label htmlFor="hasElevator">Has Elevator</label>
+            </div>
+            
+            <div className="checkbox-field">
+              <input
+                id="hasParking"
+                type="checkbox"
+                checked={formData.hasParking}
+                onChange={(e) => handleChange("hasParking", e.target.checked)}
+              />
+              <label htmlFor="hasParking">Has Parking</label>
+            </div>
+            
+            <hr />
+
+            <FormField
+              id="contactEmail"
+              label="Contact Email"
+              type="email"
+              value={formData.contactEmail}
+              onChange={(e) => handleChange("contactEmail", e.target.value)}
+            />
+            
+            <FormField
+              id="contactPhone"
+              label="Contact Phone"
+              type="tel"
+              value={formData.contactPhone}
+              onChange={(e) => handleChange("contactPhone", e.target.value)}
+            />
 
             <hr />
             <div>
@@ -225,8 +301,6 @@ const BuildingForm = () => {
             <button className="create-button" type="submit" disabled={loading}>
               {loading ? "Uploading..." : "Create Building"}
             </button>
-
-
           </form>
         </div>
       </div>

@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
+import { useAuth } from "../../services/AuthProvider";
+import { Calendar, Clock } from "react-feather";
 import "../../components/Ad/Ad.css";
 import "../../components/Ad/AdCard.css";
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 
 const DeskDetails = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
+  const { accessToken, user } = useAuth();
   const [desk, setDesk] = useState(null);
-  const [rooms, setRooms] = useState([]); 
+  const [rooms, setRooms] = useState([]);
   const [building, setBuilding] = useState(null);
+  const [availabilityData, setAvailabilityData] = useState([]);
   const [error, setError] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   
@@ -20,7 +24,6 @@ const DeskDetails = () => {
         const response = await axios.get(`http://localhost:8081/api/v1/building/desk/${id}`);
         setDesk(response.data);
         
-        // Prioritize desk photos, then building photos
         const allPhotos = [
           ...(response.data.photos || []),
           ...(response.data.building?.photos || [])
@@ -32,6 +35,8 @@ const DeskDetails = () => {
           fetchBuilding(response.data.building.id);
           fetchRooms(response.data.building.id);
         }
+        
+        fetchAvailability(id);
       } catch (err) {
         setError("Failed to fetch desk details.");
         console.error(err);
@@ -57,8 +62,47 @@ const DeskDetails = () => {
       }
     };
 
+    const fetchAvailability = async (deskId) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8083/api/v1/availability/resource?type=DESK&resourceId=${deskId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "X-User-Id": user?.userId
+            }
+          }
+        );
+        setAvailabilityData(response.data || []);
+      } catch (err) {
+        console.error("Failed to fetch availability:", err);
+      }
+    };
+
     fetchDesk();
-  }, [id]);
+  }, [id, accessToken, user?.userId]);
+
+  const formatDayName = (dayCode) => {
+    const days = {
+      MONDAY: "Mon",
+      TUESDAY: "Tue",
+      WEDNESDAY: "Wed",
+      THURSDAY: "Thu",
+      FRIDAY: "Fri",
+      SATURDAY: "Sat",
+      SUNDAY: "Sun"
+    };
+    return days[dayCode] || dayCode;
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  const formatTime = (timeString) => {
+    if (!timeString) return "";
+    return timeString.substring(0, 5); 
+  };
 
   if (error) {
     return <p style={{ color: "red" }}>{error}</p>;
@@ -68,7 +112,6 @@ const DeskDetails = () => {
     return <p>Loading desk details...</p>;
   }
 
-  // Combine and deduplicate photos from desk and building
   const allPhotos = [
     ...(desk.photos || []),
     ...(building.photos || [])
@@ -107,7 +150,7 @@ const DeskDetails = () => {
           )}
         </div>
 
-        {/* Rest of the component remains the same */}
+        {/* Details Section */}
         <div className="details-section">
           <h2>{desk.desk}</h2>
           <hr />
@@ -128,13 +171,51 @@ const DeskDetails = () => {
               <strong>{desk.status}</strong>
             </div>
             <div className="detail-item">
-              <span>Available from</span>
+              <span>Created </span>
               <strong>{new Date(desk.creationDate).toLocaleDateString()}</strong>
             </div>
           </div>
           <hr />
           <p>{desk.description}</p>
           <hr />
+          
+          {/* Minimalist Availability Section */}
+          <div className="availability-section">
+            <h3><Calendar size={10} className="icon" /> Availability Schedule</h3>
+            {availabilityData.length > 0 ? (
+              <div className="schedule-container">
+                {availabilityData.map((schedule, index) => (
+                  <div key={index} className="schedule-card">
+                    <div className="schedule-date-range">
+                      <span>
+                        {formatDate(schedule.availableFrom)} - {formatDate(schedule.availableTo)}
+                      </span>
+                    </div>
+                    
+                    <div className="days-container">
+                      {schedule.availableDaysWithHours && schedule.availableDaysWithHours.map((dayData) => (
+                        <div key={dayData.dayId} className="day-item">
+                          <div className="day-name">{formatDayName(dayData.dayOfWeek)}</div>
+                          <div className="time-slots-container">
+                            {dayData.timeSlots.map((slot) => (
+                              <div key={slot.id} className="time-slot-pill">
+                                <Clock size={12} className="time-icon" />
+                                <span>{formatTime(slot.startTime)} - {formatTime(slot.endTime)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="no-availability">No availability information available at the moment.</p>
+            )}
+          </div>
+          <hr />
+          
           <div className="price-section">
             <p className="note">Rent online is {building.status}</p>
             <div>
@@ -148,9 +229,6 @@ const DeskDetails = () => {
           </div>
         </div>
       </div>
-
-      {/* The rest of the component remains unchanged */}
-      {/* ... (Building section, Rooms section, etc.) ... */}
 
       <Footer />
     </div>

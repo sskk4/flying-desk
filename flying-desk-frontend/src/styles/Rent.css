@@ -1,3 +1,192 @@
+.reservation-code-container {
+  margin: 20px 0;
+  padding: 1.5rem;
+  background-color: #ececec;
+  border-radius: 4vh;
+  border: 1px solid #e9ecef;
+}
+
+.reservation-code {
+  font-size: 24px;
+  font-weight: bold;
+  color: #5d48c0;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #d9d9d9;
+  border-radius: 5vh;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.code-instructions {
+  font-size: 14px;
+  color: #6c757d;
+  margin-top: 10px;
+}
+
+.rental-cancel-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #D9D9D9;
+  border-radius: 5vh;
+}
+
+.rental-cancel-container h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.rental-details {
+  background-color: #ececec;
+  padding: 1.5rem;
+  border-radius: 4vh;
+  margin-bottom: 1.5rem;
+  border:2px solid #c2c2c2;
+}
+
+.rental-detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 2px solid #d3d3d3;
+}
+
+.rental-detail-item:last-child {
+  border-bottom: none;
+}
+
+.rental-item
+{
+  margin:2vh;
+  background-color: #e5e5e5;
+  padding: 2vh;
+  color:#535353;
+  border-radius: 2vh;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #666;
+}
+
+.detail-value {
+  color: #333;
+  font-weight: 400;
+}
+
+.rental-detail-item.price {
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.rental-detail-item.price .detail-value {
+  color: #7158e2; 
+  font-weight: 600;
+}
+
+.cancellation-notice {
+  background-color: #f0e7e7;
+  border-left: 4px solid #ff6b6b;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px 2vh 2vh 4px;
+}
+
+.cancellation-notice p {
+  margin: 0;
+  color: #e63946;
+  font-weight: 500;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.confirm-cancel-btn {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5vh;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1;
+}
+
+.confirm-cancel-btn:hover {
+  background-color: #d32f2f;
+}
+
+.confirm-cancel-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+
+.rental-loading {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.rental-error-container {
+  max-width: 600px;
+  margin: 3rem auto;
+  text-align: center;
+}
+
+.rental-error {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 1.5rem;
+  border-radius: 6vh;
+  margin-bottom: 1.5rem;
+}
+
+.rental-success-container {
+  max-width: 600px;
+  margin: 3rem auto;
+  text-align: center;
+}
+
+.rental-success {
+  background-color: #d9d9d9;
+  color: #2e7d32;
+  padding: 2rem;
+  border-radius: 6vh;
+  margin-bottom: 1.5rem;
+}
+
+.rental-success h2 {
+  color: #2e7d32;
+  margin-bottom: 1rem;
+}
+
+
+@media (max-width: 768px) {
+  .rental-cancel-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .confirm-cancel-btn, 
+  .back-btn {
+    width: 100%;
+  }
+}
+
 
 .desk-container {
 
@@ -215,7 +404,7 @@
     background-color: #009688;
   }
   
-  .badge.conference {
+  .badge.room {
     background-color: #9c27b0;
   }
   

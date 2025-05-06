@@ -1,4 +1,6 @@
 CREATE TABLE IF NOT EXISTS user
+
+
 (
     id            BIGINT                 NOT NULL AUTO_INCREMENT PRIMARY KEY,
     firstname     VARCHAR(255)           NOT NULL,

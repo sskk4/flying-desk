@@ -2,6 +2,7 @@ package com.seba.office_service.model;
 
 import com.seba.office_service.dto.PhotoDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,13 +23,40 @@ public class Building {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "building", nullable = false)
+    @Column(nullable = false)
     @NotBlank(message = "Building name is mandatory")
     private String building;
 
-    @Column(name = "description")
+    @Column(nullable = false)
     @NotBlank(message = "Building description is mandatory")
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "building_type")
+    private BuildingType buildingType;
+
+    public enum BuildingType {
+        OFFICE, COWORKING, WAREHOUSE, OTHER
+    }
+
+    @Column(name = "total_floors")
+    private Integer totalFloors;
+
+    @Column(name = "has_elevator")
+    private Boolean hasElevator = false;
+
+    @Column(name = "has_parking")
+    private Boolean hasParking = false;
+
+    @Column(name = "contact_email")
+    @Email
+    private String contactEmail;
+
+    @Column(name = "contact_phone")
+    private String contactPhone;
+
+    @Column(name = "rating", precision = 2, scale = 1)
+    private BigDecimal rating;
 
     @ManyToOne
     @JoinColumn(name = "address_id")
@@ -57,6 +86,6 @@ public class Building {
         ACTIVE, INACTIVE, UNDER_REVIEW
     }
 
-    @Transient // Pole nie zapisuje się w bazie
+    @Transient
     private List<PhotoDTO> photos;
 }

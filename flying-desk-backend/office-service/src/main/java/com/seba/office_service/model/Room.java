@@ -8,6 +8,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,11 +20,11 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "room", nullable = false)
+    @Column(nullable = false)
     @NotBlank(message = "Room name is mandatory")
     private String room;
 
-    @Column(name = "equipment", nullable = false)
+    @Column(nullable = false)
     private String equipment;
 
     @ManyToOne
@@ -38,7 +39,16 @@ public class Room {
     private Double price;
 
     @Column(name = "max_occupants")
-    private Integer maxOccupants; // Pole określające maksymalną liczbę osób
+    private Integer maxOccupants;
+
+    @Column(name = "floor_number")
+    private Integer floorNumber;
+
+    @Column(name = "surface")
+    private BigDecimal surface;
+
+    @Column(name = "rating", precision = 2, scale = 1)
+    private BigDecimal rating;
 
     @CreationTimestamp
     @Column(name = "creation_date", updatable = false, nullable = false)
@@ -49,7 +59,7 @@ public class Room {
     private LocalDateTime editDate;
 
     @Column(name = "is_approved", nullable = false)
-    private Boolean isApproved = false; // Domyślna wartość: niezaakceptowane
+    private Boolean isApproved = false;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -59,11 +69,6 @@ public class Room {
         AVAILABLE, BOOKED, OUT_OF_SERVICE
     }
 
-
-    public enum Equipment {
-        DESK, PROJECTOR, MULTIMEDIA_BOARD, WHITEBOARD
-    }
-
-    @Transient // Pole nie zapisuje się w bazie
+    @Transient
     private List<PhotoDTO> photos;
 }

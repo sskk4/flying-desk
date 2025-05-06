@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./SearchBar.css";
 import FiltresBarOffice from "../FiltresBar/FiltresBarOffice"; 
 import FiltresBarDesks from "../FiltresBar/FiltresBarDesk"; 
+import FiltresBarRooms from "../FiltresBar/FiltresBarRoom";
 import searchIcon from "../../assets/icons/search.svg";
 import filterIcon from "../../assets/icons/filter.svg";
 
@@ -53,6 +54,15 @@ const SearchBar = ({ filterType, onSearchChange, onFilterChange, onSortChange })
             onSortChange={onSortChange}
           />
         );
+        case "room":
+          return (
+            <FiltresBarRooms
+              isFiltersOpen={isFiltersOpen}
+              toggleFilters={toggleFilters}
+              onFilterChange={onFilterChange}
+              onSortChange={onSortChange}
+            />
+          );
       default:
         console.warn(`Unknown filter type: ${filterType}`);
         return null;

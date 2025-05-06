@@ -21,9 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Service odpowiedzialny za logikę biznesową dotyczącą biurek.
@@ -71,16 +73,12 @@ public class DeskService {
                 .and(DeskSpecification.withCreationDateBetween(startDate, endDate))
                 .and(DeskSpecification.withPriceBetween(minPrice, maxPrice));
 
-        // Tworzymy obiekt sortowania
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-        // Tworzymy pageable z sortowaniem
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-        // Pobieramy biurka z repozytorium
         Page<Desk> desks = deskRepository.findAll(specification, pageable);
 
-        // Dodajemy zdjęcia do każdego biurka
         desks.forEach(desk -> {
             List<PhotoDTO> photos = photoService.getPhotos("DESK", desk.getId());
             desk.setPhotos(photos);
@@ -98,19 +96,47 @@ public class DeskService {
      * @return Strona z biurkami spełniającymi warunki filtrowania.
      */
     public Page<Desk> getDesksByApprovalStatus(Boolean isApproved, Pageable pageable) {
-        // Pobranie biurek bez filtrowania
         if (isApproved == null) {
             log.info("Fetching all desks without filtering approval status");
             return deskRepository.findAll(pageable);
         }
-        // Pobranie biurek z filtrowaniem
         else {
             log.info("Fetching desks with approval status: {}", isApproved);
             return deskRepository.findByIsApproved(isApproved, pageable);
         }
     }
 
+    /**
+     * Pobiera wszystkie biurka należące do budynków danego użytkownika.
+     *
+     * @param userId ID użytkownika.
+     * @param pageable Parametry paginacji i sortowania.
+     * @return Lista biurek użytkownika.
+     */
+    public Page<Desk> getDesksByUserId(Long userId, Pageable pageable) {
+        log.info("Fetching paginated desks for user ID: {}", userId);
 
+        // Najpierw pobieramy ID budynków użytkownika
+        List<Long> buildingIds = buildingRepository.findAllByUserId(userId, pageable)
+                .stream()
+                .map(Building::getId)
+                .collect(Collectors.toList());
+
+        if (buildingIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        // Następnie pobieramy biurka z tych budynków
+        Page<Desk> desks = deskRepository.findByBuilding(buildingIds, pageable);
+
+        // Dodajemy zdjęcia do każdego biurka
+        desks.forEach(desk -> {
+            List<PhotoDTO> photos = photoService.getPhotos("DESK", desk.getId());
+            desk.setPhotos(photos);
+        });
+
+        return desks;
+    }
 
     /**
      * Pobiera wszystkie biurka z możliwością paginacji i sortowania.
@@ -151,13 +177,11 @@ public class DeskService {
      * @throws ResourceNotFoundException Jeśli budynek o podanym ID nie istnieje
      */
     public Page<Desk> getDesksByBuildingId(Long buildingId, Boolean isApproved, Pageable pageable) {
-        // Sprawdzenie, czy budynek istnieje
         Building building = buildingRepository.findById(buildingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Building not found with ID: " + buildingId));
 
         Page<Desk> desks;
 
-        // Pobranie biurek w zależności od statusu zatwierdzenia
         if (isApproved == null) {
             log.info("Fetching all desks for building ID: {}", buildingId);
             desks = deskRepository.findByBuilding(building, pageable);
@@ -166,7 +190,6 @@ public class DeskService {
             desks = deskRepository.findByBuildingAndIsApproved(building, isApproved, pageable);
         }
 
-        // Pobranie zdjęć dla każdego biurka
         desks.forEach(desk -> {
             List<PhotoDTO> photos = photoService.getPhotos("DESK", desk.getId());
             desk.setPhotos(photos);
@@ -284,7 +307,8 @@ public class DeskService {
         desk.setDesk(deskDTO.getDesk());
         desk.setEquipment(deskDTO.getEquipment());
         desk.setDescription(deskDTO.getDescription());
-        desk.setPrice(deskDTO.getPrice());
+        desk.setFloorNumber(deskDTO.getFloorNumber());
+        desk.setPrice(BigDecimal.valueOf(deskDTO.getPrice()));
         desk.setStatus(Desk.Status.valueOf(deskDTO.getStatus().toUpperCase()));
         desk.setBuilding(building);
         desk.setIsApproved(false);

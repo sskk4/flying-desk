@@ -17,7 +17,7 @@ const OwnerContainer = () => {
         <Header />
     <div className="owner-container">
 
-    <Link to="/desks">
+    <Link to="/for-customer">
       <div className="image-hover-container">
       <div className="image-wrapper">
         <img
@@ -33,7 +33,7 @@ const OwnerContainer = () => {
       </div>
     </div>
     </Link>
-    <Link to="/desks">
+    <Link to="/for-customer">
     <button className="rent-button create-button">Start rent</button>
     </Link>
 

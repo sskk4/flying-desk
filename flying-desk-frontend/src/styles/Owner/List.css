@@ -1,0 +1,433 @@
+/* ManageAds.css */
+
+
+.rental-details-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.rental-stats-container {
+  margin-bottom: 30px;
+}
+
+.stats-card {
+  background-color: #dadada;
+  border-radius: 3vh;
+  padding: 1.5rem;
+}
+
+.stats-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.stats-header h3 {
+  margin: 0 0 0 10px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 15px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem;
+  border-radius: 3vh;
+  background-color: #ececec;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #7360DF;
+}
+
+.rental-history-container {
+  margin-bottom: 30px;
+  
+}
+
+.rental-history-container h3 {
+  font-size: 1.3rem;
+  
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.rental-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+}
+
+.rental-item-card {
+  
+  background-color: #dadada;
+  border-radius: 3vh;
+  padding: 1.5rem 5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rental-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.rental-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.rental-date {
+  gap: 8px;
+  font-weight: 600;
+}
+
+.rental-status {
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
+  border-radius: 2vh;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: #ececec;
+  color: #7360DF;
+}
+
+.rental-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rental-detail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rental-duration {
+  margin-left: auto;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.rental-user-email {
+  margin-left: 10px;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.rental-price {
+  font-weight: 600;
+  color: #28a745;
+}
+
+.no-rentals-message {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+
+
+
+.secondary-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.2s;
+}
+
+.secondary-button:hover {
+  background-color: #5a6268;
+}
+
+/* Tabs */
+.manage-ads-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+
+
+/* Grid Layout for Cards */
+.ads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 30px;
+}
+
+/* Office Card Styling */
+.office-card {
+  background: #fdfdfd;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #eaeaea;
+}
+
+.office-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  border-color: #d0c4ff;
+}
+
+.office-image {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.office-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.office-card:hover .office-image img {
+  transform: scale(1.05);
+}
+
+.status-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.active {
+  background-color: #9f83ff;
+  color: white;
+}
+
+.status-badge.inactive {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+/* Office Content */
+.office-content {
+  padding: 20px;
+}
+
+.office-content h3 {
+  color: #2D297D;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.office-address {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.office-address svg {
+  margin-top: 3px;
+  color: #9f83ff;
+}
+
+.approval-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eaeaea;
+  font-size: 14px;
+}
+
+.approval-status .approved {
+  color: #4caf50;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.approval-status .not-approved {
+  color: #f44336;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.primary-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #9f83ff;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.primary-button:hover {
+  background-color: #7c63d9;
+}
+
+.button-groups {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+.button-group {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.button-group h4 {
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  color: #2D297D;
+  font-weight: 500;
+}
+
+.group-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.group-buttons button {
+  padding: 8px;
+  background-color: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.group-buttons button:hover {
+  background-color: #d0c4ff;
+  border-color: #9f83ff;
+  color: #2D297D;
+}
+
+/* Add button */
+.floating-add-button {
+  margin-top: 20px;
+  padding: 15px 30px;
+  background-color: #9f83ff;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 10px rgba(159, 131, 255, 0.3);
+}
+
+.floating-add-button:hover {
+  background-color: #7c63d9;
+  box-shadow: 0 6px 15px rgba(159, 131, 255, 0.4);
+}
+
+/* Loading indicator */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #9f83ff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ads-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .manage-ads-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab-button {
+    margin-bottom: 10px;
+  }
+  
+  .office-image {
+    height: 160px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .ads-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

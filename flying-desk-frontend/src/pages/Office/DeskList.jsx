@@ -32,19 +32,18 @@ const DeskList = () => {
     const applyFilters = debounce(() => {
       setFilters((prevFilters) => ({
         ...prevFilters,
-        ...tempFilters, // Mieszamy filtry zaktualizowane z tymczasowymi
+        ...tempFilters,
       }));
-      setPage(0); // Resetowanie do pierwszej strony po zmianie
+      setPage(0); 
     }, 500);
 
     const handleFilterChange = (field, value) => {
-      // Bezpośrednia synchronizacja filtrów
       setFilters((prev) => ({
         ...prev,
-        [field]: value, // Aktualizacja właściwości
+        [field]: value, 
       }));
       
-      setPage(0); // Resetowanie strony
+      setPage(0); 
     };
 
   const handleSortChange = (sort) => {
@@ -55,9 +54,9 @@ const DeskList = () => {
   const handleSearchChange = (search) => {
     setFilters((prev) => ({
       ...prev,
-      search, // Aktualizacja wyszukiwania w głównych filtrach
+      search, 
     }));
-    setPage(0); // Resetowanie strony
+    setPage(0); 
   };
 
 
@@ -65,11 +64,11 @@ const DeskList = () => {
       const queryParams = new URLSearchParams();
     
       Object.entries({
-        country: filters.countryId,   // Zmapowane na API
-        city: filters.cityId,         // Zmapowane na API
+        country: filters.countryId,   
+        city: filters.cityId,        
         status: filters.status,
-        startDate: filters.dateFrom,  // Zmieniona nazwa
-        endDate: filters.dateTo,      // Zmieniona nazwa
+        startDate: filters.dateFrom,  
+        endDate: filters.dateTo,      
         equipment: filters.equipment,
         minPrice: filters.priceFrom,
         maxPrice: filters.priceTo,
@@ -87,58 +86,60 @@ const DeskList = () => {
 
 
 
-  
-    useEffect(() => {
-      const fetchDesks = async () => {
-        try {
-          setLoading(true);
-    
-          const [sortBy, sortDir] = filters.sort.split("-");
-          const params = {
-            country: filters.countryId || null,
-            city: filters.cityId || null,
-            status: filters.status || null,
-            startDate: filters.dateFrom || null,
-            endDate: filters.dateTo || null,
-            equipment: filters.equipment || null,
-            minPrice: filters.priceFrom || null,
-            maxPrice: filters.priceTo || null,
-            sortBy,
-            sortDir,
-            page,
-            size: 9,
- 
-          };
-    
-          const filteredParams = Object.fromEntries(
-            Object.entries(params).filter(([_, value]) => value !== null)
-          );
-    
-          console.log("Wysyłane parametry do API:", filteredParams);
-    
-          const response = await axios.get("http://localhost:8081/api/v1/building/desks", {
-            params: filteredParams,
-          });
-    
-          setDesks(response.data?.content || []);
-          setTotalPages(response.data?.totalPages || 0);
-        } catch (err) {
-          console.error("Błąd podczas pobierania danych:", err);
-          setError("Failed to fetch desks. Please try again later.");
-        } finally {
-          setLoading(false);
-        }
+useEffect(() => {
+  const fetchDesks = async () => {
+    try {
+      setLoading(true);
+
+      const [sortBy, sortDir] = filters.sort.split("-");
+      const params = {
+        country: filters.countryId || null,
+        city: filters.cityId || null,
+        status: filters.status || null,
+        startDate: filters.dateFrom || null,
+        endDate: filters.dateTo || null,
+        equipment: filters.equipment || null,
+        minPrice: filters.priceFrom || null,
+        maxPrice: filters.priceTo || null,
+        isApproved: true,
+        sortBy,
+        sortDir,
+        page,
+        size: 9,
       };
-    
-      fetchDesks();
-    }, [filters, page]); // Filtry i strona jako wyzwalacze
+
+      const filteredParams = Object.fromEntries(
+        Object.entries(params).filter(([_, value]) => value !== null)
+      );
+
+      const response = await axios.get("http://localhost:8081/api/v1/building/desks", {
+        params: filteredParams,
+      });
+
+      const allDesks = response.data?.content || [];
+
+      const approvedDesks = allDesks
+
+      setDesks(approvedDesks);
+      setTotalPages(response.data?.totalPages || 0);
+    } catch (err) {
+      console.error("Błąd podczas pobierania danych:", err);
+      setError("Failed to fetch desks. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchDesks();
+}, [filters, page]);
+
 
   return (
     <div>
       <Header />
 
         <SearchBar
-          filterType="desk" // Filtry dla biurek
+          filterType="desk"
           onSearchChange={handleSearchChange}
           onFilterChange={handleFilterChange}
           onSortChange={handleSortChange}
@@ -175,7 +176,7 @@ const DeskList = () => {
       </div>
     ))}
   </div>
-) : !loading && !error ? ( // Wyświetlamy tylko, gdy nie ma błędów ani ładowania
+) : !loading && !error ? ( 
   <div className="no-results">
     {filters.search
       ? `No offices found for "${filters.search}". Try adjusting your search.`

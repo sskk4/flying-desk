@@ -1,0 +1,412 @@
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../../services/AuthProvider";
+import FormField from "../../../components/Form/FormField";
+import Header from "../../../components/Header/Header";
+import Footer from "../../../components/Footer/Footer";
+import OwnerTabs from "./OwnerTabs";
+
+const OwnerManageOffice = () => {
+  const { buildingId } = useParams();
+  const { accessToken, user } = useAuth();
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    buildingName: "",
+    description: "",
+    address: {
+      street: "",
+      buildingNumber: "",
+      zipCode: "",
+      cityId: "",
+      countryId: "",
+    },
+    buildingType: "",
+    totalFloors: "",
+    hasElevator: false,
+    hasParking: false,
+    contactEmail: "",
+    contactPhone: "",
+  });
+
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [files, setFiles] = useState([]);
+  const [currentPhotos, setCurrentPhotos] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const fetchBuilding = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8081/api/v1/building/${buildingId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        const buildingData = response.data;
+        
+        let street = "";
+        let buildingNumber = "";
+        
+        if (buildingData.address && buildingData.address.address) {
+          const addressParts = buildingData.address.address.split(',');
+          street = addressParts[0] ? addressParts[0].trim() : "";
+          buildingNumber = addressParts[1] ? addressParts[1].trim() : "";
+        }
+        
+        setFormData({
+          buildingName: buildingData.building || "",
+          description: buildingData.description || "",
+          address: {
+            street: street,
+            buildingNumber: buildingNumber,
+            zipCode: buildingData.address?.zipCode || "",
+            cityId: buildingData.address?.city?.id || "",
+            countryId: buildingData.address?.country?.id || "",
+          },
+          buildingType: buildingData.buildingType || "",
+          totalFloors: buildingData.totalFloors || "",
+          hasElevator: buildingData.hasElevator || false,
+          hasParking: buildingData.hasParking || false,
+          contactEmail: buildingData.contactEmail || "",
+          contactPhone: buildingData.contactPhone || "",
+        });
+        
+        if (buildingData.photos && buildingData.photos.length > 0) {
+          setCurrentPhotos(buildingData.photos);
+        }
+        
+      } catch (err) {
+        console.error("Error fetching building:", err);
+        setError("Failed to load building details. Please try again later.");
+      }
+    };
+
+    if (buildingId && accessToken) {
+      fetchBuilding();
+    }
+  }, [buildingId, accessToken]);
+
+  useEffect(() => {
+    if (accessToken) {
+      axios
+        .get("http://localhost:8081/api/v1/country", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((res) => setCountries(res.data))
+        .catch((err) => console.error("Error fetching countries:", err));
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (formData.address.countryId) {
+      axios
+        .get(`http://localhost:8081/api/v1/city/by-country/${formData.address.countryId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((res) => setCities(res.data))
+        .catch((err) => setError("Error fetching cities."));
+    }
+  }, [formData.address.countryId, accessToken]);
+
+  const handleChange = (field, value, section = null) => {
+    if (section === "address") {
+      setFormData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          [field]: value,
+        },
+      }));
+    } else {
+      setFormData((prevData) => ({ ...prevData, [field]: value }));
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const validFiles = selectedFiles.filter((file) => file.size <= maxSize);
+
+    if (validFiles.length !== selectedFiles.length) {
+      setError("Some files exceed the maximum size of 5MB.");
+    }
+
+    setFiles(validFiles);
+  };
+
+  const handleRemovePhoto = (photoUrl) => {
+    setCurrentPhotos(currentPhotos.filter(photo => photo.url !== photoUrl));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const buildingData = {
+      id: buildingId,
+      building: formData.buildingName,
+      description: formData.description,
+      address: {
+        street: formData.address.street,
+        buildingNumber: formData.address.buildingNumber,
+        zipCode: formData.address.zipCode,
+        cityId: parseInt(formData.address.cityId, 10),
+        countryId: parseInt(formData.address.countryId, 10),
+      },
+      buildingType: formData.buildingType,
+      totalFloors: parseInt(formData.totalFloors, 10),
+      hasElevator: formData.hasElevator,
+      hasParking: formData.hasParking,
+      contactEmail: formData.contactEmail,
+      contactPhone: formData.contactPhone,
+      retainedPhotoIds: currentPhotos.map(photo => photo.id)
+    };
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("building", new Blob([JSON.stringify(buildingData)], { type: "application/json" }));
+    files.forEach((file) => formDataToSend.append("files", file));
+
+    try {
+      await axios.put(`http://localhost:8081/api/v1/building/${buildingId}`, formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "X-User-Id": user.userId,
+        },
+      });
+
+      setMessage("Building updated successfully!");
+      setTimeout(() => {
+        navigate("/owner");
+      }, 2000);
+    } catch (err) {
+      setError("Error updating building. Try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <Header />
+      <div className="manage-ads-container">
+        <OwnerTabs />
+        
+        <div className="form-container">
+          <form onSubmit={handleSubmit}>
+            <button
+              className="create-button back-button"
+              type="button"
+              onClick={() => navigate("/owner")}
+            >
+              Back
+            </button>
+
+            <h2>Edit Your Office Space</h2>
+            <hr />
+            
+            <FormField
+              id="buildingName"
+              label="Building Name"
+              type="text"
+              value={formData.buildingName}
+              onChange={(e) => handleChange("buildingName", e.target.value)}
+            />
+            
+            <FormField
+              id="description"
+              label="Description"
+              type="textarea"
+              value={formData.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+            />
+            
+            <hr />
+            
+            <div className="select-form"> 
+              <label className="custom-label" htmlFor="countryId">Country</label>
+              <select className="custom-select"
+                id="countryId"
+                value={formData.address.countryId}
+                onChange={(e) => handleChange("countryId", e.target.value, "address")}
+              >
+                <option value="">Select Country</option>
+                {countries.map((country) => (
+                  <option key={country.id} value={country.id}>
+                    {country.country}
+                  </option>
+                ))}
+              </select>
+              <br></br>
+              <label htmlFor="cityId">City</label>
+              <br></br>
+              <select
+                id="cityId"
+                value={formData.address.cityId}
+                onChange={(e) => handleChange("cityId", e.target.value, "address")}
+                disabled={!formData.address.countryId}
+              >
+                <option value="">Select City</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.city}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <hr></hr>
+            
+            <FormField
+              id="street"
+              label="Street"
+              type="text"
+              value={formData.address.street}
+              onChange={(e) => handleChange("street", e.target.value, "address")}
+            />
+            
+            <FormField
+              id="buildingNumber"
+              label="Building Number"
+              type="text"
+              value={formData.address.buildingNumber}
+              onChange={(e) => handleChange("buildingNumber", e.target.value, "address")}
+            />
+            
+            <FormField
+              id="zipCode"
+              label="Zip Code"
+              type="text"
+              value={formData.address.zipCode}
+              onChange={(e) => handleChange("zipCode", e.target.value, "address")}
+            />
+
+            <hr />
+
+            <div className="select-form">
+              <label htmlFor="buildingType">Building Type</label>
+              <br></br>
+              <select
+                id="buildingType"
+                value={formData.buildingType}
+                onChange={(e) => handleChange("buildingType", e.target.value)}
+              >
+                <option value="">Select Building Type</option>
+                <option value="OFFICE">OFFICE</option>
+                <option value="COWORKING">COWORKING</option>
+                <option value="WAREHOUSE">WAREHOUSE</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            
+            <hr></hr>
+
+            <FormField
+              id="totalFloors"
+              label="Total Floors"
+              type="number"
+              value={formData.totalFloors}
+              onChange={(e) => handleChange("totalFloors", e.target.value)}
+            />
+            
+            <div className="checkbox-field">
+              <input
+                id="hasElevator"
+                type="checkbox"
+                checked={formData.hasElevator}
+                onChange={(e) => handleChange("hasElevator", e.target.checked)}
+              />
+              <label htmlFor="hasElevator">Has Elevator</label>
+            </div>
+            
+            <div className="checkbox-field">
+              <input
+                id="hasParking"
+                type="checkbox"
+                checked={formData.hasParking}
+                onChange={(e) => handleChange("hasParking", e.target.checked)}
+              />
+              <label htmlFor="hasParking">Has Parking</label>
+            </div>
+            
+            <hr />
+
+            <FormField
+              id="contactEmail"
+              label="Contact Email"
+              type="email"
+              value={formData.contactEmail}
+              onChange={(e) => handleChange("contactEmail", e.target.value)}
+            />
+            
+            <FormField
+              id="contactPhone"
+              label="Contact Phone"
+              type="tel"
+              value={formData.contactPhone}
+              onChange={(e) => handleChange("contactPhone", e.target.value)}
+            />
+
+            <hr />
+            
+            {/* Current Photos Display */}
+            {currentPhotos.length > 0 && (
+              <div className="current-photos">
+                <h3>Current Photos</h3>
+                <div className="photos-grid">
+                  {currentPhotos.map((photo, index) => (
+                    <div key={index} className="photo-item">
+                      <img src={photo.url} alt={`Office ${index + 1}`} />
+                      <button 
+                        type="button" 
+                        className="remove-photo" 
+                        onClick={() => handleRemovePhoto(photo.url)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <div>
+              <h3>Upload New Photos ({5 - currentPhotos.length} remaining)</h3>
+              <input 
+                type="file" 
+                multiple 
+                onChange={handleFileChange} 
+                disabled={currentPhotos.length >= 5}
+              />
+              {currentPhotos.length >= 5 && (
+                <p className="info-message">Maximum number of photos reached. Remove existing photos to add new ones.</p>
+              )}
+            </div>
+            
+            <hr />
+            
+            {error && <p className="error-message">{error}</p>}
+            {message && <p className="success-message">{message}</p>}
+            
+            <button className="create-button" type="submit" disabled={loading}>
+              {loading ? "Updating..." : "Update Building"}
+            </button>
+          </form>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
+};
+
+export default OwnerManageOffice;

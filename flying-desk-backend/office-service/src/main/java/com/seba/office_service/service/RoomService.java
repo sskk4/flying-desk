@@ -9,19 +9,23 @@ import com.seba.office_service.model.Desk;
 import com.seba.office_service.model.Room;
 import com.seba.office_service.repository.BuildingRepository;
 import com.seba.office_service.repository.RoomRepository;
+import com.seba.office_service.utils.RoomSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.seba.office_service.utils.RoomSpecification;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Service odpowiedzialny za logikę biznesową dotyczącą pokoi.
@@ -41,21 +45,43 @@ public class RoomService {
     private static final long MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // Maksymalny rozmiar pliku (5 MB)
 
 
-
-    public Page<Room> getAllRoomsWithFilters(Long buildingId, Boolean isApproved, String name, Pageable pageable) {
-
+    public Page<Room> getAllRoomsWithFilters(
+            Long buildingId,
+            Boolean isApproved,
+            String name,
+            String equipment,
+            Room.Status status,
+            String country,
+            String city,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Integer minOccupants,
+            Integer maxOccupants,
+            Double minPrice,
+            Double maxPrice,
+            String sortBy,
+            String sortDir,
+            Pageable pageable
+    ) {
         // Tworzymy specyfikację filtrowania
         Specification<Room> specification = Specification
                 .where(RoomSpecification.withBuildingId(buildingId))
                 .and(RoomSpecification.withApprovalStatus(isApproved))
-                .and(RoomSpecification.withNameContaining(name));
+                .and(RoomSpecification.hasSearch(name))
+                .and(RoomSpecification.withEquipmentContaining(equipment))
+                .and(RoomSpecification.withStatus(status))
+                .and(RoomSpecification.withBuildingCountry(country))
+                .and(RoomSpecification.withBuildingCity(city))
+                .and(RoomSpecification.withCreationDateBetween(startDate, endDate))
+                .and(RoomSpecification.withOccupantsBetween(minOccupants, maxOccupants))
+                .and(RoomSpecification.withPriceBetween(minPrice, maxPrice));
 
-        log.info("Fetching all rooms with filters: buildingId={}, isApproved={}, name={}", buildingId, isApproved, name);
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-        // Pobieramy pokoje z repozytorium
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
         Page<Room> rooms = roomRepository.findAll(specification, pageable);
 
-        // Dodajemy zdjęcia do każdego pokoju
         rooms.forEach(room -> {
             List<PhotoDTO> photos = photoService.getPhotos("ROOM", room.getId());
             room.setPhotos(photos);
@@ -65,25 +91,32 @@ public class RoomService {
     }
 
     /**
-     * Pobiera pokoje w określonym budynku z możliwością filtrowania według statusu zatwierdzenia.
+     * Pobiera wszystkie pokoje należące do budynków danego użytkownika.
      *
-     * @param buildingId ID budynku
-     * @param isApproved Opcjonalny status akceptacji (true/false)
-     * @param pageable   Parametry paginacji
-     * @return Strona pokoi
-     * @throws ResourceNotFoundException Jeśli budynek o podanym ID nie istnieje
+     * @param userId ID użytkownika.
+     * @param pageable Parametry paginacji i sortowania.
+     * @return Lista pokoi użytkownika.
      */
-    public Page<Room> getRoomsByBuildingId(Long buildingId, Boolean isApproved, Pageable pageable) {
-        Building building = buildingRepository.findById(buildingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Building not found with ID: " + buildingId));
+    public Page<Room> getRoomsByUserId(Long userId, Pageable pageable) {
+        log.info("Fetching paginated rooms for user ID: {}", userId);
 
-        if (isApproved == null) {
-            log.info("Fetching all rooms for building ID: {}", buildingId);
-            return roomRepository.findByBuilding(building, pageable);
-        } else {
-            log.info("Fetching rooms for building ID: {} with approval status: {}", buildingId, isApproved);
-            return roomRepository.findByBuildingAndIsApproved(building, isApproved, pageable);
+
+        List<Long> buildingIds = buildingRepository.findAllByUserId(userId, pageable)
+                .stream()
+                .map(Building::getId)
+                .collect(Collectors.toList());
+
+        if (buildingIds.isEmpty()) {
+            return Page.empty(pageable);
         }
+        Page<Room> rooms = roomRepository.findByBuilding(buildingIds, pageable);
+
+        rooms.forEach(room -> {
+            List<PhotoDTO> photos = photoService.getPhotos("ROOM", room.getId());
+            room.setPhotos(photos);
+        });
+
+        return rooms;
     }
 
     /**
@@ -97,7 +130,9 @@ public class RoomService {
         if (isApproved == null) {
             log.info("Fetching all rooms without filtering approval status");
             return roomRepository.findAll(pageable);
-        } else {
+        }
+
+        else {
             log.info("Fetching rooms with approval status: {}", isApproved);
             return roomRepository.findByIsApproved(isApproved, pageable);
         }
@@ -133,13 +168,44 @@ public class RoomService {
     }
 
     /**
+     * Pobiera pokoje w określonym budynku z możliwością filtrowania według statusu zatwierdzenia.
+     *
+     * @param buildingId ID budynku
+     * @param isApproved Opcjonalny status akceptacji (true/false)
+     * @param pageable   Parametry paginacji
+     * @return Strona pokoi
+     * @throws ResourceNotFoundException Jeśli budynek o podanym ID nie istnieje
+     */
+    public Page<Room> getRoomsByBuildingId(Long buildingId, Boolean isApproved, Pageable pageable) {
+        Building building = buildingRepository.findById(buildingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Building not found with ID: " + buildingId));
+
+        Page<Room> rooms;
+
+        if (isApproved == null) {
+            log.info("Fetching all rooms for building ID: {}", buildingId);
+            rooms = roomRepository.findByBuilding(building, pageable);
+        } else {
+            log.info("Fetching rooms for building ID: {} with approval status: {}", buildingId, isApproved);
+            rooms = roomRepository.findByBuildingAndIsApproved(building, isApproved, pageable);
+        }
+
+        rooms.forEach(room -> {
+            List<PhotoDTO> photos = photoService.getPhotos("ROOM", room.getId());
+            room.setPhotos(photos);
+        });
+
+        return rooms;
+    }
+
+    /**
      * Tworzy nowy pokój i zapisuje powiązane zdjęcia (jeśli dostarczono).
      *
      * @param roomDTO    Szczegóły nowego pokoju.
      * @param buildingId ID budynku, do którego przypisany jest pokój.
      * @param files      Lista zdjęć do powiązania z tworzonym pokojem.
      * @return Zapisany pokój.
-     * @throws IOException               W przypadku problemów z zapisem zdjęć.
+     * @throws IOException W przypadku problemów z zapisem zdjęć.
      * @throws ResourceNotFoundException Jeśli budynek o podanym ID nie istnieje.
      */
     public Room createRoom(RoomDTO roomDTO, Long buildingId, List<MultipartFile> files) throws IOException {
@@ -210,7 +276,7 @@ public class RoomService {
      */
     private void validateFiles(List<MultipartFile> files) {
         if (files == null || files.isEmpty()) {
-            throw new IllegalArgumentException("No files provided. Please upload at least one photo.");
+            return; // Pozwalamy na brak plików
         }
 
         if (files.size() > MAX_FILES_ALLOWED) {
@@ -240,10 +306,12 @@ public class RoomService {
         room.setEquipment(roomDTO.getEquipment());
         room.setDescription(roomDTO.getDescription());
         room.setMaxOccupants(roomDTO.getMaxOccupants());
+        room.setFloorNumber(roomDTO.getFloorNumber());
+        room.setSurface(roomDTO.getSurface());
         room.setPrice(roomDTO.getPrice());
         room.setStatus(Room.Status.valueOf(roomDTO.getStatus().toUpperCase()));
         room.setBuilding(building);
-        room.setIsApproved(false); // Domyślny status zatwierdzenia
+        room.setIsApproved(false);
         return room;
     }
 }

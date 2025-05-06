@@ -23,12 +23,21 @@ CREATE TABLE IF NOT EXISTS building (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     building VARCHAR(255),
     description VARCHAR(255),
+
+    building_type ENUM('OFFICE', 'COWORKING', 'WAREHOUSE', 'OTHER'),
+    total_floors INT,
+    has_elevator BOOLEAN DEFAULT FALSE,
+    has_parking BOOLEAN DEFAULT FALSE,
+    contact_email VARCHAR(100),
+    contact_phone VARCHAR(20),
+    rating DECIMAL(2,1),
+
     address_id BIGINT,
     user_id BIGINT,
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     edit_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     status ENUM('ACTIVE', 'INACTIVE', 'UNDER_REVIEW') DEFAULT 'ACTIVE',
-    is_approved BOOLEAN DEFAULT FALSE, -- Pole wskazujące, czy zostało zaakceptowane przez administratora
+    is_approved BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (address_id) REFERENCES address (id)
     );
 
@@ -39,6 +48,11 @@ CREATE TABLE IF NOT EXISTS room (
     equipment TEXT,
     building_id BIGINT,
     description TEXT,
+
+    floor_number INT,
+    surface DECIMAL(6, 2),
+    rating DECIMAL(2,1),
+
     max_occupants INT,
     price DECIMAL(10, 2),
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -53,6 +67,10 @@ CREATE TABLE IF NOT EXISTS desk (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     desk VARCHAR(255),
     equipment TEXT,
+
+    floor_number INT,
+    rating DECIMAL(2,1),
+
     building_id BIGINT,
     description TEXT,
     price DECIMAL(10, 2),

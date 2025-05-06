@@ -137,7 +137,6 @@ const OfficeList = () => {
     
         const buildingsData = response.data?.content || [];
     
-        // Pobieramy biurka dla każdego budynku i filtrujemy tylko te, które mają biurka
         const buildingsWithDesks = await Promise.all(
           buildingsData.map(async (building) => {
             try {
@@ -155,7 +154,6 @@ const OfficeList = () => {
           })
         );
     
-        // Usuwamy budynki, które nie mają biurek
         setBuildings(buildingsWithDesks.filter((building) => building !== null));
         setTotalPages(response.data?.totalPages || 0);
       } catch (err) {

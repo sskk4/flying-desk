@@ -1,5 +1,6 @@
 package com.seba.office_service.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+
+import java.math.BigDecimal;
 
 /**
  * DTO dla klasy Room, reprezentujący szczegóły pokoju w formie zewnętrznej do użycia np. w kontrolerach.
@@ -27,6 +30,12 @@ public class RoomDTO {
 
     @Positive(message = "Max occupants must be a positive number")
     private Integer maxOccupants;
+
+    @Positive(message = "floor_number must be a positive number")
+    private Integer floorNumber;
+
+    @Positive(message = "Surface must be  apositive number")
+    private BigDecimal surface;
 
     @Positive(message = "Price must be a positive number")
     private Double price;

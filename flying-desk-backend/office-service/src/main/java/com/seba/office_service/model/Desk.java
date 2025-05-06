@@ -8,6 +8,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,12 +20,18 @@ public class Desk {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "desk", nullable = false)
+    @Column(nullable = false)
     @NotBlank(message = "Desk name is mandatory")
     private String desk;
 
-    @Column(name = "equipment", nullable = false)
+    @Column(nullable = false)
     private String equipment;
+
+    @Column(name = "floor_number")
+    private Integer floorNumber;
+
+    @Column(name = "rating", precision = 2, scale = 1)
+    private BigDecimal rating;
 
     @ManyToOne
     @JoinColumn(name = "building_id")
@@ -35,7 +42,7 @@ public class Desk {
     private String description;
 
     @Column(name = "price")
-    private Double price;
+    private BigDecimal price;
 
     @CreationTimestamp
     @Column(name = "creation_date", updatable = false, nullable = false)
@@ -53,9 +60,9 @@ public class Desk {
     private Status status = Status.AVAILABLE;
 
     public enum Status {
-       AVAILABLE, BOOKED, OUT_OF_SERVICE
+        AVAILABLE, BOOKED, OUT_OF_SERVICE
     }
 
-    @Transient // Pole nie zapisuje się w bazie
+    @Transient
     private List<PhotoDTO> photos;
 }

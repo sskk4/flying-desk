@@ -70,14 +70,13 @@ public class SubmissionService {
      * @throws IOException If file upload fails
      */
     public Submission createSubmission(SubmissionDTO submissionDTO, Long userId, List<MultipartFile> files) throws IOException {
-        // Validate submitted files
         validateFiles(files);
 
-        // Create and save the Submission entity
+
         Submission submission = buildSubmissionEntity(submissionDTO, userId);
         Submission savedSubmission = submissionRepository.save(submission);
 
-        // Upload and save photos if provided
+
         if (files != null && !files.isEmpty()) {
             savePhotosForSubmission(files, savedSubmission.getId());
         }
@@ -94,11 +93,9 @@ public class SubmissionService {
      * @return Zaktualizowane zgłoszenie
      */
     public Submission updateSubmissionStatus(Long submissionId, Submission.Status newStatus) {
-        // Znajdź zgłoszenie po ID
         Submission submission = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Submission not found with ID: " + submissionId));
 
-        // Aktualizacja statusu
         submission.setStatus(newStatus);
         submissionRepository.save(submission);
 
@@ -115,11 +112,10 @@ public class SubmissionService {
      */
     private void savePhotosForSubmission(List<MultipartFile> files, Long submissionId) throws IOException {
         for (MultipartFile file : files) {
-            // Generate a unique file name
+
             String uniqueFileName = UUID.randomUUID().toString() +
                     file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
 
-            // Upload photo to Google Cloud and save in DB
             photoService.addPhoto(
                     file.getBytes(),                     // File bytes
                     "submissions",                       // Folder name

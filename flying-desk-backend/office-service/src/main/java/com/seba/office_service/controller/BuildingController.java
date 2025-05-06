@@ -57,13 +57,13 @@ public class BuildingController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) Boolean isApproved,
             @RequestParam(required = false) Building.Status status,
-            @RequestParam(required = false) String country, // Filtr po kraju
-            @RequestParam(required = false) String city, // Filtr po mieście
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, // Filtr po dacie początkowej
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate, // Filtr po dacie końcowej
-            @RequestParam(defaultValue = "id") String sortBy, // Pole do sortowania
-            @RequestParam(defaultValue = "asc") String sortDir, // Kierunek sortowania
-            @PageableDefault(size = 10) Pageable pageable // Domyślne parametry paginacji
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @PageableDefault(size = 10) Pageable pageable
     ) {
         return buildingService.getBuildings(search, isApproved, status, country, city, startDate, endDate, sortBy, sortDir, pageable);
     }

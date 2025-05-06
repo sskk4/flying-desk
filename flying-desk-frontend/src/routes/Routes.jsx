@@ -9,6 +9,7 @@ import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import ActivateAccountPage from "../pages/Auth/ActivateAccount";
 import RentDesk from "../pages/Rent/RentDesk";
+import RentRoom from "../pages/Rent/RentRoom";
 import Profile from "../pages/Profile/Profile";
 
 import OfficeList from "../pages/Office/OfficeList";
@@ -20,6 +21,7 @@ import RoomDetails from "../pages/Office/RoomDetails";
 import DeskList from "../pages/Office/DeskList";
 import DeskDetails from "../pages/Office/DeskDetails";
 
+import ForCustomer from "../pages/Rent/ForCustomer"
 
 import TestBuilding from "../utils/test-components/building/TestBuilding";
 
@@ -51,6 +53,14 @@ const AppRoutes = () => {
 
       <Route path="/office/:id" element={<OfficeDetails />} />
       <Route path="/room/:id" element={<RoomDetails />} />
+      <Route
+    path="/room/:roomid/rent"
+    element={
+      <ProtectedRoute>
+        <RentRoom />
+      </ProtectedRoute>
+    }
+  />
 
       <Route
     path="/desk/:deskid/rent"
@@ -86,6 +96,14 @@ const AppRoutes = () => {
         }
       />
 
+<Route
+  path="/for-customer/*"
+  element={
+    <ProtectedRoute isForCustomer={true}>
+      <ForCustomer />
+    </ProtectedRoute>
+  }
+  />
 
 
 <Route
@@ -139,9 +157,9 @@ const AppRoutes = () => {
       <Route
         path="/admin-fd/*"
         element={
-          <ProtectedRoute allowedRoles={["ADMIN"]}>
+    
             <AdminPanel />
-          </ProtectedRoute>
+
         }
       />
 

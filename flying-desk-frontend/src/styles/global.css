@@ -107,7 +107,7 @@ hr {
     color:white;
     padding:0.5vh 1vh 0.5vh 1vh;
     border:none;
-    border-radius:10px 5px 1px 1px;
+    border-radius:10px 10px 10px 10px;
     cursor:pointer;
     transition:0.1s;
     width:10vh;
