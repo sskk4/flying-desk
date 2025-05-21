@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import debounce from "lodash.debounce";
+import { Calendar, Clock } from "react-feather";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import SearchBar from "../../components/SearchBar/SearchBar";
@@ -13,6 +14,9 @@ const RoomsList = () => {
   const [error, setError] = useState("");
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [availabilityLoading, setAvailabilityLoading] = useState(false);
+  const [availableRoomsIds, setAvailableRoomsIds] = useState([]);
+  const { accessToken, user } = { accessToken: localStorage.getItem('accessToken'), user: JSON.parse(localStorage.getItem('user')) };
 
   const [filters, setFilters] = useState({
     countryId: "",
@@ -21,24 +25,18 @@ const RoomsList = () => {
     priceTo: "",
     sort: "room-asc",
     search: "",
+    availabilityDate: "",
+    availabilityStartTime: "09:00",
+    availabilityEndTime: "17:00",
+    onlyAvailable: false,
   });
-
-  const [tempFilters, setTempFilters] = useState({ ...filters });
-
-  const applyFilters = debounce(() => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      ...tempFilters,
-    }));
-    setPage(0);
-  }, 500);
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: value, 
     }));
-    setPage(0);
+    setPage(0); 
   };
 
   const handleSortChange = (sort) => {
@@ -51,27 +49,142 @@ const RoomsList = () => {
       ...prev,
       search,
     }));
-    setPage(0);
+    setPage(0); 
   };
 
   useEffect(() => {
     const queryParams = new URLSearchParams();
-
+  
     Object.entries({
-      country: filters.countryId,
-      city: filters.cityId,
+      country: filters.countryId,   
+      city: filters.cityId,        
       minPrice: filters.priceFrom,
       maxPrice: filters.priceTo,
+      availabilityDate: filters.availabilityDate,
+      availabilityStartTime: filters.availabilityStartTime,
+      availabilityEndTime: filters.availabilityEndTime,
+      onlyAvailable: filters.onlyAvailable.toString(),
       sort: filters.sort,
       search: filters.search,
       page: page.toString(),
       size: "9",
     }).forEach(([key, value]) => {
-      if (value) queryParams.append(key, value);
+      if (value) {
+        queryParams.append(key, value);
+      }
     });
-
+  
     window.history.replaceState(null, "", `?${queryParams.toString()}`);
   }, [filters, page]);
+
+  useEffect(() => {
+    const checkAvailability = async () => {
+      if (!filters.availabilityDate || !filters.onlyAvailable) {
+        setAvailableRoomsIds([]);
+        return;
+      }
+
+      try {
+        setAvailabilityLoading(true);
+
+        const checkPromises = rooms.map(async (room) => {
+          try {
+            const startDateTime = `${filters.availabilityDate}T${filters.availabilityStartTime}:00`;
+            const endDateTime = `${filters.availabilityDate}T${filters.availabilityEndTime}:00`;
+            
+            const availabilityResponse = await axios.get(
+              "http://localhost:8083/api/v1/availability/resource", {
+                params: {
+                  type: "ROOM",
+                  resourceId: room.id
+                },
+                headers: accessToken ? {
+                  Authorization: `Bearer ${accessToken}`,
+                  "X-User-Id": user?.userId
+                } : {}
+              }
+            );
+            
+            if (!availabilityResponse.data || availabilityResponse.data.length === 0) {
+              return null;
+            }
+            
+            const availabilityData = availabilityResponse.data[0];
+            
+            const startDay = new Date(filters.availabilityDate).toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+            const dayAvailability = availabilityData.availableDaysWithHours.find(day => day.dayOfWeek === startDay);
+            
+            if (!dayAvailability) {
+              return null;
+            }
+            
+            const startDateObj = new Date(`${filters.availabilityDate}T${filters.availabilityStartTime}`);
+            const endDateObj = new Date(`${filters.availabilityDate}T${filters.availabilityEndTime}`);
+            
+            const isTimeSlotAvailable = dayAvailability.timeSlots.some(slot => {
+              const slotStart = new Date(`${filters.availabilityDate}T${slot.startTime}`);
+              const slotEnd = new Date(`${filters.availabilityDate}T${slot.endTime}`);
+              return startDateObj >= slotStart && endDateObj <= slotEnd;
+            });
+            
+            if (!isTimeSlotAvailable) {
+              return null;
+            }
+            
+            const rentalHistoryResponse = await axios.get(`http://localhost:8083/api/v1/rent/resource`, {
+              params: { resourceType: "ROOM", resourceId: room.id },
+              headers: accessToken ? {
+                Authorization: `Bearer ${accessToken}`,
+                "X-User-Id": user?.userId
+              } : {}
+            });
+            
+            if (!rentalHistoryResponse.data) {
+              return room.id; 
+            }
+            
+            const rentalHistory = rentalHistoryResponse.data;
+            
+            const conflictingRental = rentalHistory.find(rental => {
+              const rentalStart = new Date(rental.startDate);
+              const rentalEnd = new Date(rental.endDate);
+              return (
+                (startDateObj >= rentalStart && startDateObj < rentalEnd) ||
+                (endDateObj > rentalStart && endDateObj <= rentalEnd) ||
+                (startDateObj <= rentalStart && endDateObj >= rentalEnd)
+              );
+            });
+            
+            if (conflictingRental) {
+              return null; 
+            }
+            
+            return room.id; 
+          } catch (err) {
+            console.error(`Error checking availability for room ${room.id}:`, err);
+            return null;
+          }
+        });
+        
+        const availabilityResults = await Promise.all(checkPromises);
+        const availableIds = availabilityResults.filter(id => id !== null);
+        
+        setAvailableRoomsIds(availableIds);
+      } catch (err) {
+        console.error("Error during batch availability check:", err);
+      } finally {
+        setAvailabilityLoading(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      if (rooms.length > 0) {
+        checkAvailability();
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [rooms, filters.availabilityDate, filters.availabilityStartTime, filters.availabilityEndTime, filters.onlyAvailable, accessToken, user?.userId]);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -114,6 +227,19 @@ const RoomsList = () => {
     fetchRooms();
   }, [filters, page]);
 
+  const filteredRooms = filters.onlyAvailable && filters.availabilityDate
+    ? rooms.filter(room => availableRoomsIds.includes(room.id))
+    : rooms;
+
+  const searchFilteredRooms = filters.search 
+    ? filteredRooms.filter(room => 
+        room.room.toLowerCase().includes(filters.search.toLowerCase()) ||
+        (room.description && room.description.toLowerCase().includes(filters.search.toLowerCase())) ||
+        (room.building && room.building.building && room.building.building.toLowerCase().includes(filters.search.toLowerCase())) ||
+        (room.building && room.building.address && room.building.address.address && room.building.address.address.toLowerCase().includes(filters.search.toLowerCase()))
+      )
+    : filteredRooms;
+
   return (
     <div>
       <Header />
@@ -126,16 +252,23 @@ const RoomsList = () => {
       />
 
       <div className="result-count">
-        <label>{rooms.length} results</label>
+        <label>{searchFilteredRooms.length} results</label>
+        {filters.availabilityDate && filters.onlyAvailable && (
+          <div className="availability-badge">
+            <Calendar size={14} /> 
+            Showing rooms available on {new Date(filters.availabilityDate).toLocaleDateString()} 
+            from {filters.availabilityStartTime} to {filters.availabilityEndTime}
+          </div>
+        )}
         <hr />
       </div>
 
-      {loading && <div className="loader-container"><div className="loader"></div></div>}
+      {(loading || availabilityLoading) && <div className="loader-container"><div className="loader"></div></div>}
       {error && <div className="error-container">{error} <hr /></div>}
 
-      {rooms.length > 0 ? (
+      {searchFilteredRooms.length > 0 ? (
         <div className="card-container">
-          {rooms.map((room) => (
+          {searchFilteredRooms.map((room) => (
             <div className="card" key={room.id}>
               <div className="card-image">
                 <img
@@ -150,6 +283,11 @@ const RoomsList = () => {
                 <div className="card-price-container">
                   <h4 className="card-price">{room.price}$ {room.currency} /day</h4>
                 </div>
+                {filters.availabilityDate && filters.onlyAvailable && availableRoomsIds.includes(room.id) && (
+                  <div className="availability-tag">
+                    <Clock size={12} /> Available
+                  </div>
+                )}
                 <Link to={`/room/${room.id}`}>
                   <button className="purple-button card-button">Check</button>
                 </Link>
@@ -157,11 +295,13 @@ const RoomsList = () => {
             </div>
           ))}
         </div>
-      ) : !loading && !error ? (
+      ) : !loading && !availabilityLoading && !error ? (
         <div className="no-results">
           {filters.search
             ? `No rooms found for "${filters.search}". Try adjusting your search.`
-            : "No rooms available. Try modifying your filters or search criteria."}
+            : filters.availabilityDate && filters.onlyAvailable
+              ? "No available rooms for the selected date and time. Try adjusting your availability filters."
+              : "No rooms available. Try modifying your filters or search criteria."}
         </div>
       ) : null}
 

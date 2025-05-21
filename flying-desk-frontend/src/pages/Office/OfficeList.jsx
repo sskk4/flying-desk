@@ -207,7 +207,7 @@ const OfficeList = () => {
             {building.address.city.city}, {building.address.address},{" "}
             {building.address.country.country}
           </h4>
-          <h4 className="card-status">{building.status}</h4>
+          <h4 className="card-price">{building.status}</h4>
           <Link to={`/office/${building.id}`}>
             <button className="purple-button card-button">Check</button>
           </Link>

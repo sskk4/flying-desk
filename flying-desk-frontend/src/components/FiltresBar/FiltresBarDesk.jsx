@@ -178,24 +178,6 @@ const FiltresBarDesk = ({
               </select>
             </div>
             <div className="filtres-item">
-              <label>Status:</label>
-              <select onChange={handleStatusChange}>
-                <option value=""></option>
-                <option value="ACTIVE">Active</option>
-                <option value="INACTIVE">Inactive</option>
-              </select>
-            </div>
-            <div className="filtres-item">
-              <label>Equipment:</label>
-              <select onChange={handleEquipmentChange}>
-                <option value=""></option>
-                <option value="monitor">Monitor</option>
-                <option value="keyboard">Keyboard</option>
-                <option value="mouse">Mouse</option>
-                <option value="headset">Headset</option>
-              </select>
-            </div>
-            <div className="filtres-item">
               <label>Price From:</label>
               <input 
                 type="number" 

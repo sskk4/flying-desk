@@ -145,14 +145,6 @@ const FiltresBar = ({
               </select>
             </div>
             <div className="filtres-item">
-              <label>Status:</label>
-              <select onChange={handleStatusChange}>
-                <option value=""> </option>
-                <option value="ACTIVE">Active</option>
-                <option value="INACTIVE">Inactive</option>
-              </select>
-            </div>
-            <div className="filtres-item">
               <label>Date Range From:</label> <br></br>
               <input
                 type="date"
