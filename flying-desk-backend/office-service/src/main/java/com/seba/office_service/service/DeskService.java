@@ -240,6 +240,13 @@ public class DeskService {
                 .orElseThrow(() -> new ResourceNotFoundException("Desk not found with ID: " + deskId));
 
         desk.setIsApproved(isApproved);
+
+        if (isApproved) {
+            desk.setStatus(Desk.Status.AVAILABLE);
+        } else {
+            desk.setStatus(Desk.Status.OUT_OF_SERVICE);
+        }
+
         deskRepository.save(desk);
 
         log.info("Desk with ID: {} approval status updated to: {}", deskId, isApproved);
@@ -314,4 +321,6 @@ public class DeskService {
         desk.setIsApproved(false);
         return desk;
     }
+
+
 }

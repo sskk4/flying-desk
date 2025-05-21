@@ -149,7 +149,15 @@ public class RentService {
         return rentRepository.save(rent);
     }
 
-
+    /**
+     * Pobiera wszystkie rezerwacje dla panelu administratora
+     *
+     * @return lista wszystkich rezerwacji w systemie
+     */
+    public List<Rent> getAllRents() {
+        log.info("Pobieranie wszystkich rezerwacji dla panelu administracyjnego");
+        return rentRepository.findAll();
+    }
 
     public List<Rent> getRentsByUser(Long userId) {
         return rentRepository.findByUserId(userId);

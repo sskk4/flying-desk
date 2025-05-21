@@ -1,4 +1,3 @@
-// src/pages/RoomsList.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -18,10 +17,6 @@ const RoomsList = () => {
   const [filters, setFilters] = useState({
     countryId: "",
     cityId: "",
-    status: "",
-    equipment: "",
-    dateFrom: "",
-    dateTo: "",
     priceFrom: "",
     priceTo: "",
     sort: "room-asc",
@@ -65,10 +60,6 @@ const RoomsList = () => {
     Object.entries({
       country: filters.countryId,
       city: filters.cityId,
-      status: filters.status,
-      startDate: filters.dateFrom,
-      endDate: filters.dateTo,
-      equipment: filters.equipment,
       minPrice: filters.priceFrom,
       maxPrice: filters.priceTo,
       sort: filters.sort,
@@ -91,10 +82,6 @@ const RoomsList = () => {
         const params = {
           country: filters.countryId || null,
           city: filters.cityId || null,
-          status: filters.status || null,
-          startDate: filters.dateFrom || null,
-          endDate: filters.dateTo || null,
-          equipment: filters.equipment || null,
           minPrice: filters.priceFrom || null,
           maxPrice: filters.priceTo || null,
           isApproved: true,
@@ -114,12 +101,10 @@ const RoomsList = () => {
         });
 
         const allRooms = response.data?.content || [];
-        const approvedRooms = allRooms
-
-        setRooms(approvedRooms);
+        setRooms(allRooms);
         setTotalPages(response.data?.totalPages || 0);
       } catch (err) {
-        console.error("Błąd podczas pobierania danych:", err);
+        console.error("Error fetching rooms:", err);
         setError("Failed to fetch rooms. Please try again later.");
       } finally {
         setLoading(false);
@@ -145,7 +130,7 @@ const RoomsList = () => {
         <hr />
       </div>
 
-      {loading && <div className="loader-container">  <div className="loader"></div> </div>}
+      {loading && <div className="loader-container"><div className="loader"></div></div>}
       {error && <div className="error-container">{error} <hr /></div>}
 
       {rooms.length > 0 ? (
@@ -162,7 +147,9 @@ const RoomsList = () => {
                 <h4 className="card-title">
                   {room.building.address.city.city}, {room.building.address.address}, {room.building.address.country.country}
                 </h4>
-                <h4 className="card-status">{room.building.status}</h4>
+                <div className="card-price-container">
+                  <h4 className="card-price">{room.price}$ {room.currency} /day</h4>
+                </div>
                 <Link to={`/room/${room.id}`}>
                   <button className="purple-button card-button">Check</button>
                 </Link>

@@ -101,7 +101,7 @@ const RoomDetails = () => {
 
   const formatTime = (timeString) => {
     if (!timeString) return "";
-    return timeString.substring(0, 5); 
+    return timeString.substring(0, 5);
   };
 
   if (error) {
@@ -111,6 +111,7 @@ const RoomDetails = () => {
   if (!room || !building) {
     return <p>Loading room details...</p>;
   }
+
   const allPhotos = [
     ...(room.photos || []),
     ...(building.photos || [])
@@ -123,7 +124,6 @@ const RoomDetails = () => {
       <Header />
 
       <div className="ad-container">
-        {/* Photo Section */}
         <div className="image-section">
           {allPhotos.length > 0 ? (
             <>
@@ -149,7 +149,6 @@ const RoomDetails = () => {
           )}
         </div>
 
-        {/* Details Section */}
         <div className="details-section">
           <h2>{room.room}</h2>
           <hr />
@@ -190,7 +189,6 @@ const RoomDetails = () => {
           <p>{room.description}</p>
           <hr />
           
-          {/* Minimalist Availability Section */}
           <div className="availability-section">
             <h3><Calendar size={10} className="icon" /> Availability Schedule</h3>
             {availabilityData.length > 0 ? (

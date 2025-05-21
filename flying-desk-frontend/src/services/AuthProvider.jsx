@@ -12,15 +12,32 @@ export const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [submissionStatus, setSubmissionStatus] = useState(null);
+    const [submissionDetails, setSubmissionDetails] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const clearError = () => setError(null);
 
     const fetchAndSetSubmissionStatus = async () => {
+        if (!user?.userId) {
+            console.warn("Cannot fetch submission status: no user ID available");
+            return null;
+        }
+        
         console.log("User ID przekazywane do fetchUserSubmissionStatus:", user?.userId);
-        const status = await fetchUserSubmissionStatus(user?.userId);
-        console.log('Fetched submission status from API:', status);
-        setSubmissionStatus(status);
+        try {
+            const statusData = await fetchUserSubmissionStatus(user?.userId);
+            console.log('Fetched submission status from API:', statusData);
+            
+            if (statusData) {
+                setSubmissionStatus(statusData.status);
+                setSubmissionDetails(statusData);
+                return statusData;
+            }
+            return null;
+        } catch (error) {
+            console.error("Error fetching submission status:", error);
+            return null;
+        }
     };
     
 
@@ -67,6 +84,8 @@ export const AuthProvider = ({ children }) => {
         setRefreshToken(null);
         setUser(null);
         setIsAuthenticated(false);
+        setSubmissionStatus(null);
+        setSubmissionDetails(null);
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
     };
@@ -110,7 +129,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (user && user.userId) {
             console.log("Fetching submission status for user:", user.userId);
-            fetchAndSetSubmissionStatus(user.userId).finally(() => setLoading(false));
+            fetchAndSetSubmissionStatus().finally(() => setLoading(false));
         } else {
             setLoading(false);
         }
@@ -118,7 +137,20 @@ export const AuthProvider = ({ children }) => {
     
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated, user, submissionStatus, accessToken, login, logout, refresh, error, clearError, loading }}
+            value={{ 
+                isAuthenticated, 
+                user, 
+                submissionStatus, 
+                submissionDetails,
+                accessToken, 
+                login, 
+                logout, 
+                refresh, 
+                error, 
+                clearError, 
+                loading,
+                fetchAndSetSubmissionStatus  
+            }}
         >
             {children}
         </AuthContext.Provider>

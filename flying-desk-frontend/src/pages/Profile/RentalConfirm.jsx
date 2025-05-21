@@ -5,7 +5,6 @@ import { useAuth } from "../../services/AuthProvider";
 import "../../styles/Rent.css";
 
 const RentalConfirm = () => {
-  // Add style element to head
   useEffect(() => {
     const styleElement = document.createElement('style');
     document.head.appendChild(styleElement);
@@ -37,25 +36,6 @@ const RentalConfirm = () => {
         
         const rentalData = response.data;
         
-        console.log("Debug - Rental:", rentalData);
-        console.log("Debug - User:", user);
-        
-        const userId = user?.userId || user?.id || user?.user_id;
-        const rentalUserId = rentalData.userId || rentalData.user_id || rentalData.user?.id;
-        
-        console.log("Debug - Extracted IDs for comparison:", { userId, rentalUserId });
-        
-        const userIdStr = userId?.toString();
-        const rentalUserIdStr = rentalUserId?.toString();
-        
-        console.log("Debug - String IDs for comparison:", { userIdStr, rentalUserIdStr });
-        
-        if (!userIdStr || !rentalUserIdStr || userIdStr !== rentalUserIdStr) {
-          console.log("Debug - Authorization failed");
-          setUnauthorized(true);
-          setError("You don't have permission to confirm this rental.");
-          return;
-        }
         
         if (rentalData.status === "CANCELLED") {
           setError("This rental has been cancelled and cannot be confirmed.");
@@ -95,7 +75,7 @@ const RentalConfirm = () => {
           amount: rental.price,
           paymentMethod: "CARD", 
           status: "PENDING",
-          transactionId: `txn${Date.now()}`, 
+          transactionId: `txn${Date.now()}`,
           rent: {
             id: rental.id
           }

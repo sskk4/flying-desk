@@ -76,25 +76,20 @@ public class BuildingService {
             String search, Boolean isApproved, Building.Status status,
             String country, String city, LocalDate startDate, LocalDate endDate,
             String sortBy, String sortDir, Pageable pageable) {
-        // Tworzymy specyfikację filtrowania
         Specification<Building> spec = Specification
                 .where(BuildingSpecification.hasIsApproved(isApproved))
                 .and(BuildingSpecification.hasStatus(status))
                 .and(BuildingSpecification.hasSearch(search))
                 .and(BuildingSpecification.hasCountry(country))
                 .and(BuildingSpecification.hasCity(city))
-                .and(BuildingSpecification.hasCreationDateBetween(startDate, endDate)); 
+                .and(BuildingSpecification.hasCreationDateBetween(startDate, endDate));
 
-        // Tworzymy obiekt sortowania
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-        // Tworzymy pageable z sortowaniem
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-        // Pobieramy budynki z repozytorium
         Page<Building> buildings = buildingRepository.findAll(spec, pageable);
 
-        // Dodajemy zdjęcia do każdego budynku
         buildings.forEach(building -> {
             List<PhotoDTO> photos = photoService.getPhotos("BUILDING", building.getId());
             building.setPhotos(photos);
@@ -192,6 +187,13 @@ public class BuildingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Building not found with ID: " + buildingId));
 
         building.setIsApproved(isApproved);
+
+        if (isApproved) {
+            building.setStatus(Building.Status.ACTIVE);
+        } else {
+            building.setStatus(Building.Status.INACTIVE);
+        }
+
         buildingRepository.save(building);
 
         log.info("Building with ID: {} approval status updated to: {}", buildingId, isApproved);
@@ -268,7 +270,7 @@ public class BuildingService {
         building.setContactEmail(buildingDTO.getContactEmail());
         building.setContactPhone(buildingDTO.getContactPhone());
         building.setIsApproved(false);
-        building.setStatus(Building.Status.ACTIVE);
+        building.setStatus(Building.Status.UNDER_REVIEW);
         return building;
     }
 }

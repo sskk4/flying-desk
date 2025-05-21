@@ -1,27 +1,48 @@
+// src/pages/MoreInfo/MoreInfo.jsx
 import React, { useState } from "react";
 import "./Info.css";
 
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+import InfoRegister from "./InfoRegister"; 
+import InfoCustomer from "./InfoCustomer";
+import InfoOwner from "./InfoOwner";
+import InfoOffice from "./InfoOffice";
+import InfoDesk from "./InfoDesk";
+
 import FlyingDesk from "../../assets/images/logo.png";
-import PhoneIcon from "../../assets/png/phone2.png";
+
 
 const MoreInfo = () => {
   const [currentSection, setCurrentSection] = useState("create");
 
   const instructions = {
-    create: { title: "Create account", content: "1. To create an account, click on 'Sign up' and follow the steps." },
-    login: { title: "Login", content: "2. Enter your credentials to log in to your account." },
-    customers: { title: "For customers", content: "3. Customers can explore the available offices and desks." },
-    owners: { title: "For owners", content: "4. Owners can manage their properties and bookings here." },
-    offices: { title: "Offices", content: "5. View and book available office spaces." },
-    rooms: { title: "Rooms", content: "6. Find shared or private rooms for your team." },
-    desks: { title: "Desks", content: "7. Browse individual desks tailored for co-working." },
+    create: {
+      title: "Create account",
+      content: <InfoRegister />,
+    },
+    customers: {
+      title: "For customers",
+      content: <InfoCustomer />,
+    },
+    owners: {
+      title: "For owners",
+      content: <InfoOwner />,
+    },
+    offices: {
+      title: "Offices",
+      content: <InfoOffice />,
+    },
+    rooms: {
+      title: "Rooms and Desks",
+      content: <InfoDesk />,
+    },
   };
 
   return (
     <div>
       <Header />
+
       <div className="info-container">
         <div className="image-container">
           <img src={FlyingDesk} alt="Flying desk" className="flying-image" />
@@ -33,9 +54,10 @@ const MoreInfo = () => {
               Start with <strong>flying desk</strong>
             </h1>
           </div>
+
           <div className="main">
-            <div className="info-menu">
-              <h3>How to start with flying desk</h3>
+            <nav className="info-menu">
+              <h3>How to start with Flying Desk</h3>
               <ul>
                 {Object.keys(instructions).map((key) => (
                   <li key={key}>
@@ -50,19 +72,24 @@ const MoreInfo = () => {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="info-instructions">
-              <h2>{instructions[currentSection].title}</h2>
-              <p>{instructions[currentSection].content}</p>
-            </div>
+            </nav>
+
+            <section className="info-instructions">
+              <h2 className="fancy-text">{instructions[currentSection].title}</h2>
+              <hr></hr>
+              {instructions[currentSection].content}
+            </section>
           </div>
+
           <div className="contact-button-container">
             <a href="/contact" className="contact-button">
-                <span>Contact us</span>
+
+              <span>Contact us</span>
             </a>
-            </div>
+          </div>
         </div>
       </div>
+
       <Footer />
     </div>
   );

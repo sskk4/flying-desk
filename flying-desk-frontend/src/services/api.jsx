@@ -1,3 +1,4 @@
+
 import axios from "./axiosConfig";
 
 export const useApi = () => {
@@ -6,9 +7,12 @@ export const useApi = () => {
     try {
       const response = await axios.get(`/auth/check-email/${email}`);
       console.log("Email check response:", response);
-      return response.status === 200 ? { exists: false } : { exists: true };
+      return { exists: response.data?.message === "Email is already taken" };
     } catch (error) {
       console.error("Error during email check:", error);
+      if (error.response?.status === 400) {
+        return { exists: true };
+      }
       throw error;
     }
   };
@@ -44,7 +48,6 @@ export const useApi = () => {
     }
   };
 
-
   const authenticate = async (email, password) => {
     try {
       const response = await axios.post(`/auth/authenticate`, { email, password });
@@ -54,7 +57,6 @@ export const useApi = () => {
       throw error;
     }
   };
-
 
   const activate = async (token) => {
     console.log("Activating email with token:", token);
@@ -78,5 +80,35 @@ export const useApi = () => {
     }
   };
 
-  return { checkEmail, register, authenticate, activate, changePassword };
+  const forgotPassword = async (email) => {
+    try {
+      const response = await axios.post("/auth/pw/recovery", { email });
+      return response.data;
+    } catch (error) {
+      console.error("Password recovery request failed:", error);
+      throw error;
+    }
+  };
+
+  const resetPassword = async (token, password) => {
+    try {
+      const response = await axios.post(`/auth/pw/recovery/${token}`, { password });
+      return response.data;
+    } catch (error) {
+      console.error("Password reset failed:", error);
+      throw error;
+    }
+  };
+
+  return { 
+    checkEmail, 
+    register, 
+    authenticate, 
+    activate, 
+    changePassword,
+    forgotPassword,
+    resetPassword
+  };
 };
+
+export default useApi;

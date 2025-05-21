@@ -12,10 +12,7 @@ import com.seba.security_service.repository.RefreshTokenRepository;
 import com.seba.security_service.model.Role;
 import com.seba.security_service.model.User;
 import com.seba.security_service.repository.UserRepository;
-import com.seba.security_service.security.request.AuthenticationRequest;
-import com.seba.security_service.security.request.PasswordChangeRequest;
-import com.seba.security_service.security.request.RefreshTokenRequest;
-import com.seba.security_service.security.request.RegisterRequest;
+import com.seba.security_service.security.request.*;
 import com.seba.security_service.security.response.AuthenticationResponse;
 import com.seba.security_service.security.response.RefreshTokenResponse;
 import com.seba.security_service.security.response.RegisterResponse;
@@ -32,7 +29,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -177,6 +176,7 @@ public class AuthenticationService {
                 .build();
     }
 
+
     @SneakyThrows
     public void forgotPassword(String email) {
         log.info(TAG + "Forgot password for user {}", email);
@@ -186,14 +186,12 @@ public class AuthenticationService {
         refreshTokenService.deleteRefreshToken(user);
         RefreshToken refreshToken = refreshTokenService.generateRefreshToken(user);
 
-        emailService.createMail(
+        emailService.sendHtmlEmail(
                 EmailStructure.builder()
                         .email(user.getEmail())
                         .emailType(EmailType.FORGOT_PASSWORD)
                         .build(),
-                emailService.createBody(
-                        EmailType.FORGOT_PASSWORD,
-                        SecurityUtils.ENDPOINT_RECOVERY + refreshToken.getToken().toString())
+                emailService.createHtmlBody(EmailType.FORGOT_PASSWORD, refreshToken.getToken().toString())
         );
     }
 
@@ -212,13 +210,13 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
 
-        emailService.createMail(
+        emailService.sendHtmlEmail(
                 EmailStructure.builder()
                         .email(user.getEmail())
                         .emailType(EmailType.PASSWORD_WAS_CHANGED)
                         .build(),
-                emailService.createBody(
-                        EmailType.PASSWORD_WAS_CHANGED));
+                emailService.createHtmlBody(EmailType.PASSWORD_WAS_CHANGED, null)
+        );
     }
 
     public void updateUserRole(Long userId, Role role) {
@@ -237,6 +235,40 @@ public class AuthenticationService {
 
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new UserFailedAuthentication("Authentication failed"));
+
+        return UserInformationResponse.builder()
+                .firstName(user.getFirstname())
+                .lastName(user.getLastname())
+                .email(user.getEmail())
+                .userId(user.getId())
+                .role(user.getRole().name())
+                .build();
+    }
+
+    public List<UserInformationResponse> getAllUsers() {
+        log.info(TAG + "Get all users");
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(user -> UserInformationResponse.builder()
+                        .firstName(user.getFirstname())
+                        .lastName(user.getLastname())
+                        .email(user.getEmail())
+                        .userId(user.getId())
+                        .role(user.getRole().name())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public UserInformationResponse updateUserInformation(Long userId, UpdateUserRequest request) {
+        log.info(TAG + "Update user information for userId: {}", userId);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setFirstname(request.getFirstName());
+        user.setLastname(request.getLastName());
+        userRepository.save(user);
 
         return UserInformationResponse.builder()
                 .firstName(user.getFirstname())

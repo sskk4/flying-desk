@@ -153,7 +153,7 @@ const OfficeList = () => {
             return null;
           })
         );
-    
+
         setBuildings(buildingsWithDesks.filter((building) => building !== null));
         setTotalPages(response.data?.totalPages || 0);
       } catch (err) {
@@ -184,10 +184,10 @@ const OfficeList = () => {
       <div className="result-count">
         <label>{buildings.length} results</label>
         <hr />
+        <h4>Check desk for rent in office spaces </h4>
 
-        <h2>Check desk for rent in office spaces </h2>
       </div>
-
+      
 
       {loading &&<div className="loader-container">  <div className="loader"></div> </div>}
       {error && <div className="error-container">{error} <hr></hr></div>}

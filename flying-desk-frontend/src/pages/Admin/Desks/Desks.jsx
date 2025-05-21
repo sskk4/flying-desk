@@ -30,7 +30,7 @@ const Desks = () => {
           isApproved: isApproved === "" ? null : isApproved,
         };
 
-        console.log("Fetching desks with params:", params); // Debug parametrów
+        console.log("Fetching desks with params:", params); 
 
         const response = await axios.get(`http://localhost:8081/api/v1/building/desks`, {
           params,
@@ -54,19 +54,18 @@ const Desks = () => {
 
   return (
     <div className="desks-container">
-      {/* Filtry i wyszukiwanie */}
       <div className="filters-container">
         <input
           type="text"
           placeholder="Search by name or description"
           value={search}
-          onChange={(e) => setSearch(e.target.value)} // Aktualizacja stanu wyszukiwania
+          onChange={(e) => setSearch(e.target.value)} 
           className="ap-search-bar"
         />
 
         <select
           value={filter}
-          onChange={(e) => setFilter(e.target.value)} // Aktualizacja stanu filtrowania
+          onChange={(e) => setFilter(e.target.value)} 
           className="filter-select"
         >
           <option value="">All Statuses</option>
@@ -77,7 +76,7 @@ const Desks = () => {
 
         <select
           value={isApproved}
-          onChange={(e) => setIsApproved(e.target.value)} // Aktualizacja stanu zatwierdzenia
+          onChange={(e) => setIsApproved(e.target.value)} 
           className="filter-select"
         >
           <option value="">All Approvals</option>
@@ -87,7 +86,7 @@ const Desks = () => {
 
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value)} // Aktualizacja stanu sortowania
+          onChange={(e) => setSort(e.target.value)} 
           className="sort-select"
         >
           <option value="creationDate,desc">Newest First</option>
@@ -97,7 +96,6 @@ const Desks = () => {
         </select>
       </div>
 
-      {/* Tabela biurek */}
       <table className="data-table">
         <thead>
           <tr>
@@ -144,7 +142,6 @@ const Desks = () => {
         </tbody>
       </table>
 
-      {/* Paginacja */}
       <div className="ap-pagination-controls">
         <button
           className="ap-paggination-button ap-p-b-left"

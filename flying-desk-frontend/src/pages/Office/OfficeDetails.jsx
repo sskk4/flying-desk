@@ -38,7 +38,9 @@ const OfficeDetails = () => {
         const response = await axios.get(
           `http://localhost:8081/api/v1/building/${id}/rooms` 
         );
-        setRooms(response.data.content || []); 
+        const approvedRooms = response.data.content ? 
+          response.data.content.filter(room => room.isApproved === true) : [];
+        setRooms(approvedRooms); 
       } catch (err) {
         console.error("Failed to fetch rooms:", err);
       }
@@ -49,7 +51,10 @@ const OfficeDetails = () => {
         const response = await axios.get(
           `http://localhost:8081/api/v1/building/${id}/desks` 
         );
-        setDesks(response.data.content || []); 
+        console.log(response);
+        const approvedDesks = response.data.content ? 
+          response.data.content.filter(desk => desk.isApproved === true) : [];
+        setDesks(approvedDesks); 
       } catch (err) {
         console.error("Failed to fetch desks:", err);
       }
@@ -82,7 +87,6 @@ const OfficeDetails = () => {
       <Header />
 
       <div className="ad-container">
-        {/* Photo Section */}
         <div className="image-section">
           {office.photos && office.photos.length > 0 ? (
             <>
@@ -107,7 +111,6 @@ const OfficeDetails = () => {
           )}
         </div>
 
-        {/* Details Section */}
         <div className="details-section">
           <h2>{office.building}</h2>
           <hr />
@@ -175,7 +178,6 @@ const OfficeDetails = () => {
         </div>
       </div>
 
-      {/* Tabs for Rooms and Desks */}
       <div className="tabs-container">
         <div className="tabs">
           <button 
@@ -193,10 +195,9 @@ const OfficeDetails = () => {
         </div>
       </div>
 
-      {/* Desks Section */}
       {activeTab === "desks" && (
         <div className="items-section">
-          <h2>Available Desks</h2>
+          <h2>Approved Desks</h2>
           <div className="ads-grid">
             {desks.length > 0 ? (
               desks.map((desk) => (
@@ -241,16 +242,15 @@ const OfficeDetails = () => {
                 </div>
               ))
             ) : (
-              <p>No desks available in this building.</p>
+              <p>No approved desks available in this building.</p>
             )}
           </div>
         </div>
       )}
 
-      {/* Rooms Section */}
       {activeTab === "rooms" && (
         <div className="items-section">
-          <h2>Available Rooms</h2>
+          <h2>Approved Rooms</h2>
           <div className="ads-grid">
             {rooms.length > 0 ? (
               rooms.map((room) => (
@@ -305,7 +305,7 @@ const OfficeDetails = () => {
                 </div>
               ))
             ) : (
-              <p>No rooms available in this building.</p>
+              <p>No approved rooms available in this building.</p>
             )}
           </div>
         </div>

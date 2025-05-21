@@ -238,6 +238,14 @@ public class RoomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found with ID: " + roomId));
 
         room.setIsApproved(isApproved);
+
+        if (isApproved) {
+            room.setStatus(Room.Status.AVAILABLE);
+        } else {
+            room.setStatus(Room.Status.OUT_OF_SERVICE);
+        }
+
+
         roomRepository.save(room);
 
         log.info("Room with ID: {} approval status updated to: {}", roomId, isApproved);

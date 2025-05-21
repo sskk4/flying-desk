@@ -30,7 +30,7 @@ const Buildings = () => {
           isApproved: isApproved === "" ? null : isApproved,
         };
 
-        console.log("Fetching buildings with params:", params); // Debug parametrów
+        console.log("Fetching buildings with params:", params); 
 
         const response = await axios.get(`http://localhost:8081/api/v1/building`, {
           params,
@@ -54,19 +54,18 @@ const Buildings = () => {
 
   return (
     <div className="buildings-container">
-      {/* Filtry i wyszukiwanie */}
       <div className="filters-container">
         <input
           type="text"
           placeholder="Search by name or description"
           value={search}
-          onChange={(e) => setSearch(e.target.value)} // Aktualizacja stanu wyszukiwania
+          onChange={(e) => setSearch(e.target.value)} 
           className="ap-search-bar"
         />
 
         <select
           value={filter}
-          onChange={(e) => setFilter(e.target.value)} // Aktualizacja stanu filtrowania
+          onChange={(e) => setFilter(e.target.value)} 
           className="filter-select"
         >
           <option value="">All Statuses</option>
@@ -76,7 +75,7 @@ const Buildings = () => {
 
         <select
           value={isApproved}
-          onChange={(e) => setIsApproved(e.target.value)} // Aktualizacja stanu isApproved
+          onChange={(e) => setIsApproved(e.target.value)} 
           className="filter-select"
         >
           <option value="">All Approvals</option>
@@ -86,7 +85,7 @@ const Buildings = () => {
 
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value)} // Aktualizacja stanu sortowania
+          onChange={(e) => setSort(e.target.value)} 
           className="sort-select"
         >
           <option value="creationDate,desc">Newest First</option>
@@ -96,7 +95,6 @@ const Buildings = () => {
         </select>
       </div>
 
-      {/* Tabela budynków */}
       <table className="data-table">
         <thead>
           <tr>
@@ -138,7 +136,6 @@ const Buildings = () => {
         </tbody>
       </table>
 
-      {/* Paginacja */}
       <div className="ap-pagination-controls">
         <button
           className="ap-paggination-button ap-p-b-left"

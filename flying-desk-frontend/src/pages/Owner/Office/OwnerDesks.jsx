@@ -1,4 +1,4 @@
-// Plik: OwnerDesks.jsx
+
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../services/AuthProvider";
 import axios from "axios";
@@ -113,7 +113,7 @@ const OwnerDesks = () => {
 
         <button
           className="floating-add-button"
-          onClick={() => navigate("/owner/desk/add")}
+          onClick={() => navigate("/owner/")}
         >
           Add New Desk
         </button>

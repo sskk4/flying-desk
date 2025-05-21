@@ -25,4 +25,12 @@ public class PaymentService {
     public Payment getByTransactionId(String transactionId) {
         return paymentRepository.findByTransactionId(transactionId);
     }
+
+    public Payment getByRentId(Long rentId) {
+        return paymentRepository.findByRentId(rentId).get(0);
+    }
+
+    public List<Payment> getAllPayments() {
+        return paymentRepository.findAll();
+    }
 }

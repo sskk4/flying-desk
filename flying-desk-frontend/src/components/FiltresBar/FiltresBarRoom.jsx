@@ -1,9 +1,9 @@
-// src/components/FiltresBar/FiltresBarRooms.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import arrowDownIcon from "../../assets/icons/arrow-down.svg";
 import arrowUpIcon from "../../assets/icons/arrow-up.svg";
+import { Calendar } from "react-feather";
 import "./FiltresBar.css";
 
 const FiltresBarRooms = ({
@@ -16,6 +16,14 @@ const FiltresBarRooms = ({
   const [cities, setCities] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
+  const [showAvailabilityFilters, setShowAvailabilityFilters] = useState(false);
+
+  const [availabilityFilters, setAvailabilityFilters] = useState({
+    date: "",
+    startTime: "09:00",
+    endTime: "17:00",
+    onlyAvailable: false
+  });
 
   useEffect(() => {
     axios
@@ -48,15 +56,40 @@ const FiltresBarRooms = ({
   };
 
   const handleSortChange = (e) => {
-    onSortChange(e.target.value);
+    const sortValue = e.target.value;
+    onSortChange(sortValue);
   };
 
-  const handleStatusChange = (e) => {
-    onFilterChange("status", e.target.value);
-  };
-
-  const handleDateRangeChange = (field, value) => {
+  const handlePriceChange = (field, value) => {
     onFilterChange(field, value);
+  };
+
+  const toggleAvailabilityFilters = () => {
+    setShowAvailabilityFilters(!showAvailabilityFilters);
+  };
+
+  const handleAvailabilityChange = (field, value) => {
+    const newAvailabilityFilters = {
+      ...availabilityFilters,
+      [field]: value
+    };
+    
+    setAvailabilityFilters(newAvailabilityFilters);
+    
+    if (field === "date") {
+      onFilterChange("availabilityDate", value);
+    } else if (field === "startTime") {
+      onFilterChange("availabilityStartTime", value);
+    } else if (field === "endTime") {
+      onFilterChange("availabilityEndTime", value);
+    } else if (field === "onlyAvailable") {
+      onFilterChange("onlyAvailable", value);
+    }
+  };
+
+  const getCurrentDateString = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
   };
 
   return (
@@ -78,8 +111,10 @@ const FiltresBarRooms = ({
             <div className="filtres-bar-right-panel">
               <select onChange={handleSortChange}>
                 <option className="first-option" value="">Sort by</option>
-                <option value="room-desc">Name (A-Z)</option>
-                <option value="room-asc">Name (Z-A)</option>
+                <option value="room-asc">Name (A-Z)</option>
+                <option value="room-desc">Name (Z-A)</option>
+                <option value="price-asc">Price (Low to High)</option>
+                <option value="price-desc">Price (High to Low)</option>
                 <option value="creationDate-desc">Creation Date (Oldest)</option>
                 <option value="creationDate-asc">Creation Date (Newest)</option>
               </select>
@@ -106,7 +141,7 @@ const FiltresBarRooms = ({
               </select>
             </div>
             <div className="filtres-item">
-              <label>Destination:</label>
+              <label>City:</label>
               <select onChange={handleCityChange} value={selectedCity} disabled={!selectedCountry}>
                 <option value=""></option>
                 {cities.map((city) => (
@@ -117,28 +152,71 @@ const FiltresBarRooms = ({
               </select>
             </div>
             <div className="filtres-item">
-              <label>Status:</label>
-              <select onChange={handleStatusChange}>
-                <option value=""></option>
-                <option value="ACTIVE">Active</option>
-                <option value="INACTIVE">Inactive</option>
-              </select>
-            </div>
-            <div className="filtres-item">
-              <label>Date Range From:</label>
-              <input
-                type="date"
-                onChange={(e) => handleDateRangeChange("dateFrom", e.target.value)}
+              <label>Price From:</label>
+              <input 
+                type="number" 
+                min="0"
+                onChange={(e) => handlePriceChange("priceFrom", e.target.value)}
               />
             </div>
             <div className="filtres-item">
-              <label>Date Range To:</label>
-              <input
-                type="date"
-                onChange={(e) => handleDateRangeChange("dateTo", e.target.value)}
+              <label>Price To:</label>
+              <input 
+                type="number" 
+                min="0"
+                onChange={(e) => handlePriceChange("priceTo", e.target.value)}
               />
             </div>
           </div>
+
+          <div className="filtres-availability-toggle" onClick={toggleAvailabilityFilters}>
+            <Calendar size={16} />
+            <span>Availability Filters</span>
+            <img className="arrow" src={showAvailabilityFilters ? arrowUpIcon : arrowDownIcon} alt="Arrow" />
+          </div>
+
+          {showAvailabilityFilters && (
+            <div className="filtres-availability-section">
+              <div className="filtres-availability-row">
+                <div className="filtres-item">
+                  <label>Date:</label>
+                  <input 
+                    type="date"
+                    min={getCurrentDateString()}
+                    onChange={(e) => handleAvailabilityChange("date", e.target.value)}
+                    value={availabilityFilters.date}
+                  />
+                </div>
+                <div className="filtres-item">
+                  <label>Start Time:</label>
+                  <input 
+                    type="time"
+                    onChange={(e) => handleAvailabilityChange("startTime", e.target.value)}
+                    value={availabilityFilters.startTime}
+                  />
+                </div>
+                <div className="filtres-item">
+                  <label>End Time:</label>
+                  <input 
+                    type="time"
+                    onChange={(e) => handleAvailabilityChange("endTime", e.target.value)}
+                    value={availabilityFilters.endTime}
+                  />
+                </div>
+                <div className="filtres-item checkbox-item">
+                  <label>
+                    <input 
+                      type="checkbox"
+                      onChange={(e) => handleAvailabilityChange("onlyAvailable", e.target.checked)}
+                      checked={availabilityFilters.onlyAvailable}
+                    />
+                    Show only available rooms
+                  </label>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="arrow-hide" onClick={toggleFilters}>
             <img className="arrow" src={arrowUpIcon} alt="Up Arrow" />
           </div>

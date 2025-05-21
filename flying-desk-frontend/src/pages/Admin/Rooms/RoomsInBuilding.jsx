@@ -5,7 +5,7 @@ import { useAuth } from "../../../services/AuthProvider";
 
 const Rooms = () => {
   const { accessToken } = useAuth();
-  const { buildingId } = useParams(); // Pobranie ID budynku z URL
+  const { buildingId } = useParams(); 
   const [rooms, setRooms] = useState([]);
   const [page, setPage] = useState(0);
   const [size] = useState(10);
@@ -15,7 +15,6 @@ const Rooms = () => {
   const [sort, setSort] = useState("creationDate,desc");
   const navigate = useNavigate();
 
-  // Pobieranie pokoi dla budynku
   useEffect(() => {
     const fetchRooms = async () => {
       try {
@@ -49,7 +48,7 @@ const Rooms = () => {
 
   return (
     <div className="rooms-container">
-      {/* Filtry i wyszukiwanie */}
+
       <div className="filters-container">
         <input
           type="text"
@@ -71,7 +70,6 @@ const Rooms = () => {
         </select>
       </div>
 
-      {/* Tabela pokoi */}
       <table className="data-table">
         <thead>
           <tr>
@@ -116,7 +114,6 @@ const Rooms = () => {
         </tbody>
       </table>
 
-      {/* Paginacja */}
       <div className="ap-pagination-controls">
         <button
           className="ap-paggination-button ap-p-b-left"

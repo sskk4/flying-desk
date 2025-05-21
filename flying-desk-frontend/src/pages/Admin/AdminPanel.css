@@ -393,10 +393,9 @@ table th:hover {
 }
 
  
- /* Dla ekranów średnich (np. tablety) */
 @media (max-width: 1420px) {
     .ap-sidebar {
-        width: 20%; /* Sidebar zajmuje więcej miejsca */
+        width: 20%; 
     }
 
     .header-title
@@ -405,21 +404,20 @@ table th:hover {
 }
 
     .main-content {
-        margin-left: 22%; /* Przesunięcie na większy sidebar */
+        margin-left: 22%; 
         width: 80%;
     }
 }
 
-/* Dla małych ekranów (np. telefony) */
 @media (max-width: 900px) {
     .admin-panel {
-        flex-direction: column; /* Sidebar przesuwany na górę */
+        flex-direction: column; 
     }
 
     .ap-sidebar {
         position: relative;
-        width: 100%; /* Sidebar zajmuje całą szerokość */
-        height: auto; /* Wysokość automatyczna */
+        width: 100%; 
+        height: auto; 
         border-right: none;
         border-bottom: 1px solid #ddd;
     }
@@ -428,14 +426,13 @@ table th:hover {
 
     .main-content {
         margin: 0;
-        width: 100%; /* Główna zawartość zajmuje pełną szerokość */
+        width: 100%; 
     }
 }
 
-/* Dla bardzo małych ekranów (np. małe telefony) */
 @media (max-width: 480px) {
     .ap-sidebar {
-        display: none; /* Ukrycie sidebaru dla małych ekranów */
+        display: none; 
     }
 
     .main-content {

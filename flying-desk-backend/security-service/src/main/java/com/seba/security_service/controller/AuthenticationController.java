@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @CrossOrigin
 @RestController
@@ -134,5 +136,23 @@ public class AuthenticationController {
         log.info(TAG + "get current user info");
         var user = authenticationService.getCurrentUser(SecurityHolder.getPrincipal());
         return ResponseEntity.ok(user);
+    }
+
+    @Operation(summary = "Get all users")
+    @GetMapping("/users")
+    public ResponseEntity<List<UserInformationResponse>> getAllUsers() {
+        log.info(TAG + "Get all users");
+        List<UserInformationResponse> users = authenticationService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @Operation(summary = "Update user information")
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserInformationResponse> updateUser(
+            @PathVariable Long userId,
+            @RequestBody UpdateUserRequest request) {
+        log.info(TAG + "Update user with ID: {}", userId);
+        UserInformationResponse updatedUser = authenticationService.updateUserInformation(userId, request);
+        return ResponseEntity.ok(updatedUser);
     }
 }

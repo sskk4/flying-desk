@@ -18,7 +18,6 @@ const DeskForm = () => {
     equipment: "",
     description: "",
     price: "",
-    status: "AVAILABLE",
     floorNumber: "", 
   });
 
@@ -151,8 +150,8 @@ const DeskForm = () => {
       equipment: formData.equipment,
       description: formData.description,
       price: formData.price,
-      status: formData.status,
-      floorNumber: formData.floorNumber, 
+      status: "UNDER_REVIEW",
+      floorNumber: formData.floorNumber,
     };
 
     const formDataToSend = new FormData();
@@ -279,21 +278,6 @@ const DeskForm = () => {
                 required
               />
 
-              <div className="select-form">
-                <label className="custom-label" htmlFor="status">
-                  Status
-                </label>
-                <select
-                  className="custom-select"
-                  id="status"
-                  value={formData.status}
-                  onChange={(e) => handleChange("status", e.target.value)}
-                >
-                  <option value="AVAILABLE">Available</option>
-                  <option value="BOOKED">Booked</option>
-                  <option value="OUT_OF_SERVICE">Out of Service</option>
-                </select>
-              </div>
             </div>
 
             <hr className="divider" />

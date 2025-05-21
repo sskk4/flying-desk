@@ -3,6 +3,7 @@ package com.seba.office_service.service;
 import com.seba.office_service.cloud.PhotoService;
 import com.seba.office_service.dto.PhotoDTO;
 import com.seba.office_service.dto.SubmissionDTO;
+import com.seba.office_service.dto.SubmissionStatusDTO;
 import com.seba.office_service.exception.errors.ResourceNotFoundException;
 import com.seba.office_service.exception.errors.SubmissionValidationException;
 import com.seba.office_service.model.Photo;
@@ -93,13 +94,41 @@ public class SubmissionService {
      * @return Zaktualizowane zgłoszenie
      */
     public Submission updateSubmissionStatus(Long submissionId, Submission.Status newStatus) {
+        return updateSubmissionStatus(submissionId, newStatus, null);
+    }
+
+    /**
+     * Aktualizuje status zgłoszenia wraz z opcjonalnym powodem odrzucenia.
+     *
+     * @param submissionId ID zgłoszenia do aktualizacji
+     * @param newStatus Nowy status zgłoszenia
+     * @param rejectionReason Powód odrzucenia (wymagany tylko gdy status = REJECTED)
+     * @return Zaktualizowane zgłoszenie
+     */
+    public Submission updateSubmissionStatus(Long submissionId, Submission.Status newStatus, String rejectionReason) {
         Submission submission = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Submission not found with ID: " + submissionId));
 
         submission.setStatus(newStatus);
+
+        // Walidacja i ustawienie powodu odrzucenia
+        if (newStatus == Submission.Status.REJECTED) {
+            if (rejectionReason == null || rejectionReason.trim().isEmpty()) {
+                throw new IllegalArgumentException("Rejection reason is required when status is REJECTED");
+            }
+            submission.setRejectionReason(rejectionReason);
+        } else {
+            // Gdy status nie jest REJECTED, usuwamy ewentualny powód odrzucenia
+            submission.setRejectionReason(null);
+        }
+
         submissionRepository.save(submission);
 
         log.info("Submission with ID: {} updated to status: {}", submissionId, newStatus);
+        if (newStatus == Submission.Status.REJECTED) {
+            log.info("Rejection reason: {}", rejectionReason);
+        }
+
         return submission;
     }
 
@@ -168,10 +197,22 @@ public class SubmissionService {
         }
     }
 
+    /**
+     * Get just the status for a user's submission
+     */
     public Submission.Status getUserSubmissionStatus(Long userId) {
         Submission submission = submissionRepository.findFirstByUserIdOrderByCreatedAtDesc(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("No submissions found for user ID: " + userId));
         return submission.getStatus();
     }
 
+    /**
+     * Get the status and additional details for a user's submission
+     */
+    public SubmissionStatusDTO getUserSubmissionStatusWithDetails(Long userId) {
+        Submission submission = submissionRepository.findFirstByUserIdOrderByCreatedAtDesc(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("No submissions found for user ID: " + userId));
+
+        return SubmissionStatusDTO.fromSubmission(submission);
+    }
 }

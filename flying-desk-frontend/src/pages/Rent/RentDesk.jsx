@@ -502,13 +502,18 @@ const RentDeskContainer = () => {
                     </div>
 
                     {/* Right side: Rental history */}
-<div className="rental-history-section">
+                    <div className="rental-history-section">
     <div className="rental-history">
         <h3><Calendar size={18} /> Rental History</h3>
         {rentalHistory && rentalHistory.length > 0 ? (
             <div className="rental-list">
                 {rentalHistory
-                    .filter(rental => rental.status === "PAID") 
+                    .filter(rental => {
+                        const currentDate = new Date();
+                        currentDate.setHours(0, 0, 0, 0); 
+                        const rentalStartDate = new Date(rental.startDate);
+                        return rental.status === "PAID" && rentalStartDate >= currentDate;
+                    })
                     .sort((a, b) => {
                         return new Date(a.startDate) - new Date(b.startDate);
                     })
@@ -525,16 +530,23 @@ const RentDeskContainer = () => {
                                     <User size={14} /> {rental.user.firstName} {rental.user.lastName}
                                 </div>
                             )}
-                                                        <div className="rental-status">
-                                {/* Display the payment status if available */}
-                                Status: {rental.status || rental.paymentStatus || (rental.isPaid ? "PAID" : "") || (rental.paid ? "PAID" : "") || "Unknown"}
+                            <div className="rental-status">
+                            Status: {"BOOKED"}
                             </div>
                         </div>
-                        
                     ))}
             </div>
         ) : (
             <p>No paid rental history available for this desk.</p>
+        )}
+        {rentalHistory && rentalHistory.length > 0 && 
+         !rentalHistory.some(rental => {
+             const currentDate = new Date();
+             currentDate.setHours(0, 0, 0, 0);
+             const rentalStartDate = new Date(rental.startDate);
+             return rental.status === "PAID" && rentalStartDate >= currentDate;
+         }) && (
+            <p>No upcoming rentals for this desk.</p>
         )}
     </div>
 </div>

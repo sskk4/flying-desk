@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import arrowDownIcon from "../../assets/icons/arrow-down.svg";
 import arrowUpIcon from "../../assets/icons/arrow-up.svg";
+import { Calendar, Clock } from "react-feather";
 import "./FiltresBar.css";
 
-const FiltresBar = ({
+const FiltresBarDesk = ({
   isFiltersOpen,
   toggleFilters,
   onFilterChange = () => {}, 
@@ -15,7 +16,14 @@ const FiltresBar = ({
   const [cities, setCities] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
+  const [showAvailabilityFilters, setShowAvailabilityFilters] = useState(false);
 
+  const [availabilityFilters, setAvailabilityFilters] = useState({
+    date: "",
+    startTime: "09:00",
+    endTime: "17:00",
+    onlyAvailable: false
+  });
   
   useEffect(() => {
     console.log("Fetching countries...");
@@ -25,7 +33,6 @@ const FiltresBar = ({
       .catch((err) => console.error("Error fetching countries:", err));
   }, []);
 
- 
   useEffect(() => {
     if (selectedCountry) {
       console.log("Fetching cities for country: ", selectedCountry);
@@ -37,7 +44,6 @@ const FiltresBar = ({
       setCities([]);
     }
   }, [selectedCountry]);
-
 
   const handleCountryChange = (e) => {
     const countryName = e.target.selectedOptions[0]?.text;
@@ -51,13 +57,11 @@ const FiltresBar = ({
     onFilterChange("cityId", cityName); 
   };
 
-
   const handleSortChange = (e) => {
     const sortValue = e.target.value;
     console.log("Sort order changed:", sortValue);
     onSortChange(sortValue);
   };
-
 
   const handleStatusChange = (e) => {
     const status = e.target.value;
@@ -65,10 +69,48 @@ const FiltresBar = ({
     onFilterChange("status", status);
   };
 
-
   const handleDateRangeChange = (field, value) => {
     console.log(`${field} changed to: ${value}`); 
     onFilterChange(field, value);
+  };
+
+  const handleEquipmentChange = (e) => {
+    const equipment = e.target.value;
+    console.log("Equipment changed:", equipment);
+    onFilterChange("equipment", equipment);
+  };
+
+  const handlePriceChange = (field, value) => {
+    console.log(`${field} changed to: ${value}`);
+    onFilterChange(field, value);
+  };
+
+  const toggleAvailabilityFilters = () => {
+    setShowAvailabilityFilters(!showAvailabilityFilters);
+  };
+
+  const handleAvailabilityChange = (field, value) => {
+    const newAvailabilityFilters = {
+      ...availabilityFilters,
+      [field]: value
+    };
+    
+    setAvailabilityFilters(newAvailabilityFilters);
+    
+    if (field === "date") {
+      onFilterChange("availabilityDate", value);
+    } else if (field === "startTime") {
+      onFilterChange("availabilityStartTime", value);
+    } else if (field === "endTime") {
+      onFilterChange("availabilityEndTime", value);
+    } else if (field === "onlyAvailable") {
+      onFilterChange("onlyAvailable", value);
+    }
+  };
+
+  const getCurrentDateString = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
   };
 
   return (
@@ -76,26 +118,27 @@ const FiltresBar = ({
       {!isFiltersOpen && (
         <div className="filtres-bar-close">
           <div className="filtres-bar-left">
-          <Link className="light-purple-button" to="/">
+            <Link className="light-purple-button" to="/">
               Offices
             </Link>
             <Link className="light-purple-button" to="/rooms">
               Rooms
             </Link>
-            <Link className="light-purple-button  active-button" to="/desks">
+            <Link className="light-purple-button active-button" to="/desks">
               Desks
             </Link>
           </div>
           <div className="filtres-bar-right">
             <div className="filtres-bar-right-panel">
-        
-            <select onChange={(e) => onSortChange(e)}>
-  <option className="first-option" value="">Sort by</option>
-  <option value="building-desc">Name (A-Z)</option>
-  <option value="building-asc">Name (Z-A)</option>
-  <option value="creationDate-desc">Creation Date (Oldest)</option>
-  <option value="creationDate-asc">Creation Date (Newest)</option>
-          </select>
+              <select onChange={handleSortChange}>
+                <option className="first-option" value="">Sort by</option>
+                <option value="desk-asc">Name (A-Z)</option>
+                <option value="desk-desc">Name (Z-A)</option>
+                <option value="price-asc">Price (Low to High)</option>
+                <option value="price-desc">Price (High to Low)</option>
+                <option value="creationDate-desc">Creation Date (Oldest)</option>
+                <option value="creationDate-asc">Creation Date (Newest)</option>
+              </select>
  
               <div className="arrow-show" onClick={toggleFilters}>
                 <img className="arrow" src={arrowDownIcon} alt="Down Arrow" />
@@ -120,7 +163,7 @@ const FiltresBar = ({
               </select>
             </div>
             <div className="filtres-item">
-              <label>Destination: </label>
+              <label>City: </label>
               <select
                 onChange={handleCityChange}
                 value={selectedCity}
@@ -137,26 +180,87 @@ const FiltresBar = ({
             <div className="filtres-item">
               <label>Status:</label>
               <select onChange={handleStatusChange}>
-                <option value=""> </option>
+                <option value=""></option>
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>
               </select>
             </div>
             <div className="filtres-item">
-              <label>Date Range From:</label> <br></br>
-              <input
-                type="date"
-                onChange={(e) => handleDateRangeChange("dateFrom", e.target.value)}
+              <label>Equipment:</label>
+              <select onChange={handleEquipmentChange}>
+                <option value=""></option>
+                <option value="monitor">Monitor</option>
+                <option value="keyboard">Keyboard</option>
+                <option value="mouse">Mouse</option>
+                <option value="headset">Headset</option>
+              </select>
+            </div>
+            <div className="filtres-item">
+              <label>Price From:</label>
+              <input 
+                type="number" 
+                min="0"
+                onChange={(e) => handlePriceChange("priceFrom", e.target.value)}
               />
             </div>
             <div className="filtres-item">
-              <label>Date Range To:</label><br></br>
-              <input
-                type="date"
-                onChange={(e) => handleDateRangeChange("dateTo", e.target.value)}
+              <label>Price To:</label>
+              <input 
+                type="number" 
+                min="0"
+                onChange={(e) => handlePriceChange("priceTo", e.target.value)}
               />
             </div>
           </div>
+
+          <div className="filtres-availability-toggle" onClick={toggleAvailabilityFilters}>
+            <Calendar size={16} />
+            <span>Availability Filters</span>
+            <img className="arrow" src={showAvailabilityFilters ? arrowUpIcon : arrowDownIcon} alt="Arrow" />
+          </div>
+
+          {showAvailabilityFilters && (
+            <div className="filtres-availability-section">
+              <div className="filtres-availability-row">
+                <div className="filtres-item">
+                  <label>Date:</label>
+                  <input 
+                    type="date"
+                    min={getCurrentDateString()}
+                    onChange={(e) => handleAvailabilityChange("date", e.target.value)}
+                    value={availabilityFilters.date}
+                  />
+                </div>
+                <div className="filtres-item">
+                  <label>Start Time:</label>
+                  <input 
+                    type="time"
+                    onChange={(e) => handleAvailabilityChange("startTime", e.target.value)}
+                    value={availabilityFilters.startTime}
+                  />
+                </div>
+                <div className="filtres-item">
+                  <label>End Time:</label>
+                  <input 
+                    type="time"
+                    onChange={(e) => handleAvailabilityChange("endTime", e.target.value)}
+                    value={availabilityFilters.endTime}
+                  />
+                </div>
+                <div className="filtres-item checkbox-item">
+                  <label>
+                    <input 
+                      type="checkbox"
+                      onChange={(e) => handleAvailabilityChange("onlyAvailable", e.target.checked)}
+                      checked={availabilityFilters.onlyAvailable}
+                    />
+                    Show only available desks
+                  </label>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="arrow-hide" onClick={toggleFilters}>
             <img className="arrow" src={arrowUpIcon} alt="Up Arrow" />
           </div>
@@ -178,4 +282,4 @@ const FiltresBar = ({
   );
 };
 
-export default FiltresBar;
+export default FiltresBarDesk;

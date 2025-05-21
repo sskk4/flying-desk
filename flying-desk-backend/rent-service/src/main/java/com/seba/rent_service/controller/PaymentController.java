@@ -29,8 +29,18 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getPaymentsByUser(userId));
     }
 
+    @GetMapping("/rent/{rentId}")
+    public ResponseEntity<Payment> getPaymentByRentId(@PathVariable Long rentId) {
+        return ResponseEntity.ok(paymentService.getByRentId(rentId));
+    }
+
     @GetMapping("/transaction/{transactionId}")
     public ResponseEntity<Payment> getPaymentByTransactionId(@PathVariable String transactionId) {
         return ResponseEntity.ok(paymentService.getByTransactionId(transactionId));
+    }
+
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<Payment>> getAllPayments() {
+        return ResponseEntity.ok(paymentService.getAllPayments());
     }
 }

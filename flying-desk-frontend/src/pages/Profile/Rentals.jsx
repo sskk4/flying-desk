@@ -4,13 +4,18 @@ import { useAuth } from "../../services/AuthProvider";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import "../../styles/Rent.css"; 
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 
 const UserRentals = () => {
   const { accessToken, user } = useAuth();
   const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [sortConfig, setSortConfig] = useState({
+ key: 'createdAt',
+    direction: 'descending'
+  });
+  
   const statusColors = {
     PENDING: "#9D8CFF", 
     PAID: "#4CAF50", 
@@ -41,6 +46,58 @@ const UserRentals = () => {
       fetchRentals();
     }
   }, [accessToken, user]);
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortedData = () => {
+    if (!sortConfig.key) {
+      return rentals;
+    }
+
+    return [...rentals].sort((a, b) => {
+
+      let aValue = a[sortConfig.key];
+      let bValue = b[sortConfig.key];
+      
+      if (['startDate', 'endDate', 'createdAt'].includes(sortConfig.key)) {
+        aValue = new Date(aValue).getTime();
+        bValue = new Date(bValue).getTime();
+      }
+      
+      if (sortConfig.key === 'price') {
+        aValue = parseFloat(aValue || 0);
+        bValue = parseFloat(bValue || 0);
+      }
+      
+      if (sortConfig.key === 'id') {
+        aValue = parseInt(aValue);
+        bValue = parseInt(bValue);
+      }
+
+      if (aValue < bValue) {
+        return sortConfig.direction === 'ascending' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortConfig.direction === 'ascending' ? 1 : -1;
+      }
+      return 0;
+    });
+  };
+
+  const getSortIcon = (columnKey) => {
+    if (sortConfig.key !== columnKey) {
+      return <FaSort className="sort-icon" />;
+    }
+    return sortConfig.direction === 'ascending' ? 
+      <FaSortUp className="sort-icon active" /> : 
+      <FaSortDown className="sort-icon active" />;
+  };
 
   const formatDateTime = (dateTimeStr) => {
     try {
@@ -99,23 +156,35 @@ const UserRentals = () => {
           <table className="rentals-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Type</th>
+                <th onClick={() => requestSort('id')} className="sortable-column">
+                  ID {getSortIcon('id')}
+                </th>
+                <th onClick={() => requestSort('resourceType')} className="sortable-column">
+                  Type {getSortIcon('resourceType')}
+                </th>
                 <th>Resource</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Created</th>
+                <th onClick={() => requestSort('startDate')} className="sortable-column">
+                  Start Date {getSortIcon('startDate')}
+                </th>
+                <th onClick={() => requestSort('endDate')} className="sortable-column">
+                  End Date {getSortIcon('endDate')}
+                </th>
+                <th onClick={() => requestSort('price')} className="sortable-column">
+                  Price {getSortIcon('price')}
+                </th>
+                <th onClick={() => requestSort('status')} className="sortable-column">
+                  Status {getSortIcon('status')}
+                </th>
+                <th onClick={() => requestSort('createdAt')} className="sortable-column">
+                  Created {getSortIcon('createdAt')}
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {rentals.map((rental) => {
+              {getSortedData().map((rental) => {
                 const status = rental.status || "UNKNOWN";
-                
                 const statusColor = statusColors[status] || "#757575";
- 
                 
                 return (
                   <tr key={rental.id}>
@@ -179,6 +248,31 @@ const UserRentals = () => {
           </table>
         </div>
       )}
+
+      <style jsx>{`
+        .sortable-column {
+          cursor: pointer;
+          user-select: none;
+          position: relative;
+          padding-right: 20px;
+        }
+        
+        .sort-icon {
+          font-size: 12px;
+          vertical-align: middle;
+          margin-left: 5px;
+          opacity: 0.5;
+        }
+        
+        .sort-icon.active {
+          opacity: 1;
+          color: #0066cc;
+        }
+        
+        .rentals-table th:hover .sort-icon {
+          opacity: 0.8;
+        }
+      `}</style>
     </div>
   );
 };

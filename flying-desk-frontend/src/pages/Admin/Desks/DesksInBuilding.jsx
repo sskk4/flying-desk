@@ -49,7 +49,6 @@ const DesksInBuilding = () => {
 
   return (
     <div className="desks-container">
-      {/* Filtry i wyszukiwanie */}
       <div className="filters-container">
         <input
           type="text"
@@ -71,7 +70,6 @@ const DesksInBuilding = () => {
         </select>
       </div>
 
-      {/* Tabela biurek */}
       <table className="data-table">
         <thead>
           <tr>
@@ -116,7 +114,6 @@ const DesksInBuilding = () => {
         </tbody>
       </table>
 
-      {/* Paginacja */}
       <div className="ap-pagination-controls">
         <button
           className="ap-paggination-button ap-p-b-left"

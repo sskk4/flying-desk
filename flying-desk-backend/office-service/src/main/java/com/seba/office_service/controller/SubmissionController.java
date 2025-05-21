@@ -2,6 +2,7 @@ package com.seba.office_service.controller;
 
 import com.seba.office_service.dto.PhotoDTO;
 import com.seba.office_service.dto.SubmissionDTO;
+import com.seba.office_service.dto.SubmissionStatusDTO;
 import com.seba.office_service.model.Submission;
 import com.seba.office_service.service.SubmissionService;
 import jakarta.validation.Valid;
@@ -72,23 +73,28 @@ public class SubmissionController {
     /**
      * Zmienia status zgłoszenia.
      *
-     * @param submissionId ID zgłoszenia
-     * @param newStatus Nowy status zgłoszenia
+     * @param submissionId    ID zgłoszenia
+     * @param newStatus       Nowy status zgłoszenia
+     * @param rejectionReason Powód odrzucenia (wymagany tylko gdy status = REJECTED)
      * @return Zaktualizowane zgłoszenie
      */
     @PatchMapping("/{id}/status")
     @ResponseStatus(HttpStatus.OK)
     public Submission updateSubmissionStatus(
             @PathVariable("id") Long submissionId,
-            @RequestParam("status") Submission.Status newStatus
+            @RequestParam("status") Submission.Status newStatus,
+            @RequestParam(value = "rejectionReason", required = false) String rejectionReason
     ) {
         log.info("Updating submission ID: {} to status: {}", submissionId, newStatus);
-        return submissionService.updateSubmissionStatus(submissionId, newStatus);
+        if (newStatus == Submission.Status.REJECTED) {
+            log.info("Rejection reason: {}", rejectionReason);
+        }
+        return submissionService.updateSubmissionStatus(submissionId, newStatus, rejectionReason);
     }
 
     @GetMapping("/status/{userId}")
-    public Submission.Status getUserSubmissionStatus(@PathVariable("userId") Long userId) {
+    public SubmissionStatusDTO getUserSubmissionStatus(@PathVariable("userId") Long userId) {
         log.info("Fetching submission status for user ID: {}", userId);
-        return submissionService.getUserSubmissionStatus(userId);
+        return submissionService.getUserSubmissionStatusWithDetails(userId);
     }
 }

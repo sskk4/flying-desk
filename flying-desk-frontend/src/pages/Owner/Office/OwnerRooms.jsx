@@ -1,3 +1,4 @@
+// Plik: OwnerRooms.jsx
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../services/AuthProvider";
 import axios from "axios";
@@ -7,7 +8,7 @@ import "../../../styles/Owner/List.css";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import OwnerTabs from "./OwnerTabs";
-import { FaMapMarkerAlt, FaCheck, FaTimes, FaDoorOpen } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaCheck, FaTimes, FaDoorOpen, FaHistory } from 'react-icons/fa';
 
 const OwnerRooms = () => {
   const { user, accessToken } = useAuth();
@@ -25,7 +26,11 @@ const OwnerRooms = () => {
           },
         });
 
-        setRooms(response.data.content);
+        const sortedRooms = response.data.content.sort((a, b) => {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+
+        setRooms(sortedRooms);
       } catch (err) {
         console.error("Error fetching rooms:", err);
         setError("Failed to load rooms. Please try again later.");
@@ -36,6 +41,14 @@ const OwnerRooms = () => {
       fetchRooms();
     }
   }, [user, accessToken]);
+
+  const handleViewDetails = (roomId) => {
+    navigate(`/room/${roomId}`);
+  };
+
+  const handleViewRentHistory = (roomId) => {
+    navigate(`/owner/room/${roomId}`);
+  };
 
   if (error) return <p className="error-message">{error}</p>;
 
@@ -48,7 +61,7 @@ const OwnerRooms = () => {
         <div className="manage-ads-tabs">
           <OwnerTabs />
         </div>
-
+        
         <div className="ads-grid">
           {rooms.map((room) => (
             <div key={room.id} className="office-card">
@@ -69,8 +82,6 @@ const OwnerRooms = () => {
                   </p>
                 </div>
 
-        
-      
                 <p><strong>Price:</strong> {room.price} PLN</p>
 
                 <div className="approval-status">
@@ -84,9 +95,15 @@ const OwnerRooms = () => {
                 <div className="action-buttons">
                   <button 
                     className="primary-button"
-                    onClick={() => navigate(`/owner/room/${room.id}`)}
+                    onClick={() => handleViewDetails(room.id)}
                   >
                     View Details
+                  </button>
+                  <button 
+                    className="create-button"
+                    onClick={() => handleViewRentHistory(room.id)}
+                  >
+                     Rental History 
                   </button>
                 </div>
               </div>
@@ -96,7 +113,7 @@ const OwnerRooms = () => {
 
         <button
           className="floating-add-button"
-          onClick={() => navigate("/owner/room/add")}
+          onClick={() => navigate("/owner/")}
         >
           Add New Room
         </button>

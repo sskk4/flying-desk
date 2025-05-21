@@ -41,7 +41,6 @@ const CustomerExperience = () => {
         </h1>
 
         <div className="customer-sections">
-          {/* First row: Image left, Text right */}
           <div className="customer-row">
             <div className="customer-image">
               <img src={customer1} alt="Search workspace" className="animated-image" />
@@ -56,7 +55,6 @@ const CustomerExperience = () => {
             </div>
           </div>
 
-          {/* Second row: Text left, Image right */}
           <div className="customer-row">
             <div className="customer-content">
               <h2>02. Book</h2>
@@ -71,7 +69,6 @@ const CustomerExperience = () => {
             </div>
           </div>
 
-          {/* Third row: Image left, Text right */}
           <div className="customer-row">
             <div className="customer-image">
               <img src={customer3} alt="Work comfortably" className="animated-image" />

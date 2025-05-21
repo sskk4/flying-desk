@@ -10,17 +10,17 @@ const Rooms = () => {
   const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState("");
-  const [search, setSearch] = useState(""); // Wyszukiwanie
-  const [filter, setFilter] = useState(""); // Filtrowanie po statusie
-  const [isApproved, setIsApproved] = useState(""); // Filtrowanie po zatwierdzeniu
-  const [sort, setSort] = useState("creationDate,desc"); // Sortowanie
+  const [search, setSearch] = useState(""); 
+  const [filter, setFilter] = useState(""); 
+  const [isApproved, setIsApproved] = useState(""); 
+  const [sort, setSort] = useState("creationDate,desc"); 
   const navigate = useNavigate();
 
-  // Pobieranie danych pokoi
+
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        setError(""); // Reset błędu przed zapytaniem
+        setError(""); 
         const params = {
           page,
           size,
@@ -30,7 +30,7 @@ const Rooms = () => {
           isApproved: isApproved === "" ? null : isApproved,
         };
 
-        console.log("Fetching rooms with params:", params); // Debug parametrów
+        console.log("Fetching rooms with params:", params); 
 
         const response = await axios.get(`http://localhost:8081/api/v1/building/rooms`, {
           params,
@@ -54,19 +54,19 @@ const Rooms = () => {
 
   return (
     <div className="rooms-container">
-      {/* Filtry i wyszukiwanie */}
+
       <div className="filters-container">
         <input
           type="text"
           placeholder="Search by name or description"
           value={search}
-          onChange={(e) => setSearch(e.target.value)} // Aktualizacja stanu wyszukiwania
+          onChange={(e) => setSearch(e.target.value)} 
           className="ap-search-bar"
         />
 
         <select
           value={filter}
-          onChange={(e) => setFilter(e.target.value)} // Aktualizacja stanu filtrowania
+          onChange={(e) => setFilter(e.target.value)} 
           className="filter-select"
         >
           <option value="">All Statuses</option>
@@ -76,7 +76,7 @@ const Rooms = () => {
 
         <select
           value={isApproved}
-          onChange={(e) => setIsApproved(e.target.value)} // Aktualizacja stanu zatwierdzenia
+          onChange={(e) => setIsApproved(e.target.value)}
           className="filter-select"
         >
           <option value="">All Approvals</option>
@@ -86,7 +86,7 @@ const Rooms = () => {
 
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value)} // Aktualizacja stanu sortowania
+          onChange={(e) => setSort(e.target.value)}
           className="sort-select"
         >
           <option value="creationDate,desc">Newest First</option>
@@ -96,7 +96,6 @@ const Rooms = () => {
         </select>
       </div>
 
-      {/* Tabela pokoi */}
       <table className="data-table">
         <thead>
           <tr>
@@ -135,7 +134,6 @@ const Rooms = () => {
         </tbody>
       </table>
 
-      {/* Paginacja */}
       <div className="ap-pagination-controls">
         <button
           className="ap-paggination-button ap-p-b-left"

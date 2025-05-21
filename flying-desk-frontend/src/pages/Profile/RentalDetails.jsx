@@ -50,7 +50,6 @@ const RentalDetails = () => {
             }
           } catch (codeErr) {
             console.error("Error fetching reservation code:", codeErr);
-
           }
         }
       } catch (err) {

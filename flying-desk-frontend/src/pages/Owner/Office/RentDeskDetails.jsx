@@ -57,7 +57,6 @@ const DeskRentalDetails = () => {
           const uniqueUsersSet = new Set(sortedRentals.map(rental => rental.user?.userId));
           const totalRevenue = sortedRentals.reduce((total, rental) => total + (rental.price || 0), 0);
           
-
           const totalDurationMs = sortedRentals.reduce((total, rental) => {
             const startDate = new Date(rental.startDate);
             const endDate = new Date(rental.endDate);
@@ -158,7 +157,7 @@ const DeskRentalDetails = () => {
               </div>
               <div className="stat-item">
                 <span className="stat-label">Total Revenue</span>
-                <span className="stat-value">{rentalStats.totalRevenue} PLN</span>
+                <span className="stat-value">{rentalStats.totalRevenue} $</span>
               </div>
               <div className="stat-item">
                 <span className="stat-label">Avg. Duration</span>
@@ -178,10 +177,13 @@ const DeskRentalDetails = () => {
                   <div className="rental-item-header">
                     <div className="rental-date">
                       <Calendar size={16} /> {formatDateTime(rental.startDate).split(' ')[0]}
+                                            <h4> {new Date(rental.endDate) < new Date() ? "Passed" : "Upcoming"}</h4>
                     </div>
                     <div className="rental-status">
-                      {new Date(rental.endDate) < new Date() ? "Completed" : "Upcoming"}
+
+                                            {rental.status}
                     </div>
+                    
                   </div>
                   
                   <div className="rental-item-details">
@@ -201,7 +203,7 @@ const DeskRentalDetails = () => {
                     
                     <div className="rental-detail">
                       <DollarSign size={16} /> 
-                      <span className="rental-price">{rental.price?.toFixed(2) || "N/A"} PLN</span>
+                      <span className="rental-price">{rental.price?.toFixed(2) || "N/A"} $</span>
                     </div>
                   </div>
                 </div>
@@ -213,8 +215,7 @@ const DeskRentalDetails = () => {
             </div>
           )}
         </div>
-        <hr>
-        </hr>
+        <hr></hr>
         <div className="action-buttons-container">
           <button 
             className="login-button"

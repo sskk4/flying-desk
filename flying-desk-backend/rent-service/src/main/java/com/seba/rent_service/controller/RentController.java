@@ -110,6 +110,19 @@ public class RentController {
         return ResponseEntity.ok(rentService.getRentsByUser(userId));
     }
 
+    /**
+     * Endpoint dla panelu administracyjnego do pobierania wszystkich rezerwacji
+     *
+     * @return lista wszystkich rezerwacji w systemie
+     */
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<Rent>> getAllRentsForAdmin() {
+        log.info("Pobieranie wszystkich rezerwacji dla panelu administracyjnego");
+        List<Rent> allRents = rentService.getAllRents();
+        log.info("Znaleziono łącznie {} rezerwacji", allRents.size());
+        return ResponseEntity.ok(allRents);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Rent> getRentById(@PathVariable Long id) {
         return rentService.getRentById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());

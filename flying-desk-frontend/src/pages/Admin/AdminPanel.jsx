@@ -21,10 +21,15 @@ import DeskAdd from './Desks/AddDesk';
 import DeskDetails from './Desks/DeskDetails';
 import DesksInBuilding from './Desks/DesksInBuilding';
 
+import Rents from './Rents/Rents';
+import RentDetails from './Rents/DetailsRent';
+
+import Payments from './Payments/Payments';
+
+import Users from './Users/Users';
+import UserDetails from './Users/UserDetails';
+
 import AdminPanelPhoto from '../../assets/png/giphy.gif';
-
-
-
 
 const AdminPanel = () => {
     const views = {
@@ -43,6 +48,17 @@ const AdminPanel = () => {
         rooms: { title: 'Rooms', addButtonText: '+ Add Room', addPath:"/admin-fd/buildings"  },
         roomadd: { title: 'Add rooom', addButtonText: 'Back', addPath:"/admin-fd/buildings/:buildingId/rooms"  },
         roomdetails: { title: 'Room details', addButtonText: 'Back', addPath:"/admin-fd/rooms" },
+
+        rents: { title: 'Rents', addButtonText: '+ Add Rent', addPath:"/admin-fd/rents/add" },
+        rentdetails: { title: 'Rent details', addButtonText: 'Back', addPath:"/admin-fd/rents" },
+        
+        payments: { title: 'Payments', addButtonText: '+ Add Payment', addPath:"/admin-fd/payments/add" },
+        paymentadd: { title: 'Add payment', addButtonText: 'Back', addPath:"/admin-fd/payments" },
+        paymentdetails: { title: 'Payment details', addButtonText: 'Back', addPath:"/admin-fd/payments" },
+        
+        users: { title: 'Users', addButtonText: '+ Add User', addPath:"/admin-fd/users/add" },
+        useradd: { title: 'Add user', addButtonText: 'Back', addPath:"/admin-fd/users" },
+        userdetails: { title: 'User details', addButtonText: 'Back', addPath:"/admin-fd/users" },
     };
 
     return (
@@ -53,25 +69,26 @@ const AdminPanel = () => {
                 <Routes>
 
                     <Route path="/" element={
-
-<div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#f0f0f0' 
-}}>
-    <img 
-        src={AdminPanelPhoto} 
-        alt="Admin Panel" 
-        style={{
-            width: '20%', 
-            height: 'auto', 
-            objectFit: 'contain' 
-        }} 
-    />
-</div>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '100vh',
+                            backgroundColor: '#f0f0f0' 
+                        }}>
+                            <img 
+                                src={AdminPanelPhoto} 
+                                alt="Admin Panel" 
+                                style={{
+                                    width: '20%', 
+                                    height: 'auto', 
+                                    objectFit: 'contain' 
+                                }} 
+                            />
+                        </div>
                     } />
+                    
+                    {/* Submissions Routes */}
                     <Route
                         path="/submissions"
                         element={
@@ -90,7 +107,6 @@ const AdminPanel = () => {
                             </>
                         }
                     />
-
                     <Route
                         path="/submissions/:id"
                         element={
@@ -101,8 +117,8 @@ const AdminPanel = () => {
                         }
                     />
 
-
-<Route
+                    {/* Buildings Routes */}
+                    <Route
                         path="/buildings"
                         element={
                             <>
@@ -120,7 +136,6 @@ const AdminPanel = () => {
                             </>
                         }
                     />
-
                     <Route
                         path="/buildings/:id"
                         element={
@@ -131,6 +146,7 @@ const AdminPanel = () => {
                         }
                     />
 
+                    {/* Desks Routes */}
                     <Route
                         path="/desks"
                         element={
@@ -139,41 +155,41 @@ const AdminPanel = () => {
                                 <Desks />
                             </>
                         }
-                />
-            <Route
-                path="/buildings/:buildingId/add-desk"
-                element={
-                    <>
-                        <Header {...views.deskadd} />
-                        <DeskAdd />
-                    </>
-                }
-            />
-            <Route
-                path="/desks/:id"
-                element={
-                    <>
-                        <Header {...views.deskdetails} />
-                        <DeskDetails />
-                    </>
-                }
-            />
-            <Route
-                path="/buildings/:buildingId/desks"
-                element={
-                    <>
-                        <Header
-                            title="Desks in building"
-                            addButtonText="+ Add Desk"
-                            addPath={`/admin-fd/buildings/:buildingId/add-desk`}
-                        />
-                        <DesksInBuilding />
-                    </>
-                }
-            />
+                    />
+                    <Route
+                        path="/buildings/:buildingId/add-desk"
+                        element={
+                            <>
+                                <Header {...views.deskadd} />
+                                <DeskAdd />
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/desks/:id"
+                        element={
+                            <>
+                                <Header {...views.deskdetails} />
+                                <DeskDetails />
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/buildings/:buildingId/desks"
+                        element={
+                            <>
+                                <Header
+                                    title="Desks in building"
+                                    addButtonText="+ Add Desk"
+                                    addPath={`/admin-fd/buildings/:buildingId/add-desk`}
+                                />
+                                <DesksInBuilding />
+                            </>
+                        }
+                    />
 
-
-<Route
+                    {/* Rooms Routes */}
+                    <Route
                         path="/rooms"
                         element={
                             <>
@@ -191,7 +207,6 @@ const AdminPanel = () => {
                             </>
                         }
                     />
-
                     <Route
                         path="/rooms/:id"
                         element={
@@ -205,12 +220,64 @@ const AdminPanel = () => {
                         path="/buildings/:buildingId/rooms"
                         element={
                             <>
-                                      <Header
-                                        title="Rooms in building"
-                                        addButtonText="+ Add Room"
-                                        addPath={`/admin-fd/buildings/:buildingId/add-room`} 
-                                    />
+                                <Header
+                                    title="Rooms in building"
+                                    addButtonText="+ Add Room"
+                                    addPath={`/admin-fd/buildings/:buildingId/add-room`} 
+                                />
                                 <RoomsInBuilding />
+                            </>
+                        }
+                    />
+
+                    {/* Rents Routes */}
+                    <Route
+                        path="/rents"
+                        element={
+                            <>
+                                <Header {...views.rents} />
+                                <Rents />
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/rents/:id"
+                        element={
+                            <>
+                                <Header {...views.rentdetails} />
+                                <RentDetails />
+                            </>
+                        }
+                    />
+
+                    {/* Payments Routes */}
+                    <Route
+                        path="/payments"
+                        element={
+                            <>
+                                <Header {...views.payments} />
+                                <Payments />
+                            </>
+                        }
+                    />
+
+
+                    {/* Users Routes */}
+                    <Route
+                        path="/users"
+                        element={
+                            <>
+                                <Header {...views.users} />
+                                <Users />
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/users/:id"
+                        element={
+                            <>
+                                <Header {...views.userdetails} />
+                                <UserDetails />
                             </>
                         }
                     />

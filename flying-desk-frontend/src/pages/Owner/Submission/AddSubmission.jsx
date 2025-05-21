@@ -12,7 +12,7 @@ import { ReactComponent as LockIcon } from "../../../assets/icons/summary.svg";
 import { ReactComponent as PhotosIcon } from "../../../assets/icons/photos.svg";
 
 const SubmissionsForm = () => {
-  const { accessToken, user, logout } = useAuth();
+  const { accessToken, user, fetchAndSetSubmissionStatus } = useAuth();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -96,9 +96,14 @@ const SubmissionsForm = () => {
         },
       });
 
-      logout();
-
-      navigate("/login"); 
+      // Instead of logging out, update the submission status and redirect
+      await fetchAndSetSubmissionStatus();
+      setMessage("Submission created successfully!");
+      
+      // Short delay before redirect to ensure status is updated
+      setTimeout(() => {
+        navigate("/waiting-status");
+      }, 1000);
       
     } catch (err) {
       console.error("Error submitting form:", err.response?.data || err.message);
@@ -204,8 +209,8 @@ const SubmissionsForm = () => {
                 placeholder="Describe the building"
               />
 
-<hr></hr>
-<h2>Office photos and authorization document</h2>
+              <hr></hr>
+              <h2>Office photos and authorization document</h2>
               <div>
    
                 <input type="file" multiple onChange={handleFileChange} />
@@ -226,6 +231,8 @@ const SubmissionsForm = () => {
         
       </div>
       
+      <Footer />
+
     </div>
 
   );

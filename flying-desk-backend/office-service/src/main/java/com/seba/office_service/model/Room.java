@@ -66,7 +66,7 @@ public class Room {
     private Status status = Status.AVAILABLE;
 
     public enum Status {
-        AVAILABLE, BOOKED, OUT_OF_SERVICE
+        AVAILABLE, BOOKED, OUT_OF_SERVICE, UNDER_REVIEW
     }
 
     @Transient

@@ -1,13 +1,14 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 
-
 import { useAuth } from "../services/AuthProvider";
 import ProtectedRoute from "./ProtectedRoute"; 
 
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import ActivateAccountPage from "../pages/Auth/ActivateAccount";
+import ForgotPassword from "../pages/Auth/ForgotPassword";  
+import ResetPassword from "../pages/Auth/ResetPassword";    
 import RentDesk from "../pages/Rent/RentDesk";
 import RentRoom from "../pages/Rent/RentRoom";
 import Profile from "../pages/Profile/Profile";
@@ -42,7 +43,11 @@ import Error403 from "../pages/Error/Error403";
 import Error404 from "../pages/Error/Error404";
 
 const AppRoutes = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <div><h2 className="fancy-text"> Loading... </h2></div>; 
+  }
 
   return (
     
@@ -54,22 +59,22 @@ const AppRoutes = () => {
       <Route path="/office/:id" element={<OfficeDetails />} />
       <Route path="/room/:id" element={<RoomDetails />} />
       <Route
-    path="/room/:roomid/rent"
-    element={
-      <ProtectedRoute>
-        <RentRoom />
-      </ProtectedRoute>
-    }
-  />
+        path="/room/:roomid/rent"
+        element={
+          <ProtectedRoute>
+            <RentRoom />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
-    path="/desk/:deskid/rent"
-    element={
-      <ProtectedRoute>
-        <RentDesk />
-      </ProtectedRoute>
-    }
-  />
+        path="/desk/:deskid/rent"
+        element={
+          <ProtectedRoute>
+            <RentDesk />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/desk/:id" element={<DeskDetails />} />
       <Route path="/desks" element={<DeskList />} />
 
@@ -82,10 +87,14 @@ const AppRoutes = () => {
         element={isAuthenticated ? <Navigate to="/profile" /> : <Register />}
       />
 
-        <Route
-          path="/activate/:activationId"
-          element={<ActivateAccountPage />}
-        />
+
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+      <Route
+        path="/activate/:activationId"
+        element={<ActivateAccountPage />}
+      />
 
       <Route
         path="/profile/*"
@@ -96,58 +105,54 @@ const AppRoutes = () => {
         }
       />
 
-<Route
-  path="/for-customer/*"
-  element={
-    <ProtectedRoute isForCustomer={true}>
-      <ForCustomer />
-    </ProtectedRoute>
-  }
-  />
+      <Route
+        path="/for-customer/*"
+        element={
+          <ProtectedRoute isForCustomer={true}>
+            <ForCustomer />
+          </ProtectedRoute>
+        }
+      />
 
 
-<Route
-  path="/become-owner/*"
-  element={
-    <ProtectedRoute isBecomeOwner={true}>
-      <BecomeOwner />
-    </ProtectedRoute>
-  }
-/>
-
-
-
+      <Route
+        path="/become-owner/*"
+        element={
+          <ProtectedRoute isBecomeOwner={true}>
+            <BecomeOwner />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Zależne od statusu zgłoszenia */}
       <Route
-  path="/waiting-status"
-  element={
-    <ProtectedRoute allowedStatuses={['PENDING']}>
-      <OwnerWaitingContainer />
-    </ProtectedRoute>
-  }
-/>
-<Route
-  path="/rejected"
-  element={
-    <ProtectedRoute allowedStatuses={['REJECTED']}>
-      <OwnerRejectedContainer />
-    </ProtectedRoute>
-  }
-/>
+        path="/waiting-status"
+        element={
+          <ProtectedRoute allowedStatuses={['PENDING']}>
+            <OwnerWaitingContainer />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/rejected"
+        element={
+          <ProtectedRoute allowedStatuses={['REJECTED']}>
+            <OwnerRejectedContainer />
+          </ProtectedRoute>
+        }
+      />
 
-<Route
-  path="/owner/*"
-  element={
-    <ProtectedRoute
-      allowedRoles={["ADMIN", "OWNER"]} 
-      allowedSubmissionStatuses={["APPROVED"]} 
-    >
-      <OwnerPanel />
-    </ProtectedRoute>
-  }
-/>
-
+      <Route
+        path="/owner/*"
+        element={
+          <ProtectedRoute
+            allowedRoles={["ADMIN", "OWNER"]} 
+            allowedSubmissionStatuses={["APPROVED"]} 
+          >
+            <OwnerPanel />
+          </ProtectedRoute>
+        }
+      />
 
       <Route path="/start-rent" element={<RentContainer />} />
 
@@ -157,9 +162,9 @@ const AppRoutes = () => {
       <Route
         path="/admin-fd/*"
         element={
-    
-            <AdminPanel />
-
+  <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <AdminPanel />
+                </ProtectedRoute>
         }
       />
 

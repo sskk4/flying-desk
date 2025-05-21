@@ -359,7 +359,6 @@ const OwnerManageOffice = () => {
 
             <hr />
             
-            {/* Current Photos Display */}
             {currentPhotos.length > 0 && (
               <div className="current-photos">
                 <h3>Current Photos</h3>

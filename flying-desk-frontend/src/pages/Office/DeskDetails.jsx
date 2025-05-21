@@ -124,7 +124,6 @@ const DeskDetails = () => {
       <Header />
 
       <div className="ad-container">
-        {/* Photo Section */}
         <div className="image-section">
           {allPhotos.length > 0 ? (
             <>
@@ -150,7 +149,6 @@ const DeskDetails = () => {
           )}
         </div>
 
-        {/* Details Section */}
         <div className="details-section">
           <h2>{desk.desk}</h2>
           <hr />
@@ -179,7 +177,6 @@ const DeskDetails = () => {
           <p>{desk.description}</p>
           <hr />
           
-          {/* Minimalist Availability Section */}
           <div className="availability-section">
             <h3><Calendar size={10} className="icon" /> Availability Schedule</h3>
             {availabilityData.length > 0 ? (

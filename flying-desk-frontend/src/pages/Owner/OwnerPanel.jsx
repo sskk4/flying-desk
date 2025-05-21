@@ -13,7 +13,7 @@ import OwnerManageDesk from "./Office/OwnerManageDesk";
 import OwnerRooms from "./Office/OwnerRooms";
 import OwnerAddRoom from "./Office/OwnerAddRoom";
 import OwnerRoomsInOffice from "./Office/OwnerRoomsByBuilding";
-import OwnerManageRoom from "./Office/OwnerManageRoom";
+import RentRoomDetails from "./Office/RentRoomDetails";
 import RentDeskDetails from "./Office/RentDeskDetails";
 
 
@@ -36,7 +36,7 @@ const OwnerPages = () => {
       <Route path="/rooms" element={<div><OwnerRooms /></div>} />
       <Route path="/office/:buildingId/room/add" element={<div><OwnerAddRoom></OwnerAddRoom></div>} />
       <Route path="/office/:buildingId/rooms" element={<div><OwnerRoomsInOffice></OwnerRoomsInOffice></div>} />
-      <Route path="/room/:roomId/manage" element={<div><OwnerManageRoom /></div>} />
+      <Route path="/room/:roomId" element={<div><RentRoomDetails /></div>} />
 
 
     </Routes>

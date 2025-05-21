@@ -6,19 +6,27 @@ const ProtectedRoute = ({
   children,
   allowedRoles = [],
   allowedStatuses = [],
+  allowedSubmissionStatuses = [],
   isBecomeOwner = false,
+  isForCustomer = false,
 }) => {
-  const { isAuthenticated, user, submissionStatus, loading } = useAuth();
+  const { isAuthenticated, user, submissionStatus, submissionDetails, loading } = useAuth();
 
-  console.log("Auth context debug:", {
+  console.log("Protected Route debug:", {
     isAuthenticated,
     user,
     submissionStatus,
-    role: user?.role?.toUpperCase(),
+    submissionDetails,
+    role: user?.role,
+    isBecomeOwner,
+    allowedRoles,
+    allowedStatuses,
+    allowedSubmissionStatuses
   });
 
-  if (loading) {
-    return <div>Loading...</div>;
+  if (loading || (isAuthenticated && !user)) {
+    console.log("Still loading user data...");
+    return <div><h2 className="fancy-text"> Loading...</h2></div>;
   }
 
   if (!isAuthenticated) {
@@ -32,7 +40,7 @@ const ProtectedRoute = ({
     if (submissionStatus === "REJECTED") {
       return <Navigate to="/rejected" />;
     }
-    if (user?.role?.toUpperCase() === "ADMIN" || user?.role?.toUpperCase() === "OWNER") {
+    if (user?.role === "OWNER" || user?.role === "ADMIN") {
       return <Navigate to="/owner" />;
     }
     return children;
@@ -40,18 +48,33 @@ const ProtectedRoute = ({
 
   if (
     allowedRoles.length > 0 &&
-    (!user?.role || !allowedRoles.includes(user.role.toUpperCase()))
+    (!user?.role || !allowedRoles.includes(user.role))
   ) {
-    console.log("Role mismatch or missing role:", user?.role);
+    console.log("Role access denied. User role:", user?.role, "Allowed roles:", allowedRoles);
+    return <Navigate to="/error-403" />;
+  }
+
+  if (
+    allowedSubmissionStatuses?.length > 0 &&
+    (!submissionStatus || !allowedSubmissionStatuses.includes(submissionStatus)) &&
+    user?.role !== "ADMIN"
+  ) {
+    console.log("Submission status check failed:", {
+      userSubmissionStatus: submissionStatus,
+      allowedSubmissionStatuses
+    });
     return <Navigate to="/error-403" />;
   }
 
   if (
     allowedStatuses.length > 0 &&
-    !allowedStatuses.includes(submissionStatus) &&
-    user?.role?.toUpperCase() !== "ADMIN"
+    (!submissionStatus || !allowedStatuses.includes(submissionStatus)) &&
+    user?.role !== "ADMIN"
   ) {
-    console.log("Status mismatch:", { submissionStatus });
+    console.log("Status check failed:", {
+      userStatus: submissionStatus,
+      allowedStatuses
+    });
     return <Navigate to="/error-403" />;
   }
 

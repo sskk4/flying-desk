@@ -4,12 +4,14 @@ import axios from "axios";
 import { useAuth } from "../../../services/AuthProvider";
 
 const SubmissionDetails = () => {
-  const { id } = useParams(); // Get submission ID from the URL
+  const { id } = useParams(); 
   const { accessToken, user } = useAuth();
   const [submission, setSubmission] = useState(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [showRejectionForm, setShowRejectionForm] = useState(false);
 
   const fetchSubmissionDetails = async () => {
     try {
@@ -29,13 +31,39 @@ const SubmissionDetails = () => {
     setMessage("");
 
     try {
-await axios.patch(
-  `http://localhost:8081/api/v1/submissions/${id}/status?status=${newStatus}`,
-  null, 
-  { headers: { Authorization: `Bearer ${accessToken}` } }
-);
-          
+      if (newStatus === "REJECTED") {
+        if (!rejectionReason.trim()) {
+          setError("Reason for rejection is required.");
+          setLoading(false);
+          return;
+        }
+        
+        await axios.patch(
+          `http://localhost:8081/api/v1/submissions/${id}/status?status=${newStatus}&rejectionReason=${encodeURIComponent(rejectionReason)}`,
+          null, 
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+
+        await updateUserRole("USER");
+      } else {
+        await axios.patch(
+          `http://localhost:8081/api/v1/submissions/${id}/status?status=${newStatus}`,
+          null, 
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+
+        if (newStatus === "APPROVED") {
+          await updateUserRole("OWNER");
+        } else if (newStatus === "PENDING") {
+          await updateUserRole("USER");
+        }
+      }
+      
       setMessage(`Status updated to ${newStatus}`);
+
+      setShowRejectionForm(false);
+      setRejectionReason("");
+
       fetchSubmissionDetails(); 
     } catch (err) {
       console.error("Error updating submission status:", err);
@@ -46,10 +74,6 @@ await axios.patch(
   };
 
   const updateUserRole = async (newRole) => {
-    setLoading(true);
-    setError("");
-    setMessage("");
-  
     try {
       await axios.put(
         `http://localhost:8080/api/v1/auth/set-role/${submission.userId}`,
@@ -61,18 +85,18 @@ await axios.patch(
           },
         }
       );
-      setMessage(`Role updated to ${newRole}`);
+      setMessage((prevMessage) => `${prevMessage}. User role updated to ${newRole}`);
     } catch (err) {
       console.error("Error updating user role:", err);
-  
-      if (err.response?.status === 403) {
-        setError("You do not have permission to perform this action.");
-      } else {
-        setError("An unexpected error occurred. Please try again.");
-      }
-    } finally {
-      setLoading(false);
     }
+  };
+  
+  const handleRejection = () => {
+    setShowRejectionForm(true);
+  };
+  
+  const submitRejection = () => {
+    updateSubmissionStatus("REJECTED");
   };
   
   useEffect(() => {
@@ -83,10 +107,9 @@ await axios.patch(
   if (!submission) return <p>Loading...</p>;
 
   return (
-    
     <div className="ap-details-container">
-              {message && <p className="success-message">{message}</p>}
-              {error && <p className="error-message">{error}</p>}
+      {message && <p className="success-message">{message}</p>}
+      {error && <p className="error-message">{error}</p>}
       <p>
         <strong>ID:</strong> {submission.id}
       </p>
@@ -117,6 +140,11 @@ await axios.patch(
       <p>
         <strong>Status:</strong> {submission.status}
       </p>
+      {submission.rejectionReason && (
+        <p>
+          <strong>Rejection Reason:</strong> {submission.rejectionReason}
+        </p>
+      )}
       <p>
         <strong>Created At:</strong> {new Date(submission.createdAt).toLocaleString()}
       </p>
@@ -129,47 +157,62 @@ await axios.patch(
         ))}
       </ul>
       <hr />
-      <h2>Actions for subbmision</h2>
+      <h2>Actions for submission</h2>
       <div className="actions-container">
-        <button
-          onClick={() => updateSubmissionStatus("APPROVED")}
-          disabled={loading}
-          className="create-button action-button"
-        >
-          Approve
-        </button>
-        <button
-          onClick={() => updateSubmissionStatus("REJECTED")}
-          disabled={loading}
-          className="create-button action-button"
-        >
-          Reject
-        </button>
-        <button
-          onClick={() => updateSubmissionStatus("PENDING")}
-          disabled={loading}
-          className="create-button action-button"
-        >
-          Mark as Pending
-        </button>
-        <hr />
-        <h2>Change the role for the user who added subbmision </h2>
-        <button
-          onClick={() => updateUserRole("OWNER")}
-          disabled={loading}
-          className="create-button action-button"
-        >
-          Set Role to Owner
-        </button>
-        <button
-          onClick={() => updateUserRole("USER")}
-          disabled={loading}
-          className="create-button action-button"
-        >
-          Set Role to User
-        </button>
+        {!showRejectionForm ? (
+          <>
+            <button
+              onClick={() => updateSubmissionStatus("APPROVED")}
+              disabled={loading}
+              className="create-button action-button"
+            >
+              Approve and Set as Owner
+            </button>
+            <button
+              onClick={handleRejection}
+              disabled={loading}
+              className="create-button action-button"
+            >
+              Reject and Set as User
+            </button>
+            <button
+              onClick={() => updateSubmissionStatus("PENDING")}
+              disabled={loading}
+              className="create-button action-button"
+            >
+              Mark as Pending and Set as User
+            </button>
+          </>
+        ) : (
+          <div className="rejection-form">
+            <h3>Enter reason for rejection:</h3>
+            <textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              rows={4}
+              cols={50}
+              placeholder="Provide a reason for rejection..."
+              required
+            />
+            <div className="rejection-buttons">
+              <button 
+                onClick={submitRejection}
+                disabled={loading || !rejectionReason.trim()}
+                className="create-button action-button"
+              >
+                Submit Rejection
+              </button>
+              <button
+                onClick={() => setShowRejectionForm(false)}
+                disabled={loading}
+                className="create-button action-button"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-
     </div>
   );
 };

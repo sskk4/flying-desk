@@ -18,7 +18,6 @@ const RoomForm = () => {
     equipment: "",
     description: "",
     price: "",
-    status: "AVAILABLE",
     maxOccupants: "",
     surface: "",
     floorNumber: ""
@@ -153,7 +152,7 @@ const RoomForm = () => {
       equipment: formData.equipment,
       description: formData.description,
       price: parseFloat(formData.price),
-      status: formData.status,
+      status: "UNDER_REVIEW",
       maxOccupants: parseInt(formData.maxOccupants),
       surface: parseInt(formData.surface),
       floorNumber: parseInt(formData.floorNumber),
@@ -202,7 +201,7 @@ const RoomForm = () => {
         equipment: "",
         description: "",
         price: "",
-        status: "AVAILABLE",
+        status: "UNDER_REVIEW",
         maxOccupants: "",
         surface: "",
         floorNumber: ""
@@ -301,21 +300,6 @@ const RoomForm = () => {
                 required
               />
 
-              <div className="select-form">
-                <label className="custom-label" htmlFor="status">
-                  Status
-                </label>
-                <select
-                  className="custom-select"
-                  id="status"
-                  value={formData.status}
-                  onChange={(e) => handleChange("status", e.target.value)}
-                >
-                  <option value="AVAILABLE">Available</option>
-                  <option value="BOOKED">Booked</option>
-                  <option value="OUT_OF_SERVICE">Out of Service</option>
-                </select>
-              </div>
             </div>
 
             <hr className="divider" />

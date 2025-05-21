@@ -8,7 +8,6 @@ import "../../styles/Rent.css";
 import Footer from "../../components/Footer/Footer";
 import Header from '../../components/Header/Header';
 import room2 from "../../assets/png/desk.png"; 
-
 const RentRoomContainer = () => {
     const { roomid } = useParams();
     const navigate = useNavigate();
@@ -63,6 +62,7 @@ const RentRoomContainer = () => {
         return new Date(dateString).toLocaleDateString();
     };
     
+
     const formatDateTime = (dateTimeString) => {
         if (!dateTimeString) return "";
         const date = new Date(dateTimeString);
@@ -89,7 +89,7 @@ const RentRoomContainer = () => {
                 if (availabilityResponse.data?.length > 0) {
                     setAvailabilityData(availabilityResponse.data[0]);
                 }
-
+                
                 const rentalHistoryResponse = await axios.get(`http://localhost:8083/api/v1/rent/resource`, {
                     params: { resourceType: "ROOM", resourceId: parseInt(roomid) },
                     headers: { 
@@ -168,6 +168,7 @@ const RentRoomContainer = () => {
         if (availabilityData?.availableDaysWithHours?.length > 0) {
             const startDay = new Date(formData.startDate).toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
             const endDay = new Date(formData.endDate).toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+            
             const startDayAvailability = availabilityData.availableDaysWithHours.find(day => day.dayOfWeek === startDay);
             if (!startDayAvailability) {
                 setDateError(`No availability for ${startDay}`);
@@ -181,7 +182,7 @@ const RentRoomContainer = () => {
                     return false;
                 }
             }
-
+            
             const isWithinSlot = startDayAvailability.timeSlots.some(slot => {
                 const slotStart = new Date(`${formData.startDate}T${slot.startTime}`);
                 const slotEnd = new Date(`${formData.startDate}T${slot.endTime}`);
@@ -504,39 +505,54 @@ const RentRoomContainer = () => {
                     </div>
 
                     {/* Right side: Rental history */}
-       <div className="rental-history-section">
-           <div className="rental-history">
-               <h3><Calendar size={18} /> Rental History</h3>
-               {rentalHistory && rentalHistory.length > 0 ? (
-                   <div className="rental-list">
-                       {rentalHistory
-                           .filter(rental => rental.status === "PAID") 
-                           .map((rental) => (
-                               <div key={rental.id} className="rental-item">
-                                   <div className="rental-date">
-                                       <Calendar size={14} /> {formatDateTime(rental.startDate).split(' ')[0]}
-                                   </div>
-                                   <div className="rental-time">
-                                       <Clock size={14} /> {formatDateTime(rental.startDate).split(' ')[1]} - {formatDateTime(rental.endDate).split(' ')[1]}
-                                   </div>
-                                   {rental.user && (
-                                       <div className="rental-user">
-                                           <User size={14} /> {rental.user.firstName} {rental.user.lastName}
-                                       </div>
-                                   )}
-                                                               <div className="rental-status">
-                                       {/* Display the payment status if available */}
-                                       Status: {rental.status || rental.paymentStatus || (rental.isPaid ? "PAID" : "") || (rental.paid ? "PAID" : "") || "Unknown"}
-                                   </div>
-                               </div>
-                               
-                           ))}
-                   </div>
-               ) : (
-                   <p>No paid rental history available for this desk.</p>
-               )}
-           </div>
-       </div>
+                   <div className="rental-history-section">
+    <div className="rental-history">
+        <h3><Calendar size={18} /> Rental History</h3>
+        {rentalHistory && rentalHistory.length > 0 ? (
+            <div className="rental-list">
+                {rentalHistory
+                    .filter(rental => {
+                        const currentDate = new Date();
+                        currentDate.setHours(0, 0, 0, 0); 
+                        const rentalStartDate = new Date(rental.startDate);
+                        return rental.status === "PAID" && rentalStartDate >= currentDate;
+                    })
+                    .sort((a, b) => {
+                        return new Date(a.startDate) - new Date(b.startDate);
+                    })
+                    .map((rental) => (
+                        <div key={rental.id} className="rental-item">
+                            <div className="rental-date">
+                                <Calendar size={14} /> {formatDateTime(rental.startDate).split(' ')[0]}
+                            </div>
+                            <div className="rental-time">
+                                <Clock size={14} /> {formatDateTime(rental.startDate).split(' ')[1]} - {formatDateTime(rental.endDate).split(' ')[1]}
+                            </div>
+                            {rental.user && (
+                                <div className="rental-user">
+                                    <User size={14} /> {rental.user.firstName} {rental.user.lastName}
+                                </div>
+                            )}
+                            <div className="rental-status">
+                        {"BOOKED"}
+                            </div>
+                        </div>
+                    ))}
+            </div>
+        ) : (
+            <p>No paid rental history available for this desk.</p>
+        )}
+        {rentalHistory && rentalHistory.length > 0 && 
+         !rentalHistory.some(rental => {
+             const currentDate = new Date();
+             currentDate.setHours(0, 0, 0, 0);
+             const rentalStartDate = new Date(rental.startDate);
+             return rental.status === "PAID" && rentalStartDate >= currentDate;
+         }) && (
+            <p>No upcoming rentals for this desk.</p>
+        )}
+    </div>
+</div>
                 </div>
 
                 <form onSubmit={handleSubmit}>

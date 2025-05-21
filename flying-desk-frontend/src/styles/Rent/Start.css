@@ -4,6 +4,11 @@
     align-items: center;
   }
   
+.owner-container {
+  background: url("../../assets/images/new00.png") no-repeat center center;
+  margin-bottom:-20vh;
+  padding-bottom:25vh;
+}
 
   .image-wrapper {
     position:relative;
@@ -106,9 +111,9 @@
     }
 }
 
-/* src/styles/CustomerExperience.css */
 .customer-experience {
   min-height: 100vh;
+    background: url("../../assets/images/new000.png") center center no-repeat;
   background-color: #ececec;
 }
 

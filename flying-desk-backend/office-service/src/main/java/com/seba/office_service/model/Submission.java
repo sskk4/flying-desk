@@ -59,6 +59,9 @@ public class Submission {
     @Column(nullable = false)
     private Status status = Status.PENDING;
 
+    @Column(columnDefinition = "TEXT")
+    private String rejectionReason;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
