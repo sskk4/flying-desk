@@ -33,6 +33,18 @@ public class AvailabilityController {
         return ResponseEntity.ok(availabilityService.getAvailabilityForResource(type, resourceId));
     }
 
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkAvailability(
+            @RequestParam ResourceAvailability.ResourceType resourceType,
+            @RequestParam Long resourceId,
+            @RequestParam String date,
+            @RequestParam String startTime,
+            @RequestParam String endTime
+    ) {
+        boolean isAvailable = availabilityService.isResourceAvailable(resourceType, resourceId, date, startTime, endTime);
+        return ResponseEntity.ok(isAvailable);
+    }
+
     @GetMapping("/days/{availabilityId}")
     public ResponseEntity<List<ResourceAvailabilityDay>> getAvailableDays(@PathVariable Long availabilityId) {
         return ResponseEntity.ok(availabilityService.getAvailableDays(availabilityId));

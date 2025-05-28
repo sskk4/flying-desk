@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -130,4 +133,36 @@ public class AvailabilityService {
     public List<ResourceAvailabilityHours> getAvailableHours(Long dayId) {
         return hoursRepository.findByAvailabilityDayId(dayId);
     }
+
+    public boolean isResourceAvailable(ResourceAvailability.ResourceType type, Long resourceId, String date, String startTime, String endTime) {
+        LocalDate targetDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
+        LocalTime targetStart = LocalTime.parse(startTime);
+        LocalTime targetEnd = LocalTime.parse(endTime);
+
+        List<AvailabilityResponseDTO> availabilities = getAvailabilityForResource(type, resourceId);
+
+        for (AvailabilityResponseDTO availability : availabilities) {
+            if ((availability.getAvailableFrom() == null || !targetDate.isAfter(availability.getAvailableTo())) &&
+                    (availability.getAvailableTo() == null || !targetDate.isAfter(availability.getAvailableTo()))) {
+
+                String dayOfWeek = targetDate.getDayOfWeek().name(); // e.g. "MONDAY"
+
+                for (DayWithHoursResponseDTO day : availability.getAvailableDaysWithHours()) {
+                    if (day.getDayOfWeek().equalsIgnoreCase(dayOfWeek)) {
+                        for (TimeSlotResponseDTO slot : day.getTimeSlots()) {
+                            LocalTime slotStart = slot.getStartTime();
+                            LocalTime slotEnd = slot.getEndTime();
+
+                            if (!slotStart.isAfter(targetStart) && !slotEnd.isBefore(targetEnd)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
 }

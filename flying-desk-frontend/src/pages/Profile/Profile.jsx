@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 
 import Sidebar from "../../components/SideBar/SideBar";
 import Header from "../../components/Header/Header";
@@ -20,11 +20,21 @@ import { ReactComponent as KeyIcon } from "../../assets/icons/key.svg";
 import Women from "../../assets/png/women.png";
 
 const Profile = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Błąd podczas wylogowywania:", error);
+    }
+  };
 
   let linkPath = '';
 
@@ -71,13 +81,18 @@ const Profile = () => {
                         <h2>{user?.role}</h2>
                       </a>
                       <h4>User id {user?.userId}</h4>
+    <div onClick={handleLogout} className="panel-forgot menu-bar-button slide-in-out margin">
+                        Logout
+                      </div>
                       <img src={Women} alt="women" className="women" />
                     </div>
                     <div className="contact-button-container">
                       <a href="/contact" className="contact-button">
                         <span>Contact us</span>
                       </a>
+
                     </div>
+                    
                   </div>
                 }
               />

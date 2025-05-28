@@ -1,7 +1,6 @@
 package com.seba.rent_service.config;
 
 
-import com.seba.rent_service.config.CustomPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -46,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestPath = request.getRequestURI();
 
-        if (requestPath.startsWith("/api/v1/building")) {
+        if (isPublicEndpoint(requestPath)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -106,5 +105,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private static final String[] PUBLIC_ENDPOINTS = {
+            "/api/v1/images/title",
+            "/api/v1/availability",
+            "/api/v1/rent",
+            "/api/core/get",
+            "/swagger-ui",
+            "/v3/api-docs"
+    };
+
+    private boolean isPublicEndpoint(String uri) {
+        return List.of(PUBLIC_ENDPOINTS).stream().anyMatch(uri::startsWith);
     }
 }

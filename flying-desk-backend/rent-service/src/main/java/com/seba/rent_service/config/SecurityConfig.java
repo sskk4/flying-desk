@@ -67,6 +67,8 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     public  final  String[] PUBLIC_ROUTES = {
             "/api/v1/images/title/**",
+            "/api/v1/availability/**",
+            "/api/v1/rent/**",
             "/api/core/get",
             "/swagger-ui/**",
             "/v3/api-docs/**",

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../../services/AuthProvider";
-import FormField from "../../../components/Form/FormField";
 
 const UserDetails = () => {
   const { id } = useParams();
@@ -24,6 +23,7 @@ const UserDetails = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    role: "",
   });
 
   useEffect(() => {
@@ -51,6 +51,7 @@ const UserDetails = () => {
         setFormData({
           firstName: user.firstName,
           lastName: user.lastName,
+          role: user.role,
         });
       } catch (err) {
         console.error("Error fetching user details:", err);
@@ -63,25 +64,30 @@ const UserDetails = () => {
     fetchUserDetails();
   }, [accessToken, id]);
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleCancel = () => {
     setFormData({
       firstName: userData.firstName,
       lastName: userData.lastName,
+      role: userData.role,
     });
     setSuccessMessage("");
+    setError("");
   };
 
-
-  const handleSave = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+    setLoading(true);
+    
     try {
-      setError("");
-      setSuccessMessage("");
-      
-      const response = await axios.put(
+      // Update user basic info
+      const userUpdateResponse = await axios.put(
         `http://localhost:8080/api/v1/auth/${id}`,
         {
           firstName: formData.firstName,
@@ -92,11 +98,32 @@ const UserDetails = () => {
         }
       );
       
-      setUserData(response.data);
+      // Update user role if it changed
+      if (formData.role !== userData.role) {
+        await axios.put(
+          `http://localhost:8080/api/v1/auth/set-role/${id}`,
+          {
+            role: formData.role,
+          },
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+      }
+      
+      // Update local state with new data
+      const updatedUserData = {
+        ...userUpdateResponse.data,
+        role: formData.role,
+      };
+      
+      setUserData(updatedUserData);
       setSuccessMessage("User information updated successfully");
     } catch (err) {
       console.error("Error updating user:", err);
       setError(err.response?.data?.message || "Failed to update user information");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,76 +131,78 @@ const UserDetails = () => {
   if (error && !userData.userId) return <div className="error-message">{error}</div>;
 
   return (
-    <div className="form-container">
-      <div className="form">
-        <h2>User Details</h2>
+    <div className="ap-form-container">
+      <form onSubmit={handleSubmit} className="ap-form">
+        <h2 className="ap-h2">User Details</h2>
         
-        {error && <div className="error-message">{error}</div>}
-        {successMessage && <div className="success-message">{successMessage}</div>}
+        {error && <p className="error-message">{error}</p>}
+        {successMessage && <p className="success-message">{successMessage}</p>}
         
-        <FormField
-          id="userId"
-          label="User ID"
+        <input
           type="text"
+          placeholder="User ID"
           value={userData.userId}
           disabled={true}
+          style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
         />
         
-        <FormField
-          id="firstName"
-          label="First Name"
+        <input
+          name="firstName"
           type="text"
+          placeholder="First Name"
           value={formData.firstName}
-          onChange={(e) => handleChange("firstName", e.target.value)}
-          placeholder="Enter first name"
+          onChange={handleInputChange}
+          required
         />
         
-        <FormField
-          id="lastName"
-          label="Last Name"
+        <input
+          name="lastName"
           type="text"
+          placeholder="Last Name"
           value={formData.lastName}
-          onChange={(e) => handleChange("lastName", e.target.value)}
-          placeholder="Enter last name"
+          onChange={handleInputChange}
+          required
         />
         
-        <FormField
-          id="email"
-          label="Email"
+        <input
           type="email"
+          placeholder="Email"
           value={userData.email}
           disabled={true}
+          style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
         />
         
-        <FormField
-          id="role"
-          label="Role"
-          type="text"
-          value={userData.role}
-          disabled={true}
-        />
+        <select 
+          name="role" 
+          value={formData.role} 
+          onChange={handleInputChange} 
+          required
+        >
+          <option value="">Select Role</option>
+          <option value="USER">User</option>
+          <option value="ADMIN">Admin</option>
+          <option value="OWNER">Owner</option>
+        </select>
+
+        <hr className="ap-hr" />
         
-        <div className="buttons">
+        <div style={{ display: 'flex', gap: '0px', flexWrap: 'wrap' }}>
           <button 
-            className="create-button narrow" 
-            onClick={() => navigate("/admin-fd/users")}
-          >
-            Back to Users
-          </button>
-          <button 
-            className="create-button narrow" 
+            type="button"
             onClick={handleCancel}
+            className="create-button"
           >
             Cancel Changes
           </button>
           <button 
-            className="login-button wide" 
-            onClick={handleSave}
+            type="submit" 
+            disabled={loading}
+            className="login-button wide"
           >
-            Save Changes
+            {loading ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

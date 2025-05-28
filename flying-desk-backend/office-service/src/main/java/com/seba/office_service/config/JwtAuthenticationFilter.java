@@ -106,4 +106,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+
 }

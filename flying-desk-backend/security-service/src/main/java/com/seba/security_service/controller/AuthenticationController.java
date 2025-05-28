@@ -133,7 +133,7 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/me")
     public ResponseEntity<UserInformationResponse> getCurrentUser() {
-        log.info(TAG + "get current user info");
+        log.info(TAG + "get current user info ");
         var user = authenticationService.getCurrentUser(SecurityHolder.getPrincipal());
         return ResponseEntity.ok(user);
     }

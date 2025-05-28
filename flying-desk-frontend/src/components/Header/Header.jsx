@@ -145,7 +145,7 @@ const Header = () => {
             alt="For Owners"
           />
         </Link>
-        <Link to="/" className={isActiveLink("/") ? "active" : ""}>
+        <Link to="/" className={isActiveLink("/")  ? "active" : ""}>
           <img
             className="nav-bar-menu-img nav-bar-bigger"
             src={officesIcon}

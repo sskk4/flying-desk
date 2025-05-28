@@ -20,8 +20,8 @@ const FiltresBarDesk = ({
 
   const [availabilityFilters, setAvailabilityFilters] = useState({
     date: "",
-    startTime: "09:00",
-    endTime: "17:00",
+    startTime: "",
+    endTime: "",
     onlyAvailable: false
   });
   
@@ -63,22 +63,6 @@ const FiltresBarDesk = ({
     onSortChange(sortValue);
   };
 
-  const handleStatusChange = (e) => {
-    const status = e.target.value;
-    console.log("Status changed:", status);
-    onFilterChange("status", status);
-  };
-
-  const handleDateRangeChange = (field, value) => {
-    console.log(`${field} changed to: ${value}`); 
-    onFilterChange(field, value);
-  };
-
-  const handleEquipmentChange = (e) => {
-    const equipment = e.target.value;
-    console.log("Equipment changed:", equipment);
-    onFilterChange("equipment", equipment);
-  };
 
   const handlePriceChange = (field, value) => {
     console.log(`${field} changed to: ${value}`);
@@ -219,6 +203,7 @@ const FiltresBarDesk = ({
                     type="time"
                     onChange={(e) => handleAvailabilityChange("startTime", e.target.value)}
                     value={availabilityFilters.startTime}
+                    placeholder="Optional"
                   />
                 </div>
                 <div className="filtres-item">
@@ -227,6 +212,7 @@ const FiltresBarDesk = ({
                     type="time"
                     onChange={(e) => handleAvailabilityChange("endTime", e.target.value)}
                     value={availabilityFilters.endTime}
+                    placeholder="Optional"
                   />
                 </div>
                 <div className="filtres-item checkbox-item">
